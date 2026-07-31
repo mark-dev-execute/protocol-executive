@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech PAR Toolkit — Career Assessment & Interview Framework | Fluent Edge</title>
+    <meta name="description" content="Interactive PAR Framework (Problem, Action, Result) career assessment, story bank, and readiness scorecard for tech leaders by Mark.">
+    
+    <!-- Google Fonts: Playfair Display + Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-mark">FE</span>
+                <span class="logo-text">Fluent Edge</span>
+            </a>
+            
+            <nav class="nav-menu">
+                <a href="index.html#about" class="nav-link">About Mark</a>
+                <a href="index.html#comparison" class="nav-link">Why Fluent Edge</a>
+                <a href="index.html#program" class="nav-link">Focus Areas</a>
+                <a href="par-toolkit.html" class="nav-link active">PAR Toolkit</a>
+                <a href="index.html#pricing" class="nav-link">Packages</a>
+                <a href="index.html#policies" class="nav-link">Policies</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="mailto:mark.parfenov@gmail.com" class="btn btn-ghost">
+                    <i class="fa-solid fa-envelope"></i> Email Mark
+                </a>
+                <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2eS5Lf6RGvLqM1pWFJ0GsXA_FqX1tS_AikzrszcPdrp7m0Z0qSzaYY6Ge5_8584UGuAfR-041o?gv=true" target="_blank" rel="noopener" class="btn btn-primary">
+                    Book a Session
+                </a>
+            </div>
+            
+            <button class="mobile-toggle" aria-label="Toggle Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Drawer -->
+    <div class="mobile-drawer">
+        <a href="index.html#about" class="mobile-link">About Mark</a>
+        <a href="index.html#comparison" class="mobile-link">Why Fluent Edge</a>
+        <a href="index.html#program" class="mobile-link">Focus Areas</a>
+        <a href="par-toolkit.html" class="mobile-link">PAR Toolkit</a>
+        <a href="index.html#pricing" class="mobile-link">Packages</a>
+        <a href="index.html#policies" class="mobile-link">Policies</a>
+        <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2eS5Lf6RGvLqM1pWFJ0GsXA_FqX1tS_AikzrszcPdrp7m0Z0qSzaYY6Ge5_8584UGuAfR-041o?gv=true" target="_blank" rel="noopener" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+            Book a Session
+        </a>
+    </div>
+
+    <!-- Main Toolkit Header -->
+    <section class="section hero-small">
+        <div class="container">
+            <div class="section-intro text-center">
+                <span class="sub-tag">STUDENT WORKSPACE</span>
+                <h2>Tech PAR Career Assessment & Story Bank</h2>
+                <p>Structure your 8+ interview stories using the Problem → Action → Result framework, define your executive positioning statement, and track your interview readiness. Saved automatically in your browser.</p>
+                <div class="tool-toolbar mt-3">
+                    <button onclick="saveParData()" class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Progress
+                    </button>
+                    <button onclick="window.print()" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-print"></i> Export / Print PAR Sheet
+                    </button>
+                    <button onclick="clearParData()" class="btn btn-ghost btn-sm text-muted">
+                        <i class="fa-solid fa-rotate-left"></i> Reset Template
+                    </button>
+                </div>
+            </div>
+
+            <!-- PAR Method Explainer Cards -->
+            <div class="par-explainer-grid mb-4">
+                <div class="par-explainer-card">
+                    <div class="par-letter-badge p-badge">P</div>
+                    <h3>Problem</h3>
+                    <p>What was the technical or business issue? Set the context: scale, legacy code, latency bottlenecks, or product gaps.</p>
+                </div>
+                <div class="par-explainer-card">
+                    <div class="par-letter-badge a-badge">A</div>
+                    <h3>Action</h3>
+                    <p>What did <strong>you</strong> specifically do? Highlight architecture choices, tradeoffs, code refactoring, and leadership.</p>
+                </div>
+                <div class="par-explainer-card">
+                    <div class="par-letter-badge r-badge">R</div>
+                    <h3>Result</h3>
+                    <p>What was the quantitative outcome? Latency reduction, uptime %, cost savings, revenue boost, or team velocity.</p>
+                </div>
+            </div>
+
+            <!-- Positioning Statement -->
+            <div class="par-box-panel mb-4">
+                <h3 class="box-title"><i class="fa-solid fa-bullseye text-accent"></i> Your Executive Positioning Statement</h3>
+                <p class="box-sub mb-2">Fill in your 60-second pitch formula: <em>"I help [target companies] achieve [business outcome] by using my experience in [core skills]."</em></p>
+                <div contenteditable="true" id="par-positioning-input" class="editable-banner">
+                    I help <span class="text-accent">high-growth tech & SaaS companies</span> achieve <span class="text-accent">scalable, reliable distributed systems</span> by using my experience in <span class="text-accent">cloud architecture, backend engineering, and team leadership</span>.
+                </div>
+            </div>
+
+            <!-- PAR Stories Bank -->
+            <div class="par-box-panel mb-4">
+                <div class="panel-header-row">
+                    <h3><i class="fa-solid fa-layer-group text-accent"></i> Your PAR Stories Bank</h3>
+                    <span class="badge-sub">Click any text block to edit and personalize</span>
+                </div>
+
+                <div class="stories-list" id="par-story-list">
+                    <!-- Story 1 -->
+                    <div class="story-card">
+                        <div class="story-meta">
+                            <span class="story-tag">Story 1: System Design / Tech Challenge</span>
+                            <span class="story-cat" contenteditable="true">Category: System Design</span>
+                        </div>
+                        <div class="story-par-grid">
+                            <div>
+                                <label class="par-label text-danger">Problem</label>
+                                <div contenteditable="true" class="par-input">Monolith DB queries taking 8-12s under peak load. P99 latency causing 20% checkout drop-off and $150K lost revenue per incident.</div>
+                            </div>
+                            <div>
+                                <label class="par-label text-accent">Action</label>
+                                <div contenteditable="true" class="par-input">Designed event-driven Kafka architecture + Redis cache. Led team of 4 engineers to decompose checkout pipeline and implement circuit breakers.</div>
+                            </div>
+                            <div>
+                                <label class="par-label text-success">Result</label>
+                                <div contenteditable="true" class="par-input">P99 latency dropped to 180ms. Checkout success rate improved to 99.8%. Zero downtime during Black Friday 3x peak traffic.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Story 2 -->
+                    <div class="story-card">
+                        <div class="story-meta">
+                            <span class="story-tag">Story 2: Disagreement & Leadership</span>
+                            <span class="story-cat" contenteditable="true">Category: Executive Leadership</span>
+                        </div>
+                        <div class="story-par-grid">
+                            <div>
+                                <label class="par-label text-danger">Problem</label>
+                                <div contenteditable="true" class="par-input">Architect wanted custom message broker adding 3+ months delay. I believed Kafka was battle-tested and faster to launch.</div>
+                            </div>
+                            <div>
+                                <label class="par-label text-accent">Action</label>
+                                <div contenteditable="true" class="par-input">Built side-by-side data comparison (throughput, ops burden, timeline). Proposed compromise benchmark on staging environment.</div>
+                            </div>
+                            <div>
+                                <label class="par-label text-success">Result</label>
+                                <div contenteditable="true" class="par-input">Architect agreed to Kafka approach. Saved 4 months of engineering time while scaling to 50K msgs/sec seamlessly.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Story 3 -->
+                    <div class="story-card">
+                        <div class="story-meta">
+                            <span class="story-tag">Story 3: Ambiguity & Self-Direction</span>
+                            <span class="story-cat" contenteditable="true">Category: Technical Strategy</span>
+                        </div>
+                        <div class="story-par-grid">
+                            <div>
+                                <label class="par-label text-danger">Problem</label>
+                                <div contenteditable="true" class="par-input">VP asked to "make API faster" with no metrics or assigned roadmap. 40+ endpoints with varying loads.</div>
+                            </div>
+                            <div>
+                                <label class="par-label text-accent">Action</label>
+                                <div contenteditable="true" class="par-input">Instrumented Datadog APM metrics, identified top 5 bottleneck endpoints, and built prioritized effort/impact matrix.</div>
+                            </div>
+                            <div>
+                                <label class="par-label text-success">Result</label>
+                                <div contenteditable="true" class="par-input">Reduced average API latency by 65% in 6 weeks. Created optimization framework now standard across 3 teams.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="addParStory()" class="btn btn-secondary btn-full mt-3">
+                    <i class="fa-solid fa-plus"></i> Add New PAR Story
+                </button>
+            </div>
+
+            <!-- Interview Readiness Scorecard -->
+            <div class="par-box-panel">
+                <div class="panel-header-row mb-3">
+                    <h3><i class="fa-solid fa-chart-line text-accent"></i> Interview Readiness Scorecard</h3>
+                    <span class="overall-score-display">Total Score: <strong id="par-total-score" class="text-accent">30 / 40</strong></span>
+                </div>
+
+                <div class="scorecard-table-wrapper">
+                    <table class="scorecard-table">
+                        <thead>
+                            <tr>
+                                <th>Preparation Area</th>
+                                <th>Self-Rating (1-10)</th>
+                                <th>Action Plan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>FAANG / Behavioral Story Depth</strong></td>
+                                <td>
+                                    <div class="slider-box">
+                                        <input type="range" min="1" max="10" value="8" class="score-range" oninput="updateScorecardTotal()">
+                                        <span class="score-val">8/10</span>
+                                    </div>
+                                </td>
+                                <td><div contenteditable="true" class="table-input">Refine story #3 metrics with exact latency numbers.</div></td>
+                            </tr>
+                            <tr>
+                                <td><strong>System Design Communication</strong></td>
+                                <td>
+                                    <div class="slider-box">
+                                        <input type="range" min="1" max="10" value="7" class="score-range" oninput="updateScorecardTotal()">
+                                        <span class="score-val">7/10</span>
+                                    </div>
+                                </td>
+                                <td><div contenteditable="true" class="table-input">Practice capacity estimations out loud for 100K RPS.</div></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Executive Pitch & 60s Intro</strong></td>
+                                <td>
+                                    <div class="slider-box">
+                                        <input type="range" min="1" max="10" value="9" class="score-range" oninput="updateScorecardTotal()">
+                                        <span class="score-val">9/10</span>
+                                    </div>
+                                </td>
+                                <td><div contenteditable="true" class="table-input">Smooth delivery; ready for live interview.</div></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Salary & Offer Negotiation</strong></td>
+                                <td>
+                                    <div class="slider-box">
+                                        <input type="range" min="1" max="10" value="6" class="score-range" oninput="updateScorecardTotal()">
+                                        <span class="score-val">6/10</span>
+                                    </div>
+                                </td>
+                                <td><div contenteditable="true" class="table-input">Review compensation levers with Mark during next session.</div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <div>
+                    <div class="logo mb-2">
+                        <span class="logo-mark">FE</span>
+                        <span class="logo-text">Fluent Edge</span>
+                    </div>
+                    <p class="footer-desc">Professional English, FAANG Interview Prep & Executive Career Coaching by Mark.</p>
+                </div>
+
+                <div class="footer-right">
+                    <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2eS5Lf6RGvLqM1pWFJ0GsXA_FqX1tS_AikzrszcPdrp7m0Z0qSzaYY6Ge5_8584UGuAfR-041o?gv=true" target="_blank" rel="noopener" class="btn btn-primary">
+                        Book a Session
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2026 Fluent Edge. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="mailto:mark.parfenov@gmail.com"><i class="fa-solid fa-envelope"></i> mark.parfenov@gmail.com</a>
+                    <a href="https://www.linkedin.com/in/parfenov-mark/" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin"></i> Connect on LinkedIn</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast-popup" id="toastNotification">
+        <i class="fa-solid fa-circle-check text-accent"></i>
+        <span id="toastMessage">Done!</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
