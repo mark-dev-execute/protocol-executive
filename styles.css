@@ -283,7 +283,7 @@ textarea:focus-visible {
     font-size: 1.35rem;
     color: var(--text-head);
     white-space: nowrap;
-    flex-shrink: 0;
+    flex: 1 1 0;
 }
 
 .logo-mark {
@@ -303,16 +303,23 @@ textarea:focus-visible {
 .nav-menu {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 1.15rem;
     flex-wrap: nowrap;
     white-space: nowrap;
+    flex: 0 0 auto;
 }
 
 .nav-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     color: var(--text-body);
     font-size: 0.85rem;
     font-weight: 600;
     white-space: nowrap;
+    height: 44px;
+    line-height: 1;
 }
 
 .nav-link:hover, .nav-link.active {
@@ -322,9 +329,10 @@ textarea:focus-visible {
 .nav-actions {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 0.75rem;
     white-space: nowrap;
-    flex-shrink: 0;
+    flex: 1 1 0;
 }
 
 .mobile-toggle {
