@@ -255,7 +255,6 @@ textarea:focus-visible {
     width: 100%;
 }
 
-/* Navbar (Strict Single-Line Layout) */
 .navbar {
     position: sticky;
     top: 0;
@@ -264,14 +263,14 @@ textarea:focus-visible {
     z-index: 1000;
     background-color: #0B0F19;
     border-bottom: 1px solid var(--border);
-    padding: 0.85rem 0;
+    padding: 0.75rem 0;
 }
 
 .nav-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1.25rem;
+    width: 100%;
 }
 
 .logo {
@@ -280,20 +279,22 @@ textarea:focus-visible {
     gap: 0.5rem;
     font-family: var(--font-head);
     font-weight: 700;
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     color: var(--text-head);
     white-space: nowrap;
-    flex: 1 1 0;
+    width: 220px;
+    flex-shrink: 0;
 }
 
 .logo-mark {
     background: var(--accent);
     color: #FFFFFF;
-    padding: 0.2rem 0.45rem;
+    padding: 0.25rem 0.5rem;
     border-radius: var(--radius-sm);
     font-family: var(--font-body);
     font-size: 0.8rem;
     font-weight: 700;
+    line-height: 1;
 }
 
 .logo-text {
@@ -304,10 +305,9 @@ textarea:focus-visible {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1.15rem;
-    flex-wrap: nowrap;
+    gap: 1.25rem;
+    flex: 1;
     white-space: nowrap;
-    flex: 0 0 auto;
 }
 
 .nav-link {
@@ -315,24 +315,48 @@ textarea:focus-visible {
     align-items: center;
     justify-content: center;
     color: var(--text-body);
-    font-size: 0.85rem;
+    font-size: 0.84rem;
     font-weight: 600;
     white-space: nowrap;
-    height: 44px;
-    line-height: 1;
+    height: 38px;
+    padding: 0 0.25rem;
+    border-bottom: 2px solid transparent;
+    transition: var(--transition);
 }
 
 .nav-link:hover, .nav-link.active {
     color: var(--text-head);
+    border-bottom-color: var(--accent);
 }
 
 .nav-actions {
+    width: 220px;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 0.75rem;
+    gap: 0.6rem;
     white-space: nowrap;
-    flex: 1 1 0;
+    flex-shrink: 0;
+}
+
+.nav-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-size: 1.05rem;
+    transition: var(--transition);
+}
+
+.nav-icon-btn:hover {
+    background: var(--accent-muted);
+    border-color: var(--accent);
+    color: #FFFFFF;
 }
 
 .mobile-toggle {
