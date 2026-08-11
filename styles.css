@@ -1561,6 +1561,25 @@ overflow: hidden;
     outline: none;
 }
 
+/* Isolated Header for Ad Landers (Zero Ad Leakage) */
+.nav-header-isolated .nav-container {
+    justify-content: space-between;
+}
+
+/* Marketplace Proof Badge Strip */
+.marketplace-proof-strip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--text-head);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 0.45rem 1rem;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-subtle);
+}
+
 /* Modal Backdrop & Form Inputs */
 .modal-backdrop {
     position: fixed;
@@ -1587,10 +1606,77 @@ overflow: hidden;
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     padding: 2.5rem;
-    max-width: 500px;
+    max-width: 520px;
     width: 100%;
     position: relative;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* Universal 3-Step Qualification Stepper */
+.qual-stepper-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1.25rem 0;
+}
+
+.step-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.step-dot.active {
+    background: var(--accent);
+    color: #FFFFFF;
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.step-line {
+    flex-grow: 1;
+    height: 2px;
+    background: var(--border);
+    max-width: 60px;
+    transition: var(--transition);
+}
+
+.step-line.active {
+    background: var(--accent);
+}
+
+.qual-step-pane {
+    display: none;
+}
+
+.qual-step-pane.active {
+    display: block;
+    animation: fadeInStep 0.25s ease;
+}
+
+@keyframes fadeInStep {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.step-btn-row {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+}
+
+.step-btn-row .btn {
+    flex: 1;
 }
 
 .modal-close-btn {
