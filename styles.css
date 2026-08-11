@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FLUENT_EDGE — Modern Executive Dark Slate Theme
+   PROTOCOL_EXECUTIVE_COACHING : Modern Executive Dark Slate Theme
    ========================================================================== */
 
 :root {
@@ -758,7 +758,7 @@ textarea:focus-visible {
     box-shadow: var(--shadow-subtle);
 }
 
-.fluent-edge-card {
+.protocol-card {
     border-color: var(--accent);
 }
 

@@ -1,6 +1,6 @@
 # Protocol Executive Coaching — FAANG & Tech Career Coaching
 
-> **Ace FAANG & US Tech Interviews. Command 20–30% Higher Offers. Lead with Authority.**
+> **Ace FAANG & US Tech Interviews. Command 20-30% Higher Offers. Lead with Authority.**
 
 Protocol Executive Coaching is a premium 1-on-1 executive career coaching and leadership acceleration platform designed for Senior Engineers, Product Managers, Tech Leads, and SaaS Founders.
 
@@ -9,10 +9,9 @@ Protocol Executive Coaching is a premium 1-on-1 executive career coaching and le
 ## 🚀 Key Features & Highlights
 
 - **Executive Web Platform**: Sleek dark executive slate design built for high-contrast readability and premium user experience.
-- **24-Session Programme Syllabus ([syllabus.html](syllabus.html))**: Complete 4-phase structured curriculum (Orientation & Setup → Core Skills & Habit Building → Career English → Professional Profile & Job Readiness).
-- **Interactive Tech PAR Assessment & Pitch Toolkit ([par-toolkit.html](par-toolkit.html))**: Dedicated student workspace with auto-saving 60-second positioning pitch builder, STAR methodology story bank, and interview readiness scorecard.
-- **Interactive Pricing & Currency Switcher**: Real-time EUR (€) / USD ($) rate calculations and Direct Renewal discount toggle.
-- **Verified Preply Reviews Carousel**: Interactive multi-slide testimonial carousel featuring authentic 5-star reviews from tech professionals.
+- **Interactive Tech PAR Assessment & Pitch Toolkit ([par-toolkit.html](par-toolkit.html))**: Dedicated candidate workspace with auto-saving 60-second positioning pitch builder, PAR methodology story bank, and interview readiness scorecard.
+- **High-Ticket Sprint Architecture**: Specialized tracks for FAANG Interview Preparation ($1,500), Executive Leadership Communication ($2,500), and Corporate Team Cohorts ($6,000+).
+- **Verified Preply Reviews Carousel**: Interactive multi-slide testimonial carousel featuring authentic 5-star reviews from tech leaders.
 - **Calendar & Contact Integration**: Instant scheduling via Google Calendar, direct email triggers, and LinkedIn connection points.
 
 ---
@@ -20,10 +19,12 @@ Protocol Executive Coaching is a premium 1-on-1 executive career coaching and le
 ## 📁 Project Structure
 
 ```text
-fluent-edge/
-├── index.html               # Main landing page (WeAreCareer layout & Dark Executive theme)
-├── syllabus.html            # Standalone 24-Session Programme Syllabus & Methodology page
-├── par-toolkit.html         # Interactive Student PAR Assessment & Positioning Pitch workspace
+protocol-executive-coaching/
+├── index.html               # Main executive hub & multi-lander navigation
+├── interview-prep.html      # Campaign 1: FAANG & Tech Interview Sprint lander
+├── executive-presence.html  # Campaign 2: Executive Leadership Communication lander
+├── corporate-training.html  # Campaign 3: Enterprise Team Cohorts lander
+├── par-toolkit.html         # Interactive Candidate PAR Assessment & Positioning Pitch workspace
 ├── styles.css               # Complete CSS design system (Dark Slate Palette)
 ├── app.js                   # Client-side pricing, ROI calculator, carousel & storage logic
 ├── coach_mark_portrait.jpg  # Instructor portrait asset
@@ -46,7 +47,7 @@ fluent-edge/
 ## 👤 Instructor & Founder
 
 **Mark Parfenov**  
-*Native English Speaker • Tech & Business Coach*  
+*Ex-IT Project Manager & Executive Career Coach*  
 Ex-IT Project Manager & Business Analyst • Founded EdTech Center & Software Agency  
 - **LinkedIn**: [Connect on LinkedIn](https://www.linkedin.com/in/parfenov-mark/)
 - **Email**: [mark.parfenov@gmail.com](mailto:mark.parfenov@gmail.com)

@@ -30,7 +30,7 @@
             <nav class="nav-menu">
                 <a href="index.html#landings" class="nav-link">Offer Sprints</a>
                 <a href="index.html#about" class="nav-link">About Mark</a>
-                <a href="index.html#comparison" class="nav-link">Why Fluent Edge</a>
+                <a href="index.html#comparison" class="nav-link">Why Protocol</a>
                 <a href="par-toolkit.html" class="nav-link active">PAR Toolkit</a>
                 <a href="index.html#pricing" class="nav-link">Sprint Tiers</a>
             </nav>
@@ -54,7 +54,7 @@
     <div class="mobile-drawer">
         <a href="index.html#landings" class="mobile-link">Offer Sprints</a>
         <a href="index.html#about" class="mobile-link">About Mark</a>
-        <a href="index.html#comparison" class="mobile-link">Why Fluent Edge</a>
+        <a href="index.html#comparison" class="mobile-link">Why Protocol</a>
         <a href="par-toolkit.html" class="mobile-link">PAR Toolkit</a>
         <a href="index.html#pricing" class="mobile-link">Sprint Tiers</a>
         <button class="btn btn-primary open-qual-modal" style="width: 100%; margin-top: 1rem;" data-intent="Book Free Diagnostic Session">
@@ -80,23 +80,22 @@
                         <i class="fa-solid fa-rotate-left"></i> Reset Template
                     </button>
                 </div>
-            </div>
 
-            <!-- In-Depth PAR vs. STAR Explainer Comparison Section -->
+            <!-- In-Depth Executive PAR Explainer Section -->
             <div class="roi-calculator-box mb-5">
                 <div class="text-center mb-3">
                     <span class="sub-tag">FRAMEWORK COMPARISON</span>
-                    <h3>Why PAR Outperforms STAR for Tech Leaders</h3>
-                    <p>Traditional STAR framework wastes valuable interview time. PAR eliminates passive context and hooks interviewers instantly.</p>
+                    <h3>Why The PAR Method Accelerates Tech Interview Offers</h3>
+                    <p>Traditional candidate responses waste valuable interview time. The PAR method eliminates passive context and hooks interviewers instantly.</p>
                 </div>
 
                 <div class="info-row" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
-                    <!-- The STAR Trap -->
+                    <!-- The Passive Response Trap -->
                     <div class="info-card" style="border-left: 4px solid var(--crimson);">
-                        <h4 class="text-danger mb-2"><i class="fa-solid fa-triangle-exclamation"></i> The Traditional STAR Trap</h4>
-                        <p class="mb-2"><strong>STAR = Situation → Task → Action → Result</strong></p>
+                        <h4 class="text-danger mb-2"><i class="fa-solid fa-triangle-exclamation"></i> The Passive Response Trap</h4>
+                        <p class="mb-2"><strong>Unstructured = Rambling Backstory → Delayed Execution → Weak Impact</strong></p>
                         <ul class="card-bullets">
-                            <li><i class="fa-solid fa-xmark text-danger"></i> <strong>Wastes 60–70% of Response Time:</strong> Candidates spend minutes explaining passive background ("Situation & Task"), boring senior tech leads before reaching impact.</li>
+                            <li><i class="fa-solid fa-xmark text-danger"></i> <strong>Wastes 60-70% of Response Time:</strong> Candidates spend minutes explaining passive background context, boring senior tech leads before reaching technical impact.</li>
                             <li><i class="fa-solid fa-xmark text-danger"></i> <strong>Dilutes Technical Authority:</strong> Over-explaining team dynamics makes candidates sound like passive observers rather than engineering drivers.</li>
                             <li><i class="fa-solid fa-xmark text-danger"></i> <strong>Loses Engagement:</strong> Interviewers at FAANG & scale-ups tune out before the candidate reveals the actual architectural solution.</li>
                         </ul>
@@ -104,15 +103,15 @@
 
                     <!-- The PAR Advantage -->
                     <div class="info-card" style="border-left: 4px solid var(--accent);">
-                        <h4 class="text-accent mb-2"><i class="fa-solid fa-circle-check"></i> The Executive PAR Advantage</h4>
-                        <p class="mb-2"><strong>PAR = Problem → Action → Result</strong></p>
+                        <h4 class="text-accent mb-2"><i class="fa-solid fa-circle-check"></i> The Executive PAR Method Advantage</h4>
+                        <p class="mb-2"><strong>PAR Method = Problem → Action → Result</strong></p>
                         <ul class="card-bullets">
                             <li><i class="fa-solid fa-check text-accent"></i> <strong>Launches Immediately with the Core Problem:</strong> Hooks interviewers in the first 15 seconds by stating the high-stakes engineering bottleneck, latency spike, or revenue risk.</li>
                             <li><i class="fa-solid fa-check text-accent"></i> <strong>Focuses 70% on Technical Action:</strong> Highlights your specific architectural trade-offs, system design choices, code refactoring, and cross-functional leadership.</li>
                             <li><i class="fa-solid fa-check text-accent"></i> <strong>Ends with Quantified Executive Result:</strong> Delivers crisp, unshakeable business metrics ($1.2M saved, 40% latency reduction, zero downtime migration).</li>
                         </ul>
                     </div>
-                </div>
+                </div>          </div>
             </div>
 
             <!-- PAR Method Explainer Cards -->
@@ -423,12 +422,12 @@
                 data.stories[`r${i}`] = document.getElementById(`r${i}`)?.value || '';
                 data.scores[`score${i}`] = document.getElementById(`score${i}`)?.value || '7';
             }
-            localStorage.setItem('fluent_edge_par_toolkit', JSON.stringify(data));
+            localStorage.setItem('protocol_par_toolkit', JSON.stringify(data));
             showToast('PAR Toolkit progress saved to browser!');
         }
 
         function loadParData() {
-            const raw = localStorage.getItem('fluent_edge_par_toolkit');
+            const raw = localStorage.getItem('protocol_par_toolkit');
             if (!raw) return;
             try {
                 const data = JSON.parse(raw);
@@ -448,7 +447,7 @@
 
         function clearParData() {
             if (confirm('Reset your PAR Toolkit fields?')) {
-                localStorage.removeItem('fluent_edge_par_toolkit');
+                localStorage.removeItem('protocol_par_toolkit');
                 location.reload();
             }
         }

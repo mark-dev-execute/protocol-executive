@@ -1,5 +1,5 @@
 /**
- * FLUENT_EDGE — Interactive Client Logic
+ * PROTOCOL_EXECUTIVE_COACHING : Interactive Client Logic
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -77,20 +77,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!roiValue || !roiPkg) return;
 
-        let upside = "+$35,000 – $65,000 / yr";
+        let upside = "+$35,000 - $65,000 / yr";
         let recommended = "Interview Sprint ($1,500)";
 
         if (goal === 'FAANG Offer') {
-            upside = "+$40,000 – $85,000 / yr";
+            upside = "+$40,000 - $85,000 / yr";
             recommended = "Interview Sprint ($1,500)";
         } else if (goal === 'Executive Relocation') {
-            upside = "+$35,000 – $65,000 / yr";
+            upside = "+$35,000 - $65,000 / yr";
             recommended = "Interview Sprint ($1,500)";
         } else if (goal === 'B2B Sales Pitches') {
-            upside = "+$50,000 – $120,000 / yr";
+            upside = "+$50,000 - $120,000 / yr";
             recommended = "Executive Leadership Sprint ($2,500)";
         } else if (goal === 'Meeting Leadership') {
-            upside = "+$30,000 – $55,000 / yr";
+            upside = "+$30,000 - $55,000 / yr";
             recommended = "Executive Leadership Sprint ($2,500)";
         }
 
@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Save lead data locally
         const leadData = { role, bottleneck, funding, timestamp: new Date().toISOString() };
-        localStorage.setItem('fluent_edge_lead', JSON.stringify(leadData));
+        localStorage.setItem('protocol_executive_lead', JSON.stringify(leadData));
 
         showToast('Qualified! Redirecting to Google Calendar Schedule...');
 
@@ -469,9 +469,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const calendarUrl = "https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2eS5Lf6RGvLqM1pWFJ0GsXA_FqX1tS_AikzrszcPdrp7m0Z0qSzaYY6Ge5_8584UGuAfR-041o?gv=true";
 
-        const subject = encodeURIComponent(`Fluent Edge Session Booking — ${name} (${pkg})`);
+        const subject = encodeURIComponent(`Protocol Executive Session Booking : ${name} (${pkg})`);
         const body = encodeURIComponent(
-            `Hi Mark,\n\nI would like to schedule a session for Fluent Edge.\n\n` +
+            `Hi Mark,\n\nI would like to schedule a session for Protocol Executive Coaching.\n\n` +
             `Full Name: ${name}\n` +
             `Email Address: ${email}\n` +
             `Preferred Package: ${pkg}\n` +
@@ -554,13 +554,13 @@ document.addEventListener('DOMContentLoaded', () => {
             sliderData['slider_' + index] = sl.value;
         });
 
-        localStorage.setItem('fluentedge_par_data', JSON.stringify(data));
-        localStorage.setItem('fluentedge_par_sliders', JSON.stringify(sliderData));
+        localStorage.setItem('protocol_par_data', JSON.stringify(data));
+        localStorage.setItem('protocol_par_sliders', JSON.stringify(sliderData));
         showToast('PAR Assessment saved to browser!');
     };
 
     window.loadParData = function() {
-        const data = JSON.parse(localStorage.getItem('fluentedge_par_data') || '{}');
+        const data = JSON.parse(localStorage.getItem('protocol_par_data') || '{}');
         const editableElems = document.querySelectorAll('[contenteditable="true"]');
         editableElems.forEach((el, index) => {
             if (data['field_' + index] !== undefined) {
@@ -568,7 +568,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        const sliderData = JSON.parse(localStorage.getItem('fluentedge_par_sliders') || '{}');
+        const sliderData = JSON.parse(localStorage.getItem('protocol_par_sliders') || '{}');
         const sliders = document.querySelectorAll('.score-range');
         sliders.forEach((sl, index) => {
             if (sliderData['slider_' + index] !== undefined) {
@@ -583,8 +583,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.clearParData = function() {
         if (confirm('Are you sure you want to reset your PAR Assessment template?')) {
-            localStorage.removeItem('fluentedge_par_data');
-            localStorage.removeItem('fluentedge_par_sliders');
+            localStorage.removeItem('protocol_par_data');
+            localStorage.removeItem('protocol_par_sliders');
             location.reload();
         }
     };
