@@ -163,7 +163,102 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Modal Interactions
+    // Universal Qualification Intake Modal Handlers
+    const qualModal = document.getElementById('qualModal');
+    const openQualBtns = document.querySelectorAll('.open-qual-modal');
+    const closeQualModalBtn = document.getElementById('closeQualModalBtn');
+    const qualModalTitle = document.getElementById('qualModalTitle');
+
+    let currentQualStep = 1;
+
+    window.openQualModal = function(intentText = 'Apply for Executive Coaching') {
+        currentQualStep = 1;
+        updateQualStepperDisplay();
+        if (qualModalTitle) qualModalTitle.textContent = intentText;
+        if (qualModal) {
+            qualModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    };
+
+    window.closeQualModal = function() {
+        if (qualModal) {
+            qualModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    };
+
+    window.nextQualStep = function(stepNum) {
+        // Simple validation
+        if (stepNum > currentQualStep) {
+            if (currentQualStep === 1) {
+                const role = document.getElementById('qualRole')?.value;
+                if (!role) {
+                    showToast('Please select your current role.');
+                    return;
+                }
+            } else if (currentQualStep === 2) {
+                const bottleneck = document.getElementById('qualBottleneck')?.value;
+                if (!bottleneck) {
+                    showToast('Please select your primary goal.');
+                    return;
+                }
+            }
+        }
+        currentQualStep = stepNum;
+        updateQualStepperDisplay();
+    };
+
+    function updateQualStepperDisplay() {
+        [1, 2, 3].forEach(num => {
+            const pane = document.getElementById(`qualStep${num}`);
+            const dot = document.getElementById(`dotStep${num}`);
+            const line = document.getElementById(`lineStep${num - 1}`);
+
+            if (pane) pane.classList.toggle('active', num === currentQualStep);
+            if (dot) dot.classList.toggle('active', num <= currentQualStep);
+            if (line) line.classList.toggle('active', num < currentQualStep);
+        });
+    }
+
+    window.handleQualSubmit = function() {
+        const role = document.getElementById('qualRole')?.value;
+        const bottleneck = document.getElementById('qualBottleneck')?.value;
+        const funding = document.getElementById('qualFunding')?.value;
+
+        if (!role || !bottleneck || !funding) {
+            showToast('Please complete all 3 qualification questions.');
+            return;
+        }
+
+        // Save lead data locally
+        const leadData = { role, bottleneck, funding, timestamp: new Date().toISOString() };
+        localStorage.setItem('fluent_edge_lead', JSON.stringify(leadData));
+
+        showToast('Qualified! Redirecting to Google Calendar Schedule...');
+
+        setTimeout(() => {
+            closeQualModal();
+            window.open('https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2eS5Lf6RGvLqM1pWFJ0GsXA_FqX1tS_AikzrszcPdrp7m0Z0qSzaYY6Ge5_8584UGuAfR-041o?gv=true', '_blank');
+        }, 1200);
+    };
+
+    openQualBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const intent = btn.getAttribute('data-intent') || 'Apply for Coaching';
+            openQualModal(intent);
+        });
+    });
+
+    if (closeQualModalBtn) closeQualModalBtn.addEventListener('click', closeQualModal);
+    if (qualModal) {
+        qualModal.addEventListener('click', (e) => {
+            if (e.target === qualModal) closeQualModal();
+        });
+    }
+
+    // Modal Interactions (Standard)
     function openModal(preSelectedPackage = null) {
         if (preSelectedPackage && packageSelect) {
             Array.from(packageSelect.options).forEach(opt => {
