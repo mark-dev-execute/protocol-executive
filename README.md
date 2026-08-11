@@ -1,8 +1,8 @@
-# Fluent Edge — Executive English & Tech Career Coaching
+# Protocol Executive Coaching — FAANG & Tech Career Coaching
 
-> **Land Better Tech Roles. 20–30% Higher Pay. Speak with Authority.**
+> **Ace FAANG & US Tech Interviews. Command 20–30% Higher Offers. Lead with Authority.**
 
-Fluent Edge is a premium 1-on-1 executive English fluency and career acceleration platform designed for Senior Engineers, Product Managers, Tech Leads, and SaaS Founders.
+Protocol Executive Coaching is a premium 1-on-1 executive career coaching and leadership acceleration platform designed for Senior Engineers, Product Managers, Tech Leads, and SaaS Founders.
 
 ---
 

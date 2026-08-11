@@ -83,6 +83,33 @@ a:hover {
     color: var(--accent-hover);
 }
 
+/* Accessibility & Quality Floor Rules */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+.btn,
+.nav-link,
+.field-input,
+.segment-btn,
+.modal-close-btn {
+    min-height: 44px;
+}
+
 /* Top Announcement Bar */
 .top-announcement-bar {
     background: #111827;

@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Referral Copy
     if (shareReferralBtn) {
         shareReferralBtn.addEventListener('click', () => {
-            const text = "Fluent Edge — Executive Tech Career & Presentation Coaching by Mark Parfenov. Earn up to $150 credit: mark.parfenov@gmail.com";
+            const text = "Protocol Executive Coaching — FAANG & Tech Leadership Coaching by Mark Parfenov. Earn up to $150 credit: mark.parfenov@gmail.com";
             navigator.clipboard.writeText(text).then(() => {
                 showToast("Referral details copied to clipboard!");
             }).catch(() => {
