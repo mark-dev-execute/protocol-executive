@@ -77,21 +77,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!roiValue || !roiPkg) return;
 
-        let upside = "+$25,000 – $45,000 / yr";
-        let recommended = "10 Sessions Package";
+        let upside = "+$35,000 – $65,000 / yr";
+        let recommended = "Interview Sprint ($1,500)";
 
         if (goal === 'FAANG Offer') {
             upside = "+$40,000 – $85,000 / yr";
-            recommended = "15 Sessions Package";
+            recommended = "Interview Sprint ($1,500)";
         } else if (goal === 'Executive Relocation') {
             upside = "+$35,000 – $65,000 / yr";
-            recommended = "10 Sessions Package";
+            recommended = "Interview Sprint ($1,500)";
         } else if (goal === 'B2B Sales Pitches') {
             upside = "+$50,000 – $120,000 / yr";
-            recommended = "15 Sessions Package";
+            recommended = "Executive Leadership Sprint ($2,500)";
         } else if (goal === 'Meeting Leadership') {
-            upside = "+$20,000 – $40,000 / yr";
-            recommended = "5 Sessions Package";
+            upside = "+$30,000 – $55,000 / yr";
+            recommended = "Executive Leadership Sprint ($2,500)";
         }
 
         roiValue.textContent = upside;
@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Referral Copy
     if (shareReferralBtn) {
         shareReferralBtn.addEventListener('click', () => {
-            const text = "Fluent Edge — Executive IT & Business English Coaching by Mark. Earn up to €30 off or a free session: mark.parfenov@gmail.com";
+            const text = "Fluent Edge — Executive Tech Career & Presentation Coaching by Mark Parfenov. Earn up to $150 credit: mark.parfenov@gmail.com";
             navigator.clipboard.writeText(text).then(() => {
                 showToast("Referral details copied to clipboard!");
             }).catch(() => {
