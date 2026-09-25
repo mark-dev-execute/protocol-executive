@@ -337,7 +337,7 @@ def render(meta, body, versions):
 {footer_cols}
 <nav aria-label="Elsewhere"><p class="footer-title">Elsewhere</p><ul><li><a href="{SITE["linkedin"]}" target="_blank" rel="noopener">LinkedIn</a></li><li><a href="{SITE["preply"]}" target="_blank" rel="noopener">Preply</a></li><li><a href="{SITE["italki"]}" target="_blank" rel="noopener">italki</a></li><li><a href="{SITE["superprof"]}" target="_blank" rel="noopener">Superprof</a></li></ul></nav>
 </div>
-<div class="wrap footer-base"><p>© {YEAR} {SITE["name"]} · Mark Parfenov · <a href="{url("privacy/")}">Privacy</a></p></div>
+<div class="wrap footer-base"><p>© {YEAR} {SITE["name"]} · Mark Parfenov · <a href="{url("privacy/")}">Privacy</a> · <a href="{url("cancellation-policy/")}">Cancellation policy</a></p></div>
 </footer>
 {cta_link(meta, "sticky-cta btn btn-primary", "sticky-cta") if sticky else ""}
 </body>
