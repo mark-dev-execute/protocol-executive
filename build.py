@@ -155,6 +155,53 @@ def video_html():
     )
 
 
+# Downloadable program guides (assets/programs/*.pdf, rendered by pdf/render.cjs).
+PROGRAM_GUIDES = {
+    "communication-program": ("Business English & Communication Program", "Communication · B1–B2",
+                              "Four phases and 24 sessions: from placement test to meetings, presentations, CV, LinkedIn and interview English."),
+    "executive-communication-program": ("Executive Communication Program", "Communication · C1–C2",
+                                        "Twelve weeks on presence, concise messages, meetings, persuasion, difficult conversations and storytelling."),
+    "career-accelerator": ("Career Accelerator", "Career & interview",
+                           "The 12-week job-search program: CV, LinkedIn, strategy, PAR stories, two mock interviews and negotiation."),
+    "executive-interview-program": ("The Executive Interview Edge", "Senior interviews",
+                                    "Twelve weeks of strategic storytelling: a story bank, a job-description strategy, mock panels and negotiation."),
+    "career-coaching-program": ("Career Coaching Program", "Career coaching",
+                                "Eight sessions from career assessment and positioning to leadership, networking and a 90-day plan."),
+    "leadership-program": ("Leadership Program for International Tech Leaders", "Leadership",
+                           "A 10–12 week journey: identity, presence, influence, cross-cultural leadership and a capstone project."),
+    "executive-edge": ("Executive Edge", "Leadership & executive",
+                       "Twelve weeks for managers, directors and VPs: presence, influence, panel interviews and senior negotiation."),
+    "corporate-programs": ("Corporate Programs & Team Workshops", "For companies",
+                           "Career Accelerator and Executive Edge for teams, private cohorts, and workshops for managers."),
+}
+STATIC += [f"assets/programs/{slug}.pdf" for slug in PROGRAM_GUIDES]
+
+
+def pdf_facts(slug):
+    path = ROOT / "assets" / "programs" / f"{slug}.pdf"
+    if not path.exists():
+        sys.exit(f"Missing program guide {path.relative_to(ROOT)} — run pdf/render.cjs")
+    data = path.read_bytes()
+    pages = len(re.findall(rb"/Type\s*/Page[^s]", data))
+    return pages, round(len(data) / 1024)
+
+
+def downloads_html(slugs):
+    cards = []
+    for slug in slugs:
+        if slug not in PROGRAM_GUIDES:
+            sys.exit(f"Unknown program guide '{slug}'")
+        title, tag, text = PROGRAM_GUIDES[slug]
+        pages, size = pdf_facts(slug)
+        cards.append(
+            f'<article class="card download"><span class="tag">{esc(tag)}</span>'
+            f'<h3>{esc(title)}</h3><p>{esc(text)}</p>'
+            f'<p class="guide-meta">PDF · {pages} pages · {size} KB</p>'
+            f'<a class="btn btn-dark" href="{url(f"assets/programs/{slug}.pdf")}" download '
+            f'data-track="download-{slug}">Download PDF</a></article>')
+    return f'<div class="cards downloads">{"".join(cards)}</div>'
+
+
 def reviews_html(names, reviews):
     items = []
     for name in names:
@@ -198,6 +245,8 @@ def expand(body, source):
         name, arg = match.group(1), match.group(2)
         if name == "reviews":
             return reviews_html([n.strip() for n in arg.split(",")], reviews)
+        if name == "downloads":
+            return downloads_html([n.strip() for n in arg.split(",")])
         if name not in tokens:
             sys.exit(f"{source}: unknown token '{{{{{name}}}}}'")
         return tokens[name]

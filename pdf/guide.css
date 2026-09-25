@@ -1,0 +1,114 @@
+/* Fluent in Tech — print styles for program guide PDFs (rendered by pdf/render.mjs).
+   Mirrors the website: Manrope + DM Mono, ink / lime / mist palette. */
+
+@font-face { font-family: Manrope; font-weight: 200 800; src: url(../assets/fonts/manrope-latin-wght-normal.woff2) format('woff2'); }
+@font-face { font-family: Manrope; font-weight: 200 800; src: url(../assets/fonts/manrope-latin-ext-wght-normal.woff2) format('woff2'); unicode-range: U+0100-02BA, U+1E00-1EFF; }
+@font-face { font-family: "DM Mono"; font-weight: 400; src: url(../assets/fonts/dm-mono-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: "DM Mono"; font-weight: 500; src: url(../assets/fonts/dm-mono-latin-500-normal.woff2) format('woff2'); }
+
+:root {
+  --ink: #0b1220; --ink-2: #121d31; --muted: #5b6575; --line: #dce1e8; --line-dark: #33435c;
+  --lime: #b8f34a; --lime-ink: #3d6410; --soft-lime: #ecf6d4; --soft-lime-line: #c7df92; --mist: #e8edf5;
+  --sans: Manrope, Arial, sans-serif; --mono: "DM Mono", Menlo, monospace;
+}
+
+@page {
+  size: A4;
+  margin: 18mm 17mm 20mm;
+  @bottom-left { content: "Fluent in Tech · fluentintechcoaching.com"; font: 500 7.5pt var(--mono); color: #7f8ca3; letter-spacing: .04em; }
+  @bottom-right { content: counter(page) " / " counter(pages); font: 500 7.5pt var(--mono); color: #7f8ca3; }
+}
+@page :first { margin: 0; @bottom-left { content: none; } @bottom-right { content: none; } }
+
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font: 400 10.2pt/1.55 var(--sans); color: var(--ink); }
+p { margin: 0 0 7pt; }
+strong, b { font-weight: 800; }
+a { color: var(--lime-ink); font-weight: 700; text-decoration: none; }
+
+/* Cover */
+.cover { width: 210mm; height: 297mm; background: var(--ink); color: #fff; padding: 24mm 20mm 20mm; display: flex; flex-direction: column; page-break-after: always; position: relative; overflow: hidden; }
+.cover::after { content: ""; position: absolute; right: -40mm; bottom: -40mm; width: 140mm; height: 140mm; border-radius: 50%; border: 18mm solid var(--lime); opacity: .12; }
+.brand { display: flex; align-items: center; gap: 9pt; font: 800 14pt var(--sans); letter-spacing: -.03em; }
+.brand-mark { width: 20pt; height: 20pt; border-radius: 6pt; background: var(--lime); color: var(--ink); display: grid; place-items: center; font: 500 8pt var(--mono); }
+.cover .tag { margin-top: 46mm; }
+.cover h1 { font-size: 36pt; line-height: 1.02; letter-spacing: -.055em; margin: 12pt 0 12pt; max-width: 160mm; }
+.cover .lede { font-size: 12.5pt; line-height: 1.5; color: #c9d1df; max-width: 150mm; margin: 0; }
+.cover .facts { margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid var(--line-dark); padding-top: 12pt; position: relative; z-index: 1; }
+.cover .facts div { padding-right: 10pt; }
+.cover .facts span { display: block; font: 500 7.5pt var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #9fb0c8; margin-bottom: 3pt; }
+.cover .facts b { font-size: 12pt; color: var(--lime); font-weight: 800; }
+.cover .url { margin-top: 14pt; font: 500 8pt var(--mono); color: #9fb0c8; letter-spacing: .04em; position: relative; z-index: 1; }
+
+/* Type */
+.tag { display: inline-block; align-self: flex-start; padding: 3pt 8pt; border: 1px solid #657189; border-radius: 99px; font: 500 7.5pt var(--mono); letter-spacing: .06em; }
+.eyebrow { display: block; font: 500 7.5pt var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--lime-ink); margin: 0 0 4pt; }
+h2 { font-size: 19pt; line-height: 1.1; letter-spacing: -.045em; margin: 20pt 0 8pt; break-after: avoid; break-inside: avoid; }
+h2 .num { display: block; font: 500 7.5pt var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--lime-ink); margin-bottom: 4pt; }
+h3 { font-size: 11.5pt; letter-spacing: -.02em; margin: 12pt 0 4pt; break-after: avoid; }
+.page-break { break-before: page; }
+.intro { font-size: 11.5pt; line-height: 1.55; color: #26303f; }
+.muted, .fine { color: var(--muted); }
+.fine { font-size: 8.5pt; }
+
+/* Lists */
+ul, ol { margin: 0 0 8pt; padding-left: 14pt; }
+li { margin: 2pt 0; }
+ul.check { list-style: none; padding: 0; }
+ul.check li { position: relative; padding-left: 14pt; }
+ul.check li::before { content: "↗"; position: absolute; left: 0; color: #587f11; font-weight: 800; }
+ul.cross li::before { content: "×"; color: #a23b3b; }
+
+/* Blocks */
+.grid { display: grid; gap: 8pt; margin: 8pt 0 10pt; }
+.grid.two { grid-template-columns: 1fr 1fr; }
+.grid.three { grid-template-columns: repeat(3, 1fr); }
+.grid.four { grid-template-columns: repeat(4, 1fr); }
+.card { border: 1px solid var(--line); border-radius: 9pt; padding: 10pt 11pt; break-inside: avoid; background: #fff; }
+.card h3 { margin-top: 0; }
+.card p:last-child, .card ul:last-child { margin-bottom: 0; }
+.card.feature { background: var(--soft-lime); border-color: var(--soft-lime-line); }
+.card.mist { background: var(--mist); border-color: var(--mist); }
+.stat b { display: block; font-size: 17pt; letter-spacing: -.04em; line-height: 1.1; }
+.stat span { font: 500 7.5pt var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.callout { background: var(--soft-lime); border: 1px solid var(--soft-lime-line); border-radius: 9pt; padding: 10pt 12pt; margin: 10pt 0; break-inside: avoid; }
+.callout.ink { background: var(--ink); border-color: var(--ink); color: #fff; }
+.callout.ink .eyebrow { color: var(--lime); }
+.callout p:last-child { margin-bottom: 0; }
+
+/* Phase banner */
+.phase { display: flex; justify-content: space-between; align-items: baseline; gap: 10pt; background: var(--ink); color: #fff; border-radius: 9pt; padding: 9pt 12pt; margin: 14pt 0 6pt; break-after: avoid; }
+.phase b { font-size: 12pt; letter-spacing: -.02em; }
+.phase span { font: 500 7.5pt var(--mono); letter-spacing: .08em; color: var(--lime); text-transform: uppercase; }
+.phase-goal { color: var(--muted); font-size: 9.5pt; margin: 0 0 6pt; break-after: avoid; }
+h3 + ul, h3 + p, h2 + p { break-before: avoid; }
+thead { display: table-header-group; }
+
+/* Tables */
+table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid var(--line); border-radius: 9pt; overflow: hidden; margin: 6pt 0 10pt; font-size: 9pt; line-height: 1.45; }
+th { text-align: left; font: 500 7pt var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); background: #f1f4f8; padding: 6pt 8pt; border-bottom: 1px solid var(--line); }
+td { padding: 6pt 8pt; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { break-inside: avoid; }
+tr:last-child td { border-bottom: 0; }
+td.wk { font: 500 8pt var(--mono); color: var(--lime-ink); white-space: nowrap; width: 38pt; }
+td.title { font-weight: 800; width: 28%; }
+td.deliv { color: #26303f; width: 27%; }
+table.compare td:first-child { color: var(--muted); }
+table.compare td:last-child { font-weight: 700; }
+
+/* Price */
+.price { display: flex; align-items: baseline; gap: 5pt; margin: 2pt 0 6pt; }
+.price b { font-size: 20pt; letter-spacing: -.05em; }
+.price span { color: var(--muted); font-weight: 600; }
+
+/* Closing page */
+.end { break-inside: avoid; }
+.closing { background: var(--lime); border-radius: 12pt; padding: 18pt 18pt 16pt; margin-top: 16pt; break-inside: avoid; }
+.closing h2 { margin-top: 4pt; font-size: 21pt; }
+.closing .eyebrow { color: var(--ink); }
+.closing .contact { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8pt; margin-top: 10pt; }
+.closing .contact div { background: rgba(255,255,255,.55); border-radius: 8pt; padding: 7pt 9pt; font-size: 8.5pt; overflow-wrap: anywhere; }
+.closing .contact span { display: block; font: 500 7pt var(--mono); letter-spacing: .08em; text-transform: uppercase; color: #3d4a1a; }
+.closing a { color: var(--ink); }
+.quote { font-size: 13pt; font-weight: 800; letter-spacing: -.03em; line-height: 1.3; margin: 16pt 0 4pt; }

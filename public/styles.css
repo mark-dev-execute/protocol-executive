@@ -400,3 +400,8 @@ textarea { min-height: 120px; }
 .subscribe-form.is-done .form-status { font-weight: 700; font-size: 1.05rem; }
 .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 @media (max-width: 560px) { .subscribe-row { grid-template-columns: 1fr; } .subscribe-row .btn { width: 100%; } }
+
+/* Program guide downloads */
+.cards.downloads { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.cards.downloads:has(> :only-child) { max-width: 560px; }
+.download .guide-meta { margin: 0 0 16px; }

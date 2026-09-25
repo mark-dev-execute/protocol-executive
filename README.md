@@ -52,6 +52,20 @@ cd .. && python3 -m http.server 8000
   `github` builds the GitHub Pages copy. Set the GitHub target's `redirect` to `True` once the domain
   is live, and every old GitHub Pages URL forwards to the same page on the domain.
 
+## Program guide PDFs (`pdf/`)
+
+The downloadable program guides in `assets/programs/` are generated from `pdf/guides/*.html`,
+styled by `pdf/guide.css` to match the site. To change a guide, edit its HTML and re-render:
+
+```sh
+NODE_PATH=$(npm root -g) node pdf/render.cjs                 # all guides
+NODE_PATH=$(npm root -g) node pdf/render.cjs leadership-program   # one guide
+python3 build.py
+```
+
+Each page lists its guides with `{{downloads:slug,slug}}`; titles and blurbs live in `PROGRAM_GUIDES`
+in `build.py`, and the page count and file size are read from the PDFs at build time.
+
 ## Email list (`api/` and the database)
 
 The signup form at the end of each guide posts to `api/subscribe.js`, a Vercel Function that
