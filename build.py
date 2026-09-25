@@ -295,48 +295,84 @@ def downloads_html(slugs, lang):
             f'<article class="card download"><span class="tag">{esc(tag)}</span>'
             f'<h3>{esc(title)}</h3><p>{esc(text)}</p>'
             f'<p class="guide-meta">{facts}</p>'
-            f'<a class="btn btn-dark" href="{url(f"assets/programs/{slug}.pdf")}" download '
-            f'data-guide="{slug}" data-track="download-{slug}">{"Descargar PDF" if lang == "es" else "Download PDF"}</a></article>')
-    return f'<div class="cards downloads">{"".join(cards)}</div>' + lead_dialog(lang)
+            f'<a class="btn btn-dark" href="{url(f"assets/programs/{slug}.pdf")}" download data-guide="{slug}" '
+            f'data-dialog="lead" data-title="{esc(title)}" data-track="download-{slug}">'
+            f'{"Descargar PDF" if lang == "es" else "Download PDF"}</a></article>')
+    return f'<div class="cards downloads">{"".join(cards)}</div>'
 
 
-LEAD_TEXT = {
-    "en": {"close": "Close", "eyebrow": "Your guide is downloading", "title": "Want to talk it through?",
-           "intro": "Leave your email and Mark will get in touch to arrange a free consultation about your goals. Completely optional.",
-           "label": "Email address", "placeholder": "you@example.com", "submit": "Request a free consultation",
-           "company": "Company", "privacy": "Your email is only used to arrange the consultation. See the",
-           "privacy_link": "privacy policy", "privacy_href": "privacy/#consultation-requests", "skip": "No thanks, just the guide"},
-    "es": {"close": "Cerrar", "eyebrow": "Tu guía se está descargando", "title": "¿Quieres comentarla?",
-           "intro": "Déjanos tu email y Mark se pondrá en contacto contigo para organizar una consulta gratuita sobre tus objetivos. Es totalmente opcional.",
-           "label": "Correo electrónico", "placeholder": "tu@ejemplo.com", "submit": "Solicitar consulta gratuita",
-           "company": "Empresa", "privacy": "Solo usamos tu email para organizar la consulta. Consulta la",
-           "privacy_link": "política de privacidad", "privacy_href": "es/privacidad/#solicitudes-de-consulta", "skip": "No, gracias, solo la guía"},
+# Download dialogs. Clicking "Download PDF" opens a dialog first with an optional email
+# field; the PDF downloads from the dialog either way (app.js). Without JavaScript the
+# link downloads directly. "lead": program guides, the email requests a consultation
+# (api/lead.js). "guide": article guides, the email joins the guide list (api/subscribe.js).
+DIALOG_TEXT = {
+    ("lead", "en"): {
+        "eyebrow": "Free program guide", "api": "api/lead",
+        "intro": "Want to talk it through? Leave your email and Mark will get in touch to arrange a free consultation. It’s optional: the guide downloads either way.",
+        "fine": "Your email is only used to arrange the consultation. See the",
+        "privacy_href": "privacy/#consultation-requests",
+        "done": "Your download has started. Thanks, Mark will email you to arrange your free consultation."},
+    ("lead", "es"): {
+        "eyebrow": "Guía del programa gratuita", "api": "api/lead",
+        "intro": "¿Quieres comentarla? Déjanos tu email y Mark se pondrá en contacto contigo para organizar una consulta gratuita. Es opcional: la guía se descarga igualmente.",
+        "fine": "Solo usamos tu email para organizar la consulta. Consulta la",
+        "privacy_href": "es/privacidad/#solicitudes-de-consulta",
+        "done": "Tu descarga ha empezado. Gracias, Mark te escribirá para organizar tu consulta gratuita."},
+    ("guide", "en"): {
+        "eyebrow": "Free guide", "api": "api/subscribe",
+        "intro": "Want the next guide too? Leave your email and new guides will come straight to your inbox. It’s optional: the guide downloads either way.",
+        "fine": "If you leave your email, you agree to receive new guides and occasional coaching tips from Fluent in Tech. Unsubscribe any time. See the",
+        "privacy_href": "privacy/#email-list",
+        "done": "Your download has started. You’re on the list for new guides."},
+}
+DIALOG_UI = {
+    "en": {"close": "Close", "label": "Email address (optional)", "placeholder": "Your email (optional)",
+           "submit": "Download the guide", "skip": "Download without email", "company": "Company",
+           "privacy_link": "privacy policy", "started": "Your download has started."},
+    "es": {"close": "Cerrar", "label": "Correo electrónico (opcional)", "placeholder": "Tu email (opcional)",
+           "submit": "Descargar la guía", "skip": "Descargar sin dejar el email", "company": "Empresa",
+           "privacy_link": "política de privacidad", "started": "Tu descarga ha empezado."},
 }
 
 
-def lead_dialog(lang):
-    """Shown after a program guide download starts: an optional free-consultation request (api/lead.js)."""
-    t = LEAD_TEXT[lang]
+def download_dialog(kind, lang):
+    t, ui = DIALOG_TEXT[(kind, lang)], DIALOG_UI[lang]
+    source = '\n    <input type="hidden" name="source" value="">' if kind == "guide" else ""
     return f"""
-<dialog class="lead-dialog" aria-labelledby="lead-title" data-lead-dialog>
-  <form class="lead-form" action="{url("api/lead")}" method="post" data-lead-form>
-    <button class="dialog-close" type="button" aria-label="{t["close"]}" data-lead-close>×</button>
+<dialog class="lead-dialog" aria-labelledby="{kind}-dialog-title" data-download-dialog="{kind}">
+  <form class="lead-form" action="{url(t["api"])}" method="post" novalidate data-done="{esc(t["done"])}" data-started="{esc(ui["started"])}">
+    <button class="dialog-close" type="button" aria-label="{ui["close"]}" data-dialog-close>×</button>
     <span class="eyebrow">{t["eyebrow"]}</span>
-    <h2 id="lead-title">{t["title"]}</h2>
+    <h2 id="{kind}-dialog-title" data-dialog-title></h2>
     <p>{t["intro"]}</p>
     <div class="subscribe-row">
-      <label class="visually-hidden" for="lead-email">{t["label"]}</label>
-      <input id="lead-email" name="email" type="email" placeholder="{t["placeholder"]}" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="send" maxlength="254" required>
-      <button class="btn btn-primary" type="submit" data-track="lead-submit">{t["submit"]}</button>
+      <label class="visually-hidden" for="{kind}-dialog-email">{ui["label"]}</label>
+      <input id="{kind}-dialog-email" name="email" type="email" placeholder="{ui["placeholder"]}" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="go" maxlength="254">
+      <button class="btn btn-primary" type="submit">{ui["submit"]}</button>
     </div>
-    <div class="hp" aria-hidden="true"><label>{t["company"]}<input name="company" tabindex="-1" autocomplete="off"></label></div>
+    <div class="hp" aria-hidden="true"><label>{ui["company"]}<input name="company" tabindex="-1" autocomplete="off"></label></div>
     <input type="hidden" name="guide" value="">
-    <input type="hidden" name="t" value="">
-    <p class="fine">{t["privacy"]} <a class="text-link" href="{url(t["privacy_href"])}">{t["privacy_link"]}</a>.</p>
+    <input type="hidden" name="t" value="">{source}
+    <p class="fine">{t["fine"]} <a class="text-link" href="{url(t["privacy_href"])}">{ui["privacy_link"]}</a>.</p>
     <p class="form-status" aria-live="polite"></p>
-    <button class="text-button" type="button" data-lead-close>{t["skip"]}</button>
+    <button class="text-button" type="button" data-download-skip>{ui["skip"]}</button>
   </form>
 </dialog>"""
+
+
+# Article guides (src/pages/guide-*.html) as PDFs, rendered by pdf/render-articles.cjs.
+ARTICLE_GUIDES = {
+    "interview-questions": "Interview questions and how to answer them with PAR",
+    "google-interview": "Google interview prep: Googleyness and behavioral questions",
+}
+STATIC += [f"assets/guides/{slug}.pdf" for slug in ARTICLE_GUIDES]
+
+
+def guide_download(slug, css="btn btn-dark"):
+    if slug not in ARTICLE_GUIDES:
+        sys.exit(f"Unknown article guide '{slug}'")
+    return (f'<a class="{css}" href="{url(f"assets/guides/{slug}.pdf")}" download data-guide="{slug}" '
+            f'data-dialog="guide" data-title="{esc(ARTICLE_GUIDES[slug])}" data-track="download-{slug}">Download PDF</a>')
 
 
 # Prices in page text ("$90", "$1,000–1,200") become <span class="money" data-usd="…">
@@ -427,11 +463,14 @@ def expand(body, source, lang="en"):
             return reviews_html([n.strip() for n in arg.split(",")], reviews, lang)
         if name == "downloads":
             return downloads_html([n.strip() for n in arg.split(",")], lang)
+        if name == "guide-download":
+            slug, _, css = arg.partition("|")
+            return guide_download(slug.strip(), css.strip() or "btn btn-dark")
         if name not in tokens:
             sys.exit(f"{source}: unknown token '{{{{{name}}}}}'")
         return tokens[name]
 
-    return re.sub(r"\{\{\s*(\w+)(?::([^}]*))?\s*\}\}", token, body)
+    return re.sub(r"\{\{\s*([\w-]+)(?::([^}]*))?\s*\}\}", token, body)
 
 
 def faq_entries(body):
@@ -550,6 +589,9 @@ def render(meta, body, versions):
         f'aria-label="{t["other_name"]}" data-track="lang-{t["other_lang"]}">{t["other_label"]}</a></div>'
     )
     body = wrap_money(body, lang)
+    for kind in ("lead", "guide"):
+        if f'data-dialog="{kind}"' in body:
+            body += download_dialog(kind, lang)
     consent_banner = cookie_settings = ""
     if SITE["ga_id"]:
         c = CONSENT_TEXT[lang]

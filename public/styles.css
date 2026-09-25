@@ -483,3 +483,34 @@ textarea { min-height: 120px; }
 .consent-options span { color: #c3cddd; }
 .consent-actions { order: 3; flex-wrap: wrap; }
 .btn-consent[hidden] { display: none; }
+
+/* Print (also used by pdf/render-articles.cjs to make the guide PDFs) */
+@media print {
+  @page { size: A4; margin: 14mm 14mm 16mm; }
+  body { background: #fff; }
+  .guide-layout { display: block; }
+  .toc { position: static; margin-bottom: 8px; }
+  .toc ol { columns: 2; column-gap: 28px; }
+  .toc li { break-inside: avoid; }
+  .site-header, .footer, .sticky-cta, .consent, dialog, .skip-link, .hero-video, #subscribe,
+  .page-hero .btn, .page-hero .cta-row, .final .btn, .final .link-row, .print-hide { display: none !important; }
+  .page-hero { padding: 26px 24px 28px; border-radius: 14px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page-hero .hero-grid { display: block; }
+  .page-hero h1 { font-size: 2.3rem; }
+  .wrap { width: 100%; }
+  .section { padding: 26px 0; }
+  .article { max-width: none; }
+  .article h2 { margin-top: 34px; break-after: avoid; }
+  .article h3 { break-after: avoid; }
+  .card, .quote, tr, .process li, .phrases tr, .callout, .example, .compare > div { break-inside: avoid; }
+  .final { padding: 22px 24px; border-radius: 14px; margin-top: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  a { color: inherit; }
+  details .faq-a { display: block !important; }
+}
+
+/* Guide cards with two actions */
+.card-actions { margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px; }
+.card .card-actions .btn { margin-top: 0; }
+.btn-outline { border-color: var(--ink); color: var(--ink); background: transparent; }
+.btn-outline:hover { background: var(--ink); color: #fff; }
+@media print { .final::after { content: "Book a free call: fluentintechcoaching.com/book"; display: block; margin-top: 10px; font: 700 1rem var(--sans); } }

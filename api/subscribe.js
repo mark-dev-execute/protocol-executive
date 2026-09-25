@@ -13,6 +13,8 @@ import { cleanEmail, json, looksLikeBot, readFields, sameOrigin } from './_share
 export const CONSENT_TEXT =
   'By subscribing you agree to receive new guides and occasional coaching tips from Fluent in Tech. Unsubscribe any time.';
 
+// Signups from the optional email field shown before an article guide PDF downloads.
+const DOWNLOAD_SOURCES = ['download-interview-questions', 'download-google-interview'];
 const SOURCES = {
   '/guides/': 'guides',
   '/guides/interview-questions/': 'guide-interview-questions',
@@ -70,7 +72,7 @@ export async function handleSubscribe(request, db) {
   const email = cleanEmail(fields.email);
   if (!email) return reply(request, form, 400, 'Please enter a valid email address.');
   // The page sets the source; without JavaScript, fall back to the page it came from.
-  const known = Object.values(SOURCES);
+  const known = [...Object.values(SOURCES), ...DOWNLOAD_SOURCES];
   const referer = request.headers.get('referer');
   const source = known.includes(fields.source) ? fields.source
     : (referer && SOURCES[new URL(referer, request.url).pathname]) || 'unknown';

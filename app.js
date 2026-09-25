@@ -13,7 +13,6 @@
     invalidEmail: 'Introduce un email válido.',
     failed: 'Algo ha fallado. Inténtalo de nuevo.',
     sending: 'Enviando…',
-    leadThanks: 'Gracias. Mark te escribirá para organizar tu consulta gratuita.',
     fxNote: (date, rate) => `Los precios se fijan en dólares estadounidenses y se muestran en euros al tipo de cambio de referencia del Banco Central Europeo del ${date} (1 USD = ${rate} EUR). Los importes en euros están redondeados; tu factura indica el importe exacto.`,
   } : {
     fields: 'Please complete the highlighted fields.',
@@ -21,7 +20,6 @@
     invalidEmail: 'Please enter a valid email address.',
     failed: 'Something went wrong. Please try again.',
     sending: 'Sending…',
-    leadThanks: 'Thanks. Mark will email you to arrange your free consultation.',
     fxNote: (date, rate) => `Prices are set in US dollars and shown in euros at the European Central Bank reference rate of ${date} (1 USD = ${rate} EUR). Euro amounts are rounded; your invoice shows the exact amount.`,
   };
   const LOCALE = SPANISH ? 'es-ES' : 'en-US';
@@ -346,64 +344,89 @@
     });
   };
 
-  // Program guide downloads: the PDF downloads straight away and an optional
-  // free-consultation request opens (saved by /api/lead). It opens on every download
-  // until the visitor leaves their email; after that it stays closed for the visit.
-  const LEAD_DONE = 'fit-lead-sent';
-  const leadDone = () => { try { return sessionStorage.getItem(LEAD_DONE) === '1'; } catch (e) { return false; } };
-  const markLeadDone = () => { try { sessionStorage.setItem(LEAD_DONE, '1'); } catch (e) { /* storage unavailable */ } };
+  // Guide downloads. "Download PDF" opens a dialog first with an optional email field;
+  // the PDF downloads from the dialog whether or not an email is given. Program guides
+  // (data-dialog="lead") send the email to /api/lead as a consultation request; article
+  // guides (data-dialog="guide") add it to the guide list via /api/subscribe. Once a
+  // visitor has left their email, later downloads in the same visit start straight away.
+  // Without JavaScript (or <dialog> support) the link simply downloads the file.
+  const SENT_KEY = (kind) => `fit-download-email-${kind}`;
+  const emailSent = (kind) => { try { return sessionStorage.getItem(SENT_KEY(kind)) === '1'; } catch (e) { return false; } };
+  const markEmailSent = (kind) => { try { sessionStorage.setItem(SENT_KEY(kind), '1'); } catch (e) { /* storage unavailable */ } };
+  const EMAIL_RE = /^[^\s@<>()[\],;:"]+@[^\s@<>()[\],;:"]+\.[^\s@<>()[\],;:"]{2,}$/;
 
-  const initLeadDialog = () => {
-    const dialog = document.querySelector('[data-lead-dialog]');
-    if (!dialog || typeof dialog.showModal !== 'function') return;
-    const form = dialog.querySelector('[data-lead-form]');
-    const status = form.querySelector('.form-status');
-    const button = form.querySelector('button[type="submit"]');
-    const show = (message, error) => {
-      status.className = error ? 'form-status error' : 'form-status';
-      status.textContent = message;
-    };
+  const startDownload = (link) => {
+    const a = document.createElement('a');
+    a.href = link.href;
+    a.download = '';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    track('guide_download', { guide: link.dataset.guide });
+  };
 
-    document.querySelectorAll('a[data-guide]').forEach((link) => link.addEventListener('click', () => {
-      if (leadDone()) return;
-      form.reset();
-      form.classList.remove('is-done');
-      show('');
-      form.elements.guide.value = link.dataset.guide;
-      form.elements.t.value = Date.now();
-      if (!dialog.open) dialog.showModal(); // the link's default action still downloads the PDF
-      track('lead_dialog_open', { guide: link.dataset.guide });
-    }));
+  const initDownloads = () => {
+    document.querySelectorAll('[data-download-dialog]').forEach((dialog) => {
+      const kind = dialog.dataset.downloadDialog;
+      if (typeof dialog.showModal !== 'function') return;
+      const form = dialog.querySelector('form');
+      const status = form.querySelector('.form-status');
+      const email = form.elements.email;
+      let current = null;
+      const show = (message, error) => {
+        status.className = error ? 'form-status error' : 'form-status';
+        status.textContent = message;
+      };
 
-    dialog.querySelectorAll('[data-lead-close]').forEach((el) => el.addEventListener('click', () => dialog.close()));
-    dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+      document.querySelectorAll(`a[data-dialog="${kind}"]`).forEach((link) => link.addEventListener('click', (event) => {
+        if (emailSent(kind)) return; // download straight away
+        event.preventDefault();
+        current = link;
+        form.reset();
+        form.classList.remove('is-done');
+        show('');
+        dialog.querySelector('[data-dialog-title]').textContent = link.dataset.title || '';
+        form.elements.guide.value = link.dataset.guide;
+        if (form.elements.source) form.elements.source.value = `download-${link.dataset.guide}`;
+        form.elements.t.value = Date.now();
+        dialog.showModal();
+        track('download_dialog_open', { guide: link.dataset.guide });
+      }));
 
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        show(T.invalidEmail, true);
-        return;
-      }
-      button.disabled = true;
-      show(T.sending);
-      try {
-        const response = await fetch(form.action, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(Object.fromEntries(new FormData(form))),
-        });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(SPANISH ? T.failed : result.message || T.failed);
-        track('consultation_request', { guide: form.elements.guide.value });
-        markLeadDone();
+      dialog.querySelector('[data-dialog-close]').addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+      dialog.querySelector('[data-download-skip]').addEventListener('click', () => {
+        if (current) startDownload(current);
+        dialog.close();
+      });
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const value = email.value.trim();
+        if (value && !EMAIL_RE.test(value)) {
+          show(T.invalidEmail, true);
+          email.focus();
+          return;
+        }
+        if (current) startDownload(current); // start right away, while the click still counts as a user action
+        if (!value) { dialog.close(); return; }
         form.classList.add('is-done');
-        show(SPANISH ? T.leadThanks : result.message || T.leadThanks);
-      } catch (error) {
-        show(error.message || T.failed, true);
-      } finally {
-        button.disabled = false;
-      }
+        show(form.dataset.started);
+        try {
+          const response = await fetch(form.action, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(Object.fromEntries(new FormData(form))),
+          });
+          if (!response.ok) throw new Error('not saved');
+          markEmailSent(kind);
+          track(kind === 'lead' ? 'consultation_request' : 'newsletter_signup', { guide: form.elements.guide.value });
+          show(form.dataset.done);
+        } catch (error) {
+          show(`${form.dataset.started} ${T.failed}`, true);
+          form.classList.remove('is-done');
+        }
+      });
     });
   };
 
@@ -413,7 +436,7 @@
     initVideos();
     initContactForm();
     initSubscribeForms();
-    initLeadDialog();
+    initDownloads();
     initCurrency();
     initConsent();
   });

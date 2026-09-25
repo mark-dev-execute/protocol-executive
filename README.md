@@ -87,6 +87,20 @@ python3 build.py
 Each page lists its guides with `{{downloads:slug,slug}}`; titles and blurbs live in `PROGRAM_GUIDES`
 in `build.py`, and the page count and file size are read from the PDFs at build time.
 
+## Article guide PDFs
+
+The article guides (`src/pages/guide-*.html`) are also downloadable as PDFs in `assets/guides/`,
+printed from the built pages with the site's own print styles (`@media print` in `styles.css`):
+
+```sh
+python3 build.py && NODE_PATH=$(npm root -g) node pdf/render-articles.cjs && python3 build.py
+```
+
+Re-run it after editing an article guide. In a page, `{{guide-download:slug}}` (or
+`{{guide-download:slug|btn btn-outline}}` for another button style) adds a Download PDF button.
+Every guide download, article or program, first opens a dialog with an optional email field; the
+PDF downloads from the dialog either way (`initDownloads` in `app.js`).
+
 ## Email list (`api/` and the database)
 
 The signup form at the end of each guide posts to `api/subscribe.js`, a Vercel Function that
