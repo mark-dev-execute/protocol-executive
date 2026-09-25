@@ -378,3 +378,6 @@ textarea { min-height: 120px; }
   .resume { grid-template-columns: 1fr; }
   .resume-list li { grid-template-columns: 1fr; gap: 4px; padding: 18px; }
 }
+.phrases.matrix td:first-child { color: var(--ink); font-weight: 800; width: 34%; }
+.phrases.matrix td:last-child { font-weight: 400; color: #394355; }
+.card > .tag { align-self: flex-start; }
