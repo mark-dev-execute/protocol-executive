@@ -36,6 +36,25 @@ In page sources, use `{{base}}` in front of internal links (`href="{{base}}/book
 the hero video, `{{calendar}}`, `{{email}}`, `{{linkedin}}`, `{{preply}}`, `{{italki}}` and `{{superprof}}` for the shared links, and
 `{{> partial-name}}` to include a snippet.
 
+### Spanish pages
+
+Spanish pages live in `src/pages/es/` and add two lines to the front matter: `lang: es` and
+`alt: <path of the English page>` (e.g. `alt: pricing/`). The build then adds `hreflang` links to
+both pages, and the EN/ES switch in the header links each page to its translation; English pages
+without a translation link to the Spanish home page. Spanish navigation, footer and interface text
+are in `NAV_ES`, `FOOTER_ES` and `STRINGS` in `build.py`, and Spanish partials are named `es-*.html`.
+The booking form keeps English option values so enquiries always arrive in the same format.
+
+### Prices and the USD/EUR switch
+
+Write prices in page text as `$90` or `$1,000–1,200`. The build wraps them in
+`<span class="money">` (Spanish pages show them as `90 US$`), and the USD/EUR switch in the
+header converts them in the browser at the European Central Bank reference rate served by
+`api/rates.js` (cached by Vercel for an hour). Prices are set in USD; euro amounts are shown with
+"≈" and a note with the rate and date. Visitors on Spanish pages or in a euro-area time zone see
+euros first; their choice is remembered in the browser. If no rate is available the switch
+hides and prices stay in USD.
+
 ### Preview locally
 
 ```sh

@@ -99,6 +99,51 @@ FOOTER = [
     ]),
 ]
 
+# Spanish pages live in src/pages/es/ with "lang: es" and "alt: <English path>"
+# in their front matter. English pages without a Spanish version link to /es/.
+NAV_ES = [
+    ("interview", "Entrevistas", "es/coaching-entrevistas/"),
+    ("communication", "Comunicación", "es/comunicacion-profesional/"),
+    ("business-english", "Inglés de negocios", "es/ingles-de-negocios/"),
+    ("pricing", "Precios", "es/precios/"),
+    ("about", "Sobre Mark", "es/sobre-mark/"),
+]
+
+FOOTER_ES = [
+    ("Coaching", [
+        ("Coaching de entrevistas", "es/coaching-entrevistas/"),
+        ("Comunicación profesional", "es/comunicacion-profesional/"),
+        ("Inglés de negocios", "es/ingles-de-negocios/"),
+        ("Precios", "es/precios/"),
+        ("Sobre Mark", "es/sobre-mark/"),
+        ("Contacto", "es/contacto/"),
+        ("Reserva una llamada gratuita", "es/reservar/"),
+    ]),
+    ("Más, en inglés", [
+        ("Programas", "programs/"),
+        ("Opiniones", "reviews/"),
+        ("Guías", "guides/"),
+        ("Coaching de liderazgo", "leadership-coaching/"),
+        ("Coaching ejecutivo", "executive-coaching/"),
+        ("Programas para empresas", "corporate/"),
+    ]),
+]
+
+STRINGS = {
+    "en": {
+        "locale": "en_US", "skip": "Skip to content", "menu": "Menu", "main_nav": "Main",
+        "cta": "Book a free call", "tagline": "Career, communication and leadership coaching for technology professionals.",
+        "elsewhere": "Elsewhere", "privacy": "Privacy", "cancellation": "Cancellation policy",
+        "currency": "Show prices in", "other_lang": "es", "other_label": "ES", "other_name": "Ver esta página en español",
+    },
+    "es": {
+        "locale": "es_ES", "skip": "Saltar al contenido", "menu": "Menú", "main_nav": "Principal",
+        "cta": "Reserva una llamada gratuita", "tagline": "Coaching de carrera, comunicación y liderazgo para profesionales de la tecnología.",
+        "elsewhere": "En otras webs", "privacy": "Privacidad", "cancellation": "Política de cancelación",
+        "currency": "Mostrar precios en", "other_lang": "en", "other_label": "EN", "other_name": "View this page in English",
+    },
+}
+
 # Old campaign URLs that still receive traffic -> current pages.
 REDIRECTS = {
     "interview-prep.html": "interview-coaching/",
@@ -110,6 +155,7 @@ REDIRECTS = {
 }
 
 YEAR = datetime.date.today().year
+ALTERNATES = {}  # page path -> the same page in the other language (filled in by main)
 OUT = ROOT  # output directory of the target being built
 esc = html.escape
 
@@ -141,6 +187,11 @@ def parse_page(path):
         if key not in meta:
             sys.exit(f"{path}: front matter needs '{key}'")
     meta["path"] = "" if meta["path"] == "/" else meta["path"]
+    if meta.get("alt") == "/":
+        meta["alt"] = ""
+    meta.setdefault("lang", "en")
+    if meta["lang"] not in STRINGS:
+        sys.exit(f"{path}: unknown lang '{meta['lang']}'")
     return meta, text[match.end():]
 
 
@@ -178,6 +229,18 @@ PROGRAM_GUIDES = {
 }
 STATIC += [f"assets/programs/{slug}.pdf" for slug in PROGRAM_GUIDES]
 
+# Spanish card text for the guides offered on Spanish pages (the PDFs are in English).
+PROGRAM_GUIDES_ES = {
+    "communication-program": ("Comunicación · B1–B2",
+                              "Cuatro fases y 24 sesiones: de la prueba de nivel a reuniones, presentaciones, CV, LinkedIn e inglés para entrevistas."),
+    "executive-communication-program": ("Comunicación · C1–C2",
+                                        "Doce semanas de presencia, mensajes concisos, reuniones, persuasión, conversaciones difíciles y storytelling."),
+    "career-accelerator": ("Carrera y entrevistas",
+                           "El programa de 12 semanas para buscar trabajo: CV, LinkedIn, estrategia, historias PAR, dos entrevistas simuladas y negociación."),
+    "executive-interview-program": ("Entrevistas senior",
+                                    "Doce semanas de storytelling estratégico: banco de historias, estrategia a partir de la oferta, paneles simulados y negociación."),
+}
+
 
 def pdf_facts(slug):
     path = ROOT / "assets" / "programs" / f"{slug}.pdf"
@@ -188,61 +251,123 @@ def pdf_facts(slug):
     return pages, round(len(data) / 1024)
 
 
-def downloads_html(slugs):
+def downloads_html(slugs, lang):
     cards = []
     for slug in slugs:
-        if slug not in PROGRAM_GUIDES:
-            sys.exit(f"Unknown program guide '{slug}'")
+        if slug not in PROGRAM_GUIDES or (lang == "es" and slug not in PROGRAM_GUIDES_ES):
+            sys.exit(f"Unknown program guide '{slug}' ({lang})")
         title, tag, text = PROGRAM_GUIDES[slug]
+        if lang == "es":
+            tag, text = PROGRAM_GUIDES_ES[slug]
         pages, size = pdf_facts(slug)
+        facts = f"PDF en inglés · {pages} páginas · {size} KB" if lang == "es" else f"PDF · {pages} pages · {size} KB"
         cards.append(
             f'<article class="card download"><span class="tag">{esc(tag)}</span>'
             f'<h3>{esc(title)}</h3><p>{esc(text)}</p>'
-            f'<p class="guide-meta">PDF · {pages} pages · {size} KB</p>'
+            f'<p class="guide-meta">{facts}</p>'
             f'<a class="btn btn-dark" href="{url(f"assets/programs/{slug}.pdf")}" download '
-            f'data-guide="{slug}" data-track="download-{slug}">Download PDF</a></article>')
-    return f'<div class="cards downloads">{"".join(cards)}</div>' + LEAD_DIALOG.replace("{base}", SITE["base"])
+            f'data-guide="{slug}" data-track="download-{slug}">{"Descargar PDF" if lang == "es" else "Download PDF"}</a></article>')
+    return f'<div class="cards downloads">{"".join(cards)}</div>' + lead_dialog(lang)
 
 
-# Shown after a program guide download starts: an optional free-consultation request (api/lead.js).
-LEAD_DIALOG = """
+LEAD_TEXT = {
+    "en": {"close": "Close", "eyebrow": "Your guide is downloading", "title": "Want to talk it through?",
+           "intro": "Leave your email and Mark will get in touch to arrange a free consultation about your goals. Completely optional.",
+           "label": "Email address", "placeholder": "you@example.com", "submit": "Request a free consultation",
+           "company": "Company", "privacy": "Your email is only used to arrange the consultation — see the",
+           "privacy_link": "privacy policy", "privacy_href": "privacy/#consultation-requests", "skip": "No thanks, just the guide"},
+    "es": {"close": "Cerrar", "eyebrow": "Tu guía se está descargando", "title": "¿Quieres comentarla?",
+           "intro": "Déjanos tu email y Mark se pondrá en contacto contigo para organizar una consulta gratuita sobre tus objetivos. Es totalmente opcional.",
+           "label": "Correo electrónico", "placeholder": "tu@ejemplo.com", "submit": "Solicitar consulta gratuita",
+           "company": "Empresa", "privacy": "Solo usamos tu email para organizar la consulta — consulta la",
+           "privacy_link": "política de privacidad", "privacy_href": "es/privacidad/#solicitudes-de-consulta", "skip": "No, gracias, solo la guía"},
+}
+
+
+def lead_dialog(lang):
+    """Shown after a program guide download starts: an optional free-consultation request (api/lead.js)."""
+    t = LEAD_TEXT[lang]
+    return f"""
 <dialog class="lead-dialog" aria-labelledby="lead-title" data-lead-dialog>
-  <form class="lead-form" action="{base}/api/lead" method="post" data-lead-form>
-    <button class="dialog-close" type="button" aria-label="Close" data-lead-close>×</button>
-    <span class="eyebrow">Your guide is downloading</span>
-    <h2 id="lead-title">Want to talk it through?</h2>
-    <p>Leave your email and Mark will get in touch to arrange a free consultation about your goals. Completely optional.</p>
+  <form class="lead-form" action="{url("api/lead")}" method="post" data-lead-form>
+    <button class="dialog-close" type="button" aria-label="{t["close"]}" data-lead-close>×</button>
+    <span class="eyebrow">{t["eyebrow"]}</span>
+    <h2 id="lead-title">{t["title"]}</h2>
+    <p>{t["intro"]}</p>
     <div class="subscribe-row">
-      <label class="visually-hidden" for="lead-email">Email address</label>
-      <input id="lead-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="send" maxlength="254" required>
-      <button class="btn btn-primary" type="submit" data-track="lead-submit">Request a free consultation</button>
+      <label class="visually-hidden" for="lead-email">{t["label"]}</label>
+      <input id="lead-email" name="email" type="email" placeholder="{t["placeholder"]}" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="send" maxlength="254" required>
+      <button class="btn btn-primary" type="submit" data-track="lead-submit">{t["submit"]}</button>
     </div>
-    <div class="hp" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off"></label></div>
+    <div class="hp" aria-hidden="true"><label>{t["company"]}<input name="company" tabindex="-1" autocomplete="off"></label></div>
     <input type="hidden" name="guide" value="">
     <input type="hidden" name="t" value="">
-    <p class="fine">Your email is only used to arrange the consultation — see the <a class="text-link" href="{base}/privacy/#consultation-requests">privacy policy</a>.</p>
+    <p class="fine">{t["privacy"]} <a class="text-link" href="{url(t["privacy_href"])}">{t["privacy_link"]}</a>.</p>
     <p class="form-status" aria-live="polite"></p>
-    <button class="text-button" type="button" data-lead-close>No thanks, just the guide</button>
+    <button class="text-button" type="button" data-lead-close>{t["skip"]}</button>
   </form>
 </dialog>"""
 
 
-def reviews_html(names, reviews):
+# Prices in page text ("$90", "$1,000–1,200") become <span class="money" data-usd="…">
+# so app.js can show them in euros. Spanish pages write them Spanish-style ("90 US$").
+MONEY = re.compile(r"\$(\d{1,3}(?:,\d{3})+|\d+)(?:\s*([–-])\s*\$?(\d{1,3}(?:,\d{3})+|\d+))?")
+MONEY_SKIP = ("script", "style", "title", "option", "textarea")
+
+
+def spanish_number(n):
+    return f"{n:,}".replace(",", ".") if n >= 10000 else str(n)
+
+
+def money_span(match, lang):
+    low = int(match.group(1).replace(",", ""))
+    high = int(match.group(3).replace(",", "")) if match.group(3) else None
+    usd = f"{low}-{high}" if high else str(low)
+    if lang == "es":
+        shown = f"{spanish_number(low)}–{spanish_number(high)} US$" if high else f"{spanish_number(low)} US$"
+    else:
+        shown = match.group(0)
+    return f'<span class="money" data-usd="{usd}">{shown}</span>'
+
+
+def wrap_money(body, lang):
+    parts = re.split(r"(<[^>]+>)", body)
+    skipping = None
+    for i, part in enumerate(parts):
+        if part.startswith("<"):
+            name = re.match(r"</?([a-zA-Z]+)", part)
+            name = name.group(1).lower() if name else ""
+            if skipping is None and name in MONEY_SKIP and not part.startswith("</"):
+                skipping = name
+            elif skipping == name and part.startswith("</"):
+                skipping = None
+        elif skipping is None:
+            parts[i] = MONEY.sub(lambda m: money_span(m, lang), part)
+    return "".join(parts)
+
+
+def reviews_html(names, reviews, lang="en"):
     items = []
+    spanish = lang == "es"
     for name in names:
         review = reviews[name]
-        source = f"Five-star review on {review['platform']}" if review.get("platform") else "Five-star review"
+        if spanish:  # reviews stay in English, as written
+            source = f"Opinión de cinco estrellas en {review['platform']}" if review.get("platform") else "Opinión de cinco estrellas"
+        else:
+            source = f"Five-star review on {review['platform']}" if review.get("platform") else "Five-star review"
+        stars = "5 de 5 estrellas" if spanish else "5 out of 5 stars"
+        text_lang = ' lang="en"' if spanish else ""
         items.append(
             '<blockquote class="quote">'
-            '<div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>'
-            f'<p>“{esc(review["text"])}”</p>'
+            f'<div class="stars" role="img" aria-label="{stars}">★★★★★</div>'
+            f'<p{text_lang}>“{esc(review["text"])}”</p>'
             f'<footer><b>{esc(review["name"])}</b>{esc(review["role"])} · {source}</footer>'
             '</blockquote>'
         )
     return f'<div class="testimonials">{"".join(items)}</div>'
 
 
-def expand(body, source):
+def expand(body, source, lang="en"):
     reviews = json.loads((SRC / "reviews.json").read_text(encoding="utf-8"))
 
     def partial(match):
@@ -269,9 +394,9 @@ def expand(body, source):
     def token(match):
         name, arg = match.group(1), match.group(2)
         if name == "reviews":
-            return reviews_html([n.strip() for n in arg.split(",")], reviews)
+            return reviews_html([n.strip() for n in arg.split(",")], reviews, lang)
         if name == "downloads":
-            return downloads_html([n.strip() for n in arg.split(",")])
+            return downloads_html([n.strip() for n in arg.split(",")], lang)
         if name not in tokens:
             sys.exit(f"{source}: unknown token '{{{{{name}}}}}'")
         return tokens[name]
@@ -299,6 +424,9 @@ def structured_data(meta, body):
         "email": SITE["email"],
         "image": absolute(SITE["og_image"]),
         "description": "Career, communication and leadership coaching for technology professionals.",
+        "areaServed": [{"@type": "Country", "name": "Spain"}, {"@type": "City", "name": "Madrid"},
+                       {"@type": "City", "name": "Barcelona"}, "Worldwide (online)"],
+        "availableLanguage": "English",
         "founder": {"@type": "Person", "name": "Mark Parfenov", "sameAs": profiles},
         "sameAs": profiles,
     }]
@@ -323,7 +451,7 @@ def structured_data(meta, body):
             "image": absolute(SITE["og_image"]),
             "url": absolute(meta["path"]),
             "publisher": {"@id": org_id},
-            "inLanguage": "en",
+            "inLanguage": meta["lang"],
         })
     faqs = faq_entries(body)
     if faqs:
@@ -333,8 +461,8 @@ def structured_data(meta, body):
 
 
 def cta_link(meta, css, track):
-    label = meta.get("cta", "Book a free call")
-    href = meta.get("cta_href", "book/")
+    label = meta.get("cta", STRINGS[meta["lang"]]["cta"])
+    href = meta.get("cta_href", "es/reservar/" if meta["lang"] == "es" else "book/")
     if href == "calendar":
         return (f'<a class="{css}" href="{esc(SITE["calendar"])}" target="_blank" rel="noopener" '
                 f'data-track="{track}">{esc(label)}</a>')
@@ -353,28 +481,61 @@ def render(meta, body, versions):
                      "<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}"
                      f"gtag('js',new Date());gtag('config','{SITE['ga_id']}');</script>")
 
+    lang = meta["lang"]
+    t = STRINGS[lang]
+    spanish = lang == "es"
     current = ' aria-current="page"'
     nav_links = "".join(
         f'<a href="{url(href)}"{current if meta.get("nav") == key else ""}>{label}</a>'
-        for key, label, href in NAV
+        for key, label, href in (NAV_ES if spanish else NAV)
     )
+
+    def footer_link(href):
+        # Spanish pages mark links to English-only pages, so screen readers switch voice.
+        english_only = ' hreflang="en" lang="en"' if spanish and not href.startswith("es/") else ""
+        return f'<a href="{url(href)}"{english_only}>'
+
     footer_cols = "".join(
         f'<nav aria-label="{title}"><p class="footer-title">{title}</p><ul>'
-        + "".join(f'<li><a href="{url(href)}">{label}</a></li>' for label, href in links)
+        + "".join(f'<li>{footer_link(href)}{label}</a></li>' for label, href in links)
         + "</ul></nav>"
-        for title, links in FOOTER
+        for title, links in (FOOTER_ES if spanish else FOOTER)
     )
+
+    # Language switch: the same page in the other language, or the other home page.
+    other = ALTERNATES.get(path, "" if spanish else "es/")
+    alternates = ""
+    if path in ALTERNATES:
+        en_path, es_path = (other, path) if spanish else (path, other)
+        alternates = (f'<link rel="alternate" hreflang="en" href="{absolute(en_path)}">\n'
+                      f'<link rel="alternate" hreflang="es" href="{absolute(es_path)}">\n'
+                      f'<link rel="alternate" hreflang="x-default" href="{absolute(en_path)}">\n'
+                      f'<meta property="og:locale:alternate" content="{STRINGS[t["other_lang"]]["locale"]}">\n')
+    switches = (
+        f'<div class="nav-tools">'
+        f'<div class="currency-switch" role="group" aria-label="{t["currency"]}" data-currency hidden>'
+        '<button type="button" data-cur="USD" aria-pressed="true" aria-label="USD">'
+        '<span class="cur-long">USD</span><span class="cur-short">$</span></button>'
+        '<button type="button" data-cur="EUR" aria-pressed="false" aria-label="EUR">'
+        '<span class="cur-long">EUR</span><span class="cur-short">€</span></button></div>'
+        f'<a class="lang-switch" href="{url(other)}" hreflang="{t["other_lang"]}" lang="{t["other_lang"]}" '
+        f'aria-label="{t["other_name"]}" data-track="lang-{t["other_lang"]}">{t["other_label"]}</a></div>'
+    )
+    privacy_href = "es/privacidad/" if spanish else "privacy/"
+    cancel_href = "es/politica-de-cancelacion/" if spanish else "cancellation-policy/"
+    body = wrap_money(body, lang)
 
     return f"""<!doctype html>
 <!-- Generated by build.py from src/pages/. Edit the source, not this file. -->
-<html lang="en">
+<html lang="{lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(meta["title"])}</title>
 <meta name="description" content="{esc(meta["description"])}">
 {robots}<link rel="canonical" href="{canonical}">
-<meta property="og:type" content="website">
+{alternates}<meta property="og:type" content="website">
+<meta property="og:locale" content="{t["locale"]}">
 <meta property="og:site_name" content="{SITE["name"]}">
 <meta property="og:title" content="{esc(meta.get("og_title", meta["title"]))}">
 <meta property="og:description" content="{esc(meta["description"])}">
@@ -392,13 +553,14 @@ def render(meta, body, versions):
 <script src="/_vercel/insights/script.js" defer></script>
 </head>
 <body{' class="has-sticky"' if sticky else ""}>
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="skip-link" href="#main">{t["skip"]}</a>
 <header class="site-header">
-<nav class="nav wrap" aria-label="Main">
-<a class="brand" href="{url()}"><span class="brand-mark" aria-hidden="true">{SITE["mark"]}</span>{SITE["name"]}</a>
+<nav class="nav wrap" aria-label="{t["main_nav"]}">
+<a class="brand" href="{url("es/" if spanish else "")}"><span class="brand-mark" aria-hidden="true">{SITE["mark"]}</span>{SITE["name"]}</a>
 <div class="nav-links" id="nav-links">{nav_links}{cta_link(meta, "btn btn-primary menu-cta", "menu-cta")}</div>
+{switches}
 {cta_link(meta, "btn btn-primary nav-cta", "header-cta")}
-<button class="menu" type="button" aria-expanded="false" aria-controls="nav-links" data-menu><span class="visually-hidden">Menu</span><span aria-hidden="true">☰</span></button>
+<button class="menu" type="button" aria-expanded="false" aria-controls="nav-links" data-menu><span class="visually-hidden">{t["menu"]}</span><span aria-hidden="true">☰</span></button>
 </nav>
 </header>
 <main id="main">
@@ -406,13 +568,14 @@ def render(meta, body, versions):
 </main>
 <footer class="footer">
 <div class="wrap footer-grid">
-<div class="footer-brand"><a class="brand" href="{url()}"><span class="brand-mark" aria-hidden="true">{SITE["mark"]}</span>{SITE["name"]}</a>
-<p>Career, communication and leadership coaching for technology professionals.</p>
+<div class="footer-brand"><a class="brand" href="{url("es/" if spanish else "")}"><span class="brand-mark" aria-hidden="true">{SITE["mark"]}</span>{SITE["name"]}</a>
+<p>{t["tagline"]}</p>
 <p><a href="mailto:{SITE["email"]}">{SITE["email"]}</a></p></div>
 {footer_cols}
-<nav aria-label="Elsewhere"><p class="footer-title">Elsewhere</p><ul><li><a href="{SITE["linkedin"]}" target="_blank" rel="noopener">LinkedIn</a></li><li><a href="{SITE["preply"]}" target="_blank" rel="noopener">Preply</a></li><li><a href="{SITE["italki"]}" target="_blank" rel="noopener">italki</a></li><li><a href="{SITE["superprof"]}" target="_blank" rel="noopener">Superprof</a></li></ul></nav>
+<nav aria-label="{t["elsewhere"]}"><p class="footer-title">{t["elsewhere"]}</p><ul><li><a href="{SITE["linkedin"]}" target="_blank" rel="noopener">LinkedIn</a></li><li><a href="{SITE["preply"]}" target="_blank" rel="noopener">Preply</a></li><li><a href="{SITE["italki"]}" target="_blank" rel="noopener">italki</a></li><li><a href="{SITE["superprof"]}" target="_blank" rel="noopener">Superprof</a></li></ul></nav>
 </div>
-<div class="wrap footer-base"><p>© {YEAR} {SITE["name"]} · Mark Parfenov · <a href="{url("privacy/")}">Privacy</a> · <a href="{url("cancellation-policy/")}">Cancellation policy</a></p></div>
+<div class="wrap footer-base"><p>© {YEAR} {SITE["name"]} · Mark Parfenov · <a href="{url(privacy_href)}">{t["privacy"]}</a> · <a href="{url(cancel_href)}">{t["cancellation"]}</a></p>
+<p class="fx-note" data-fx-note hidden></p></div>
 </footer>
 {cta_link(meta, "sticky-cta btn btn-primary", "sticky-cta") if sticky else ""}
 </body>
@@ -561,13 +724,20 @@ def build_target(name, target, pages, versions):
 def main():
     versions = {name: asset_version(name) for name in ("styles.css", "app.js")}
     pages = []
-    for source in sorted((SRC / "pages").glob("*.html")):
+    for source in sorted((SRC / "pages").glob("*.html")) + sorted((SRC / "pages" / "es").glob("*.html")):
         meta, body = parse_page(source)
         pages.append((meta, body))
+    english = {meta["path"] for meta, _ in pages if meta["lang"] == "en"}
+    for meta, _ in pages:
+        if meta["lang"] != "en":
+            if meta.get("alt") not in english:
+                sys.exit(f"{meta['path']}: 'alt' must name an English page")
+            ALTERNATES[meta["alt"]] = meta["path"]
+            ALTERNATES[meta["path"]] = meta["alt"]
     for name, target in TARGETS.items():
         # Tokens like {{base}} depend on the target, so expand per target.
         SITE["base"], SITE["origin"] = target["base"], target["origin"]
-        expanded = [(meta, expand(body, meta["path"])) for meta, body in pages]
+        expanded = [(meta, expand(body, meta["path"], meta["lang"])) for meta, body in pages]
         build_target(name, target, expanded, versions)
     write_vercel_config()
 

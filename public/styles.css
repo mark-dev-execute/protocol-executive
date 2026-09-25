@@ -60,15 +60,40 @@ h1, h2 { text-wrap: balance; }
 /* Header */
 .site-header { background: rgba(11, 18, 32, .97); color: #fff; position: sticky; top: 0; z-index: 20; border-bottom: 1px solid #26334a; }
 .nav { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-.brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; letter-spacing: -.04em; font-size: 1.25rem; }
+.brand { flex: none; white-space: nowrap; display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; letter-spacing: -.04em; font-size: 1.25rem; }
 .brand-mark { width: 27px; height: 27px; background: var(--lime); border-radius: 8px; display: grid; place-items: center; color: var(--ink); font: 500 .66rem var(--mono); letter-spacing: 0; }
 .nav-links { display: flex; align-items: center; gap: 22px; font-size: .9rem; margin-left: auto; }
 .nav-cta { white-space: nowrap; }
 .menu-cta { display: none; }
-.nav-links a:not(.btn) { text-decoration: none; color: #d9dfeb; padding: .4rem 0; }
+.nav-links a:not(.btn) { white-space: nowrap; text-decoration: none; color: #d9dfeb; padding: .4rem 0; }
 .nav-links a:not(.btn):hover, .nav-links a[aria-current="page"] { color: var(--lime); }
 .nav-links a[aria-current="page"] { box-shadow: inset 0 -2px 0 var(--lime); }
 .menu { display: none; background: none; border: 0; color: #fff; font-size: 1.4rem; min-width: 44px; min-height: 44px; cursor: pointer; }
+
+/* Currency and language switches */
+.nav-tools { display: flex; align-items: center; gap: 8px; flex: none; }
+.currency-switch { display: inline-flex; border: 1px solid #33425c; border-radius: 999px; padding: 2px; }
+.currency-switch[hidden] { display: none; }
+.currency-switch.is-loading { visibility: hidden; }
+.currency-switch button, .lang-switch { font: 500 .72rem var(--mono); letter-spacing: .04em; color: #c7cfdd; background: none; border: 0; border-radius: 999px; padding: 0 9px; min-height: 38px; cursor: pointer; }
+.currency-switch button:hover, .lang-switch:hover { color: #fff; }
+.currency-switch button[aria-pressed="true"] { background: var(--lime); color: var(--ink); }
+.lang-switch { display: inline-flex; align-items: center; text-decoration: none; border: 1px solid #33425c; min-height: 44px; padding: 0 12px; }
+.currency-switch button:focus-visible, .lang-switch:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+.currency-switch .cur-short { display: none; }
+.money { white-space: nowrap; }
+
+/* Small phones: shorter switch labels so the header stays on one line. */
+@media (max-width: 480px) {
+  .nav { gap: 8px; }
+  .nav-tools { gap: 6px; }
+  .currency-switch .cur-long { display: none; }
+  .currency-switch .cur-short { display: inline; }
+  .currency-switch button { padding: 0 10px; }
+  .lang-switch { padding: 0 9px; }
+}
+@media (max-width: 374px) { .brand { font-size: 1.1rem; } }
+.fx-note { font-size: .78rem; color: #8fa0bb; margin: 8px 0 0; }
 
 /* Heroes */
 .hero, .page-hero { background: var(--ink); color: #fff; overflow: hidden; }
@@ -287,11 +312,11 @@ textarea { min-height: 120px; }
 }
 
 /* Laptops and tablets: links move into the menu, the booking button stays visible. */
-@media (max-width: 1080px) {
+@media (max-width: 1200px) {
   .nav { gap: 12px; }
   .menu { display: inline-flex; align-items: center; justify-content: center; }
   .nav-links { display: none; }
-  .nav-cta { margin-left: auto; }
+  .nav-tools { margin-left: auto; }
   .nav-links.open { display: flex; position: absolute; top: 100%; left: 0; right: 0; background: var(--ink); padding: 6px 16px 18px; flex-direction: column; align-items: stretch; gap: 0; border-bottom: 1px solid #26334a; }
   .nav-links.open a:not(.btn) { padding: 14px 2px; border-bottom: 1px solid #1f2c44; font-size: 1rem; box-shadow: none; }
 }
@@ -422,3 +447,11 @@ textarea { min-height: 120px; }
 .text-button { justify-self: center; border: 0; background: none; padding: 8px; color: var(--muted); font: 700 .88rem var(--sans); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .text-button:hover { color: var(--ink); }
 @media (max-width: 560px) { .lead-form { padding: 26px 18px 16px; } .lead-form h2 { font-size: 1.45rem; padding-right: 32px; } }
+
+/* Spain focus */
+.city-list { list-style: none; padding: 0; margin: 10px 0 18px; display: grid; gap: 0; }
+.card .city-list li { margin: 0; padding-left: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.card .city-list li::before { content: none; }
+.city-list b { font-size: 1.05rem; letter-spacing: -.02em; }
+.city-list span { font: 500 .74rem var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; text-align: right; }
+.section.spain { background: var(--soft-lime); }

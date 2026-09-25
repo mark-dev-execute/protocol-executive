@@ -5,6 +5,126 @@
     try { window.gtag?.('event', name, { page_location: location.pathname, ...params }); } catch (e) { /* analytics is optional */ }
   };
 
+  // Interface text for the Spanish pages (html lang="es").
+  const SPANISH = document.documentElement.lang === 'es';
+  const T = SPANISH ? {
+    fields: 'Completa los campos marcados.',
+    mailto: (email) => `Tu aplicación de correo debería abrirse con el mensaje listo para enviar. Si no se abre, escribe directamente a ${email}.`,
+    invalidEmail: 'Introduce un email válido.',
+    failed: 'Algo ha fallado. Inténtalo de nuevo.',
+    sending: 'Enviando…',
+    leadThanks: 'Gracias. Mark te escribirá para organizar tu consulta gratuita.',
+    fxNote: (date, rate) => `Los precios se fijan en dólares estadounidenses. Los importes en euros son aproximados, según el tipo de cambio de referencia del Banco Central Europeo del ${date} (1 USD = ${rate} EUR).`,
+  } : {
+    fields: 'Please complete the highlighted fields.',
+    mailto: (email) => `Your email app should open with your message ready to send. If nothing opens, email ${email} directly.`,
+    invalidEmail: 'Please enter a valid email address.',
+    failed: 'Something went wrong. Please try again.',
+    sending: 'Sending…',
+    leadThanks: 'Thanks — Mark will email you to arrange your free consultation.',
+    fxNote: (date, rate) => `Prices are set in US dollars. Euro amounts are approximate, converted at the European Central Bank reference rate of ${date} (1 USD = ${rate} EUR).`,
+  };
+  const LOCALE = SPANISH ? 'es-ES' : 'en-US';
+
+  const store = {
+    get: (key) => { try { return localStorage.getItem(key); } catch (e) { return null; } },
+    set: (key, value) => { try { localStorage.setItem(key, value); } catch (e) { /* storage unavailable */ } },
+  };
+
+  // Prices are set in USD. The currency switch also shows them in euros, at the
+  // European Central Bank rate served by /api/rates (kept in the browser for 12 hours).
+  // Visitors on Spanish pages or in a euro-area time zone see euros first.
+  const FX_KEY = 'fit-fx';
+  const CURRENCY_KEY = 'fit-currency';
+  const EURO_ZONES = /^(Europe\/(Madrid|Paris|Berlin|Rome|Amsterdam|Brussels|Vienna|Dublin|Lisbon|Helsinki|Athens|Luxembourg|Bratislava|Ljubljana|Tallinn|Riga|Vilnius|Zagreb|Malta|Monaco|Andorra|San_Marino|Vatican|Busingen|Nicosia)|Atlantic\/(Canary|Madeira|Azores)|Africa\/Ceuta|Asia\/Nicosia)$/;
+  const HOUR = 3600 * 1000;
+
+  const preferredCurrency = () => {
+    const saved = store.get(CURRENCY_KEY);
+    if (saved === 'USD' || saved === 'EUR') return saved;
+    if (SPANISH) return 'EUR';
+    try { return EURO_ZONES.test(Intl.DateTimeFormat().resolvedOptions().timeZone) ? 'EUR' : 'USD'; } catch (e) { return 'USD'; }
+  };
+
+  const plausible = (fx) => fx && fx.rate > 0.5 && fx.rate < 1.5 && /^\d{4}-\d{2}-\d{2}$/.test(fx.date);
+
+  const savedRate = (maxAge) => {
+    try {
+      const fx = JSON.parse(store.get(FX_KEY));
+      return plausible(fx) && Date.now() - fx.fetched < maxAge ? fx : null;
+    } catch (e) { return null; }
+  };
+
+  const loadRate = async () => {
+    const fresh = savedRate(12 * HOUR);
+    if (fresh) return fresh;
+    try {
+      const response = await fetch('/api/rates');
+      const data = await response.json();
+      if (!response.ok || !plausible(data)) throw new Error('no rate');
+      const fx = { rate: data.rate, date: data.date, fetched: Date.now() };
+      store.set(FX_KEY, JSON.stringify(fx));
+      return fx;
+    } catch (e) {
+      return savedRate(7 * 24 * HOUR); // an older rate beats none
+    }
+  };
+
+  const showPrices = (currency, fx) => {
+    const euros = (n, symbol) => new Intl.NumberFormat(LOCALE, symbol
+      ? { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }
+      : { maximumFractionDigits: 0 }).format(n);
+    const convert = (usd) => {
+      const eur = Number(usd) * fx.rate;
+      return eur < 200 ? Math.round(eur) : Math.round(eur / 5) * 5;
+    };
+    document.querySelectorAll('.money[data-usd]').forEach((el) => {
+      if (el.dataset.original === undefined) el.dataset.original = el.textContent;
+      if (currency === 'USD') {
+        el.textContent = el.dataset.original;
+        el.removeAttribute('title');
+        return;
+      }
+      const [low, high] = el.dataset.usd.split('-').map(convert);
+      const range = !high ? euros(low, true)
+        : SPANISH ? `${euros(low)}–${euros(high, true)}` : `${euros(low, true)}–${euros(high)}`;
+      el.textContent = `≈\u00a0${range}`;
+      el.title = el.dataset.original.trim() + (SPANISH ? '' : ' (USD)');
+    });
+    const date = new Intl.DateTimeFormat(LOCALE, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+      .format(new Date(`${fx.date}T12:00:00Z`));
+    const rate = new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 4 }).format(fx.rate);
+    document.querySelectorAll('[data-fx-note]').forEach((note) => {
+      note.textContent = T.fxNote(date, rate);
+      note.hidden = currency !== 'EUR';
+    });
+  };
+
+  const initCurrency = async () => {
+    const group = document.querySelector('[data-currency]');
+    if (!group) return;
+    group.hidden = false;
+    group.classList.add('is-loading'); // keeps its place in the header while the rate loads
+    const fx = await loadRate();
+    if (!fx) { group.hidden = true; return; } // no rate: prices stay in USD
+    let currency = preferredCurrency();
+    const apply = () => {
+      showPrices(currency, fx);
+      group.querySelectorAll('button[data-cur]').forEach((button) =>
+        button.setAttribute('aria-pressed', String(button.dataset.cur === currency)));
+    };
+    group.addEventListener('click', (event) => {
+      const button = event.target.closest('button[data-cur]');
+      if (!button || button.dataset.cur === currency) return;
+      currency = button.dataset.cur;
+      store.set(CURRENCY_KEY, currency);
+      apply();
+      track('currency_switch', { currency });
+    });
+    apply();
+    group.classList.remove('is-loading');
+  };
+
   const initMenu = () => {
     const button = document.querySelector('[data-menu]');
     const links = document.getElementById('nav-links');
@@ -62,7 +182,7 @@
       if (!form.checkValidity()) {
         form.reportValidity();
         status.className = 'form-status error';
-        status.textContent = 'Please complete the highlighted fields.';
+        status.textContent = T.fields;
         return;
       }
       const data = new FormData(form);
@@ -78,7 +198,7 @@
       ].join('\n');
       track('booking_submitted', { service: data.get('service') });
       status.className = 'form-status';
-      status.textContent = `Your email app should open with your message ready to send. If nothing opens, email ${email} directly.`;
+      status.textContent = T.mailto(email);
       location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     });
   };
@@ -108,7 +228,7 @@
         event.preventDefault();
         if (!form.checkValidity()) {
           form.reportValidity();
-          show('Please enter a valid email address.', true);
+          show(T.invalidEmail, true);
           return;
         }
         const data = Object.fromEntries(new FormData(form));
@@ -121,13 +241,13 @@
             body: JSON.stringify(data),
           });
           const result = await response.json().catch(() => ({}));
-          if (!response.ok) throw new Error(result.message || 'Something went wrong. Please try again.');
+          if (!response.ok) throw new Error(SPANISH ? T.failed : result.message || T.failed);
           track('newsletter_signup', { source: data.source });
           form.reset();
           form.classList.add('is-done');
           show(result.message || 'You’re in — new guides will arrive in your inbox.');
         } catch (error) {
-          show(error.message || 'Something went wrong. Please try again.', true);
+          show(error.message || T.failed, true);
         } finally {
           button.disabled = false;
         }
@@ -172,11 +292,11 @@
       event.preventDefault();
       if (!form.checkValidity()) {
         form.reportValidity();
-        show('Please enter a valid email address.', true);
+        show(T.invalidEmail, true);
         return;
       }
       button.disabled = true;
-      show('Sending…');
+      show(T.sending);
       try {
         const response = await fetch(form.action, {
           method: 'POST',
@@ -184,13 +304,13 @@
           body: JSON.stringify(Object.fromEntries(new FormData(form))),
         });
         const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.message || 'Something went wrong. Please try again.');
+        if (!response.ok) throw new Error(SPANISH ? T.failed : result.message || T.failed);
         track('consultation_request', { guide: form.elements.guide.value });
         markLeadDone();
         form.classList.add('is-done');
-        show(result.message || 'Thanks — Mark will email you to arrange your free consultation.');
+        show(SPANISH ? T.leadThanks : result.message || T.leadThanks);
       } catch (error) {
-        show(error.message || 'Something went wrong. Please try again.', true);
+        show(error.message || T.failed, true);
       } finally {
         button.disabled = false;
       }
@@ -204,5 +324,6 @@
     initBookingForm();
     initSubscribeForms();
     initLeadDialog();
+    initCurrency();
   });
 })();
