@@ -346,9 +346,10 @@
     });
   };
 
-  // Program guide downloads: the PDF downloads straight away, then an optional
-  // free-consultation request opens (saved by /api/lead). Shown once per visit.
-  const LEAD_DONE = 'fit-lead-done';
+  // Program guide downloads: the PDF downloads straight away and an optional
+  // free-consultation request opens (saved by /api/lead). It opens on every download
+  // until the visitor leaves their email; after that it stays closed for the visit.
+  const LEAD_DONE = 'fit-lead-sent';
   const leadDone = () => { try { return sessionStorage.getItem(LEAD_DONE) === '1'; } catch (e) { return false; } };
   const markLeadDone = () => { try { sessionStorage.setItem(LEAD_DONE, '1'); } catch (e) { /* storage unavailable */ } };
 
@@ -370,13 +371,11 @@
       show('');
       form.elements.guide.value = link.dataset.guide;
       form.elements.t.value = Date.now();
-      setTimeout(() => dialog.showModal(), 250); // let the download start first
+      if (!dialog.open) dialog.showModal(); // the link's default action still downloads the PDF
+      track('lead_dialog_open', { guide: link.dataset.guide });
     }));
 
-    dialog.querySelectorAll('[data-lead-close]').forEach((el) => el.addEventListener('click', () => {
-      markLeadDone();
-      dialog.close();
-    }));
+    dialog.querySelectorAll('[data-lead-close]').forEach((el) => el.addEventListener('click', () => dialog.close()));
     dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
 
     form.addEventListener('submit', async (event) => {
