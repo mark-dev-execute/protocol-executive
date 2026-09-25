@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
-"""Static site builder for Protocol.
+"""Static site builder for Fluent in Tech.
 
     python3 build.py
 
 Page content lives in src/pages/, shared snippets in src/partials/, client
 reviews in src/reviews.json, and site-wide settings in SITE below. Every build
-overwrites the generated files (index.html, */index.html, 404.html,
-sitemap.xml, robots.txt and the redirect stubs), so edit the sources, not the
-output. No dependencies beyond Python 3.8+.
+overwrites the generated files, so edit the sources, not the output:
+
+- public/      the site for Vercel at the custom domain (plus vercel.json)
+- repo root    the GitHub Pages copy (index.html, */index.html, 404.html,
+               sitemap.xml, robots.txt and redirect stubs for old URLs)
+
+No dependencies beyond Python 3.8+.
 """
 import datetime
 import hashlib
@@ -15,17 +19,15 @@ import html
 import json
 import pathlib
 import re
+import shutil
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
 SRC = ROOT / "src"
 
 SITE = {
-    # Path prefix the site is served under: "/protocol-executive" on GitHub
-    # Pages. Set to "" (and update "origin") when moving to a custom domain.
-    "base": "/protocol-executive",
-    "origin": "https://mark-dev-execute.github.io",
-    "name": "Protocol",
+    "name": "Fluent in Tech",
+    "mark": "F",  # letter in the logo square
     "email": "mark.parfenov@gmail.com",
     "linkedin": "https://www.linkedin.com/in/parfenov-mark/",
     "preply": "https://preply.com/en/tutor/4745825",
@@ -34,10 +36,26 @@ SITE = {
     "video_embed": "https://www.youtube.com/embed/eWnjK1nXoSw?si=3QB_lXE4hLbpUrE2",
     # Local cover image, so no request goes to YouTube until the visitor presses play.
     "video_thumbnail": "thumbnail.jpg",
-    "og_image": "assets/og-protocol.jpg",
+    "og_image": "assets/og-image.jpg",
     # Google Analytics 4 measurement ID, e.g. "G-XXXXXXXXXX". Empty = no analytics.
     "ga_id": "",
 }
+
+# Each target is built from the same sources. "base" is the path prefix the
+# site is served under; "origin" is its scheme and host.
+TARGETS = {
+    # Vercel serves public/ at the custom domain (configured by vercel.json).
+    "vercel": {"out": "public", "base": "", "origin": "https://fluentintechcoaching.com"},
+    # GitHub Pages serves the repository root under /protocol-executive/.
+    # Set "redirect" to True once the domain is live: every old GitHub Pages
+    # URL then forwards to the same page on the domain.
+    "github": {"out": ".", "base": "/protocol-executive",
+               "origin": "https://mark-dev-execute.github.io", "redirect": False},
+}
+
+# Files the pages reference, copied into public/ for Vercel.
+STATIC = ["styles.css", "app.js", "coach_mark_portrait.jpg", "thumbnail.jpg",
+          "assets/favicon.svg", "assets/og-image.jpg"]
 
 NAV = [
     ("interview", "Interview", "interview-coaching/"),
@@ -59,7 +77,7 @@ FOOTER = [
         ("Leadership coaching", "leadership-coaching/"),
         ("Executive coaching", "executive-coaching/"),
     ]),
-    ("Protocol", [
+    ("Company", [
         ("About Mark", "about/"),
         ("Client results", "results/"),
         ("Guides", "guides/"),
@@ -81,6 +99,7 @@ REDIRECTS = {
 }
 
 YEAR = datetime.date.today().year
+OUT = ROOT  # output directory of the target being built
 esc = html.escape
 
 
@@ -289,7 +308,7 @@ def render(meta, body, versions):
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
 <nav class="nav wrap" aria-label="Main">
-<a class="brand" href="{url()}"><span class="brand-mark" aria-hidden="true">P</span>Protocol</a>
+<a class="brand" href="{url()}"><span class="brand-mark" aria-hidden="true">{SITE["mark"]}</span>{SITE["name"]}</a>
 <div class="nav-links" id="nav-links">{nav_links}{cta_link(meta, "btn btn-primary menu-cta", "menu-cta")}</div>
 {cta_link(meta, "btn btn-primary nav-cta", "header-cta")}
 <button class="menu" type="button" aria-expanded="false" aria-controls="nav-links" data-menu><span class="visually-hidden">Menu</span><span aria-hidden="true">☰</span></button>
@@ -300,13 +319,13 @@ def render(meta, body, versions):
 </main>
 <footer class="footer">
 <div class="wrap footer-grid">
-<div class="footer-brand"><a class="brand" href="{url()}"><span class="brand-mark" aria-hidden="true">P</span>Protocol</a>
+<div class="footer-brand"><a class="brand" href="{url()}"><span class="brand-mark" aria-hidden="true">{SITE["mark"]}</span>{SITE["name"]}</a>
 <p>Career, communication and leadership coaching for technology professionals.</p>
 <p><a href="mailto:{SITE["email"]}">{SITE["email"]}</a></p></div>
 {footer_cols}
 <nav aria-label="Elsewhere"><p class="footer-title">Elsewhere</p><ul><li><a href="{SITE["linkedin"]}" target="_blank" rel="noopener">LinkedIn</a></li><li><a href="{SITE["preply"]}" target="_blank" rel="noopener">Reviews on Preply</a></li></ul></nav>
 </div>
-<div class="wrap footer-base"><p>© {YEAR} Protocol · Mark Parfenov</p></div>
+<div class="wrap footer-base"><p>© {YEAR} {SITE["name"]} · Mark Parfenov</p></div>
 </footer>
 {cta_link(meta, "sticky-cta btn btn-primary", "sticky-cta") if sticky else ""}
 </body>
@@ -326,8 +345,8 @@ def redirect_stub(target):
 
 def output_path(route):
     if route.endswith(".html"):
-        return ROOT / route
-    return ROOT / route / "index.html"
+        return OUT / route
+    return OUT / route / "index.html"
 
 
 def check_links(pages):
@@ -336,20 +355,65 @@ def check_links(pages):
     for out, content in pages.items():
         for ref in re.findall(r'(?:href|src)="(' + re.escape(SITE["base"]) + r'/[^"#?]*)', content):
             rel = ref[len(SITE["base"]) + 1:]
-            target = ROOT / rel / "index.html" if rel == "" or rel.endswith("/") else ROOT / rel
+            target = OUT / rel / "index.html" if rel == "" or rel.endswith("/") else OUT / rel
             if not target.exists():
                 missing.append(f"{out.relative_to(ROOT)} -> {ref}")
     if missing:
         sys.exit("Broken internal links:\n  " + "\n  ".join(sorted(set(missing))))
 
 
-def main():
-    versions = {name: asset_version(name) for name in ("styles.css", "app.js")}
+def domain_url(path=""):
+    return f"{TARGETS['vercel']['origin']}/{path}"
+
+
+def domain_redirect_stub(path):
+    target = domain_url(path)
+    return f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>{esc(SITE["name"])} has moved</title>
+<meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0;url={target}">
+<link rel="canonical" href="{target}"></head>
+<body><p><a href="{target}">{esc(SITE["name"])} has moved to {target}</a></p></body></html>
+"""
+
+
+def write_vercel_config():
+    redirects = [{"source": "/" + old, "destination": "/" + new, "permanent": True}
+                 for old, new in REDIRECTS.items()]
+    redirects += [
+        {"source": "/protocol-executive", "destination": "/", "permanent": True},
+        {"source": "/protocol-executive/:path*", "destination": "/:path*", "permanent": True},
+    ]
+    config = {"framework": None, "outputDirectory": TARGETS["vercel"]["out"],
+              "trailingSlash": True, "redirects": redirects}
+    (ROOT / "vercel.json").write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
+
+
+def build_target(name, target, pages, versions):
+    global OUT
+    OUT = (ROOT / target["out"]).resolve()
+    SITE["base"], SITE["origin"] = target["base"], target["origin"]
+    if OUT != ROOT:
+        shutil.rmtree(OUT, ignore_errors=True)
+        for rel in STATIC:
+            (OUT / rel).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / rel, OUT / rel)
+
+    if target.get("redirect"):
+        for meta, _ in pages:
+            out = output_path(meta["path"])
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(domain_redirect_stub("" if meta["path"] == "404.html" else meta["path"]), encoding="utf-8")
+        for old, new in REDIRECTS.items():
+            (OUT / old).write_text(domain_redirect_stub(new), encoding="utf-8")
+        (OUT / "sitemap.xml").unlink(missing_ok=True)
+        (OUT / "robots.txt").write_text("User-agent: *\nAllow: /\n", encoding="utf-8")
+        print(f"{name}: {len(pages)} pages now redirect to {domain_url()}")
+        return
+
     written = {}
     sitemap = []
-    for source in sorted((SRC / "pages").glob("*.html")):
-        meta, body = parse_page(source)
-        body = expand(body, source)
+    for meta, body in pages:
         out = output_path(meta["path"])
         out.parent.mkdir(parents=True, exist_ok=True)
         content = render(meta, body, versions)
@@ -358,19 +422,34 @@ def main():
         if meta.get("sitemap", "yes") != "no":
             sitemap.append(absolute(meta["path"]))
 
-    for old, new in REDIRECTS.items():
-        (ROOT / old).write_text(redirect_stub(new), encoding="utf-8")
+    if OUT == ROOT:  # static hosts without redirect rules get HTML stubs
+        for old, new in REDIRECTS.items():
+            (OUT / old).write_text(redirect_stub(new), encoding="utf-8")
 
-    (ROOT / "sitemap.xml").write_text(
+    (OUT / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + "".join(f"  <url><loc>{loc}</loc></url>\n" for loc in sitemap)
         + "</urlset>\n", encoding="utf-8")
-    (ROOT / "robots.txt").write_text(
+    (OUT / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\nSitemap: {absolute('sitemap.xml')}\n", encoding="utf-8")
 
     check_links(written)
-    print(f"Built {len(written)} pages, {len(REDIRECTS)} redirects, sitemap with {len(sitemap)} URLs.")
+    print(f"{name}: built {len(written)} pages at {absolute()}")
+
+
+def main():
+    versions = {name: asset_version(name) for name in ("styles.css", "app.js")}
+    pages = []
+    for source in sorted((SRC / "pages").glob("*.html")):
+        meta, body = parse_page(source)
+        pages.append((meta, body))
+    for name, target in TARGETS.items():
+        # Tokens like {{base}} depend on the target, so expand per target.
+        SITE["base"], SITE["origin"] = target["base"], target["origin"]
+        expanded = [(meta, expand(body, meta["path"])) for meta, body in pages]
+        build_target(name, target, expanded, versions)
+    write_vercel_config()
 
 
 if __name__ == "__main__":

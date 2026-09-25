@@ -1,10 +1,10 @@
-# Protocol — Career. Communication. Leadership.
+# Fluent in Tech — Career. Communication. Leadership.
 
-Website for Protocol, Mark Parfenov's one-to-one coaching practice for technology professionals:
+Website for Fluent in Tech, Mark Parfenov's coaching practice for technology professionals:
 interview and career coaching, professional communication (Business English and executive
 communication), and leadership coaching.
 
-Live site: https://mark-dev-execute.github.io/protocol-executive/
+Live site: https://fluentintechcoaching.com (Vercel) — previously https://mark-dev-execute.github.io/protocol-executive/ (GitHub Pages)
 
 ## How the site is built
 
@@ -21,9 +21,10 @@ assets/             # favicon, social share image, logos
 ```
 
 Generated output (don't edit by hand; it's overwritten on every build):
-`index.html`, `*/index.html`, `404.html`, `sitemap.xml`, `robots.txt` and the redirect stubs for old
-URLs (`interview-prep.html`, `executive-presence.html`, `corporate-training.html`, `par-toolkit.html`,
-`syllabus.html`).
+
+- `public/` and `vercel.json` — the site for Vercel at fluentintechcoaching.com
+- the repository root (`index.html`, `*/index.html`, `404.html`, `sitemap.xml`, `robots.txt` and
+  redirect stubs for old URLs) — the GitHub Pages copy under `/protocol-executive/`
 
 ### Editing a page
 
@@ -43,13 +44,19 @@ cd .. && python3 -m http.server 8000
 # open http://localhost:8000/protocol-executive/
 ```
 
-## Configuration (`SITE` in `build.py`)
+## Configuration (`build.py`)
 
-- `base` / `origin`: where the site is served. For a custom domain (e.g. on Vercel), set `base` to
-  `""` and `origin` to the domain, then rebuild.
-- `ga_id`: Google Analytics 4 measurement ID. When set, every page loads GA4 and these events are sent:
-  `cta_click`, `calendar_open`, `video_play`, `booking_submitted`.
-- `calendar`: Google Calendar appointment page used by every booking button.
+- `SITE`: brand name, contact links, calendar, video and `ga_id` (Google Analytics 4 measurement ID;
+  when set, every page sends `cta_click`, `calendar_open`, `video_play` and `booking_submitted`).
+- `TARGETS`: where the site is published. `vercel` builds `public/` for the custom domain;
+  `github` builds the GitHub Pages copy. Set the GitHub target's `redirect` to `True` once the domain
+  is live, and every old GitHub Pages URL forwards to the same page on the domain.
+
+## Hosting
+
+Vercel deploys `public/` from the `main` branch (`vercel.json` sets the output directory, trailing
+slashes and permanent redirects for old URLs). No build step runs on Vercel — commit the output of
+`python3 build.py`. The domain's DNS is managed in Cloudflare (records set to DNS only).
 
 ## Pricing shown on the site
 

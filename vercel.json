@@ -1,0 +1,42 @@
+{
+  "framework": null,
+  "outputDirectory": "public",
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/interview-prep.html",
+      "destination": "/interview-coaching/",
+      "permanent": true
+    },
+    {
+      "source": "/par-toolkit.html",
+      "destination": "/interview-coaching/",
+      "permanent": true
+    },
+    {
+      "source": "/executive-presence.html",
+      "destination": "/executive-coaching/",
+      "permanent": true
+    },
+    {
+      "source": "/corporate-training.html",
+      "destination": "/corporate/",
+      "permanent": true
+    },
+    {
+      "source": "/syllabus.html",
+      "destination": "/professional-communication/",
+      "permanent": true
+    },
+    {
+      "source": "/protocol-executive",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/protocol-executive/:path*",
+      "destination": "/:path*",
+      "permanent": true
+    }
+  ]
+}

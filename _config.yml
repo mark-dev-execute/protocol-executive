@@ -4,3 +4,5 @@ exclude:
   - src
   - build.py
   - README.md
+  - public
+  - vercel.json
