@@ -85,6 +85,12 @@ guide, page, date). To see new ones: `SELECT email, guide, page, created_at FROM
 contacted_at IS NULL ORDER BY created_at DESC;` — and after replying,
 `UPDATE leads SET contacted_at = now() WHERE email = '…';`
 
+New consultation requests are also emailed to Mark through Gmail once these environment variables
+are set in Vercel (Project → Settings → Environment Variables, Production and Preview):
+`GMAIL_USER` (mark.parfenov@gmail.com) and `GMAIL_APP_PASSWORD` (a Google app password — Google
+Account → Security → 2-Step Verification → App passwords). Optional: `NOTIFY_TO` to send them to a
+different inbox. Without them the requests are still saved; only the email is skipped.
+
 ## Hosting
 
 Vercel deploys `public/` from the `main` branch (`vercel.json` sets the output directory, trailing

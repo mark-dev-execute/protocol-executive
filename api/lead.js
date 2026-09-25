@@ -3,7 +3,8 @@
 // Requests are stored in the "leads" table of the Neon Postgres database.
 
 import { neon } from '@neondatabase/serverless';
-import { cleanEmail, json, looksLikeBot, readFields, sameOrigin } from './_shared.js';
+import { waitUntil } from '@vercel/functions';
+import { cleanEmail, json, looksLikeBot, notifyMark, readFields, sameOrigin } from './_shared.js';
 
 // Program guide slugs, as used in assets/programs/<slug>.pdf and build.py.
 const GUIDES = new Set([
@@ -34,7 +35,7 @@ function database() {
   };
 }
 
-export async function handleLead(request, db) {
+export async function handleLead(request, db, notify = notifyMark) {
   if (!sameOrigin(request)) return json(403, 'Forbidden.');
   const parsed = await readFields(request);
   if (!parsed) return json(400, 'Bad request.');
@@ -54,9 +55,19 @@ export async function handleLead(request, db) {
     console.error('lead: could not save request', error?.message);
     return json(500, 'Something went wrong. Please email mark.parfenov@gmail.com instead.');
   }
+  await notify(`New consultation request: ${email}`, [
+    'Someone asked for a free consultation after downloading a program guide.',
+    '',
+    `Email: ${email}`,
+    `Guide: ${guide || 'unknown'}`,
+    `Page: ${page ? `https://www.fluentintechcoaching.com${page}` : 'unknown'}`,
+    '',
+    'Reply to this email to answer them directly. The request is also saved in the leads table in Neon.',
+  ], email);
   return json(200, THANKS);
 }
 
 export async function POST(request) {
-  return handleLead(request, database());
+  // Send the email after responding, so the visitor never waits for Gmail.
+  return handleLead(request, database(), (...args) => waitUntil(notifyMark(...args)));
 }

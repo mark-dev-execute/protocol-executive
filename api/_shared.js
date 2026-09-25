@@ -38,3 +38,23 @@ export function cleanEmail(value) {
 }
 
 export const json = (status, message) => Response.json({ ok: status < 300, message }, { status });
+
+// Emails Mark about a new lead through Gmail, if GMAIL_USER and GMAIL_APP_PASSWORD are set in
+// Vercel. Best effort: a failed or slow email never affects the visitor's request.
+export async function notifyMark(subject, lines, replyTo) {
+  const user = process.env.GMAIL_USER;
+  const pass = process.env.GMAIL_APP_PASSWORD;
+  if (!user || !pass) return false;
+  try {
+    const { default: nodemailer } = await import('nodemailer');
+    const transport = nodemailer.createTransport({
+      service: 'gmail', auth: { user, pass: pass.replace(/\s+/g, '') },
+      connectionTimeout: 5000, greetingTimeout: 5000, socketTimeout: 8000,
+    });
+    await transport.sendMail({ from: `Fluent in Tech website <${user}>`, to: process.env.NOTIFY_TO || user, replyTo, subject, text: lines.join('\n') });
+    return true;
+  } catch (error) {
+    console.error('notify: email failed', error?.message);
+    return false;
+  }
+}
