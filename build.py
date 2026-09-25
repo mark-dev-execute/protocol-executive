@@ -65,7 +65,7 @@ STATIC = ["styles.css", "app.js", "coach_mark_portrait.jpg", "thumbnail.jpg",
               "manrope-latin-wght-normal.woff2", "manrope-latin-ext-wght-normal.woff2",
               "dm-mono-latin-400-normal.woff2", "dm-mono-latin-500-normal.woff2",
               "dm-mono-latin-ext-400-normal.woff2", "dm-mono-latin-ext-500-normal.woff2")),
-          *(f"assets/logos/strip/{name}.png" for name in ("google", "tufts", "harvard", "caterpillar"))]
+          *(f"assets/logos/strip/{name}.png" for name in ("tufts", "caterpillar"))]
 
 NAV = [
     ("interview", "Interview", "interview-coaching/"),
