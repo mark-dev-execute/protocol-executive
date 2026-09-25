@@ -135,11 +135,74 @@
     });
   };
 
+  // Program guide downloads: the PDF downloads straight away, then an optional
+  // free-consultation request opens (saved by /api/lead). Shown once per visit.
+  const LEAD_DONE = 'fit-lead-done';
+  const leadDone = () => { try { return sessionStorage.getItem(LEAD_DONE) === '1'; } catch (e) { return false; } };
+  const markLeadDone = () => { try { sessionStorage.setItem(LEAD_DONE, '1'); } catch (e) { /* storage unavailable */ } };
+
+  const initLeadDialog = () => {
+    const dialog = document.querySelector('[data-lead-dialog]');
+    if (!dialog || typeof dialog.showModal !== 'function') return;
+    const form = dialog.querySelector('[data-lead-form]');
+    const status = form.querySelector('.form-status');
+    const button = form.querySelector('button[type="submit"]');
+    const show = (message, error) => {
+      status.className = error ? 'form-status error' : 'form-status';
+      status.textContent = message;
+    };
+
+    document.querySelectorAll('a[data-guide]').forEach((link) => link.addEventListener('click', () => {
+      if (leadDone()) return;
+      form.reset();
+      form.classList.remove('is-done');
+      show('');
+      form.elements.guide.value = link.dataset.guide;
+      form.elements.t.value = Date.now();
+      setTimeout(() => dialog.showModal(), 250); // let the download start first
+    }));
+
+    dialog.querySelectorAll('[data-lead-close]').forEach((el) => el.addEventListener('click', () => {
+      markLeadDone();
+      dialog.close();
+    }));
+    dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        show('Please enter a valid email address.', true);
+        return;
+      }
+      button.disabled = true;
+      show('Sending…');
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.message || 'Something went wrong. Please try again.');
+        track('consultation_request', { guide: form.elements.guide.value });
+        markLeadDone();
+        form.classList.add('is-done');
+        show(result.message || 'Thanks — Mark will email you to arrange your free consultation.');
+      } catch (error) {
+        show(error.message || 'Something went wrong. Please try again.', true);
+      } finally {
+        button.disabled = false;
+      }
+    });
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
     initMenu();
     initTracking();
     initVideos();
     initBookingForm();
     initSubscribeForms();
+    initLeadDialog();
   });
 })();

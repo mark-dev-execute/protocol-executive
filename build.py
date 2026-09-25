@@ -198,8 +198,31 @@ def downloads_html(slugs):
             f'<h3>{esc(title)}</h3><p>{esc(text)}</p>'
             f'<p class="guide-meta">PDF · {pages} pages · {size} KB</p>'
             f'<a class="btn btn-dark" href="{url(f"assets/programs/{slug}.pdf")}" download '
-            f'data-track="download-{slug}">Download PDF</a></article>')
-    return f'<div class="cards downloads">{"".join(cards)}</div>'
+            f'data-guide="{slug}" data-track="download-{slug}">Download PDF</a></article>')
+    return f'<div class="cards downloads">{"".join(cards)}</div>' + LEAD_DIALOG.replace("{base}", SITE["base"])
+
+
+# Shown after a program guide download starts: an optional free-consultation request (api/lead.js).
+LEAD_DIALOG = """
+<dialog class="lead-dialog" aria-labelledby="lead-title" data-lead-dialog>
+  <form class="lead-form" action="{base}/api/lead" method="post" data-lead-form>
+    <button class="dialog-close" type="button" aria-label="Close" data-lead-close>×</button>
+    <span class="eyebrow">Your guide is downloading</span>
+    <h2 id="lead-title">Want to talk it through?</h2>
+    <p>Leave your email and Mark will get in touch to arrange a free consultation about your goals. Completely optional.</p>
+    <div class="subscribe-row">
+      <label class="visually-hidden" for="lead-email">Email address</label>
+      <input id="lead-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="send" maxlength="254" required>
+      <button class="btn btn-primary" type="submit" data-track="lead-submit">Request a free consultation</button>
+    </div>
+    <div class="hp" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off"></label></div>
+    <input type="hidden" name="guide" value="">
+    <input type="hidden" name="t" value="">
+    <p class="fine">Your email is only used to arrange the consultation — see the <a class="text-link" href="{base}/privacy/#consultation-requests">privacy policy</a>.</p>
+    <p class="form-status" aria-live="polite"></p>
+    <button class="text-button" type="button" data-lead-close>No thanks, just the guide</button>
+  </form>
+</dialog>"""
 
 
 def reviews_html(names, reviews):

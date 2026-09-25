@@ -19,9 +19,9 @@
 <meta name="theme-color" content="#0b1220">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css?v=b7ea14f0">
+<link rel="stylesheet" href="/styles.css?v=ebc83ba7">
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "ProfessionalService", "@id": "https://www.fluentintechcoaching.com/#business", "name": "Fluent in Tech", "url": "https://www.fluentintechcoaching.com/", "email": "mark.parfenov@gmail.com", "image": "https://www.fluentintechcoaching.com/assets/og-image.jpg", "description": "Career, communication and leadership coaching for technology professionals.", "founder": {"@type": "Person", "name": "Mark Parfenov", "sameAs": ["https://www.linkedin.com/in/parfenov-mark/", "https://preply.com/en/tutor/4745825", "https://www.italki.com/en/teacher/22622933", "https://www.superprof.com/executive-interview-coaching-for-engineers-and-product-leaders-who-want-senior-offers.html"]}, "sameAs": ["https://www.linkedin.com/in/parfenov-mark/", "https://preply.com/en/tutor/4745825", "https://www.italki.com/en/teacher/22622933", "https://www.superprof.com/executive-interview-coaching-for-engineers-and-product-leaders-who-want-senior-offers.html"]}, {"@type": "Service", "name": "Executive Coaching", "serviceType": "Executive Coaching", "provider": {"@id": "https://www.fluentintechcoaching.com/#business"}, "url": "https://www.fluentintechcoaching.com/executive-coaching/", "offers": {"@type": "Offer", "price": "135", "priceCurrency": "USD", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "135", "priceCurrency": "USD", "unitText": "hour"}}}]}</script>
-<script src="/app.js?v=2d8fa019" defer></script>
+<script src="/app.js?v=b1d94838" defer></script>
 <script src="/_vercel/insights/script.js" defer></script>
 </head>
 <body class="has-sticky">
@@ -131,7 +131,26 @@
       <h2>See the full programs.</h2>
       <p>Download the week-by-week curriculum, method and pricing as a PDF — free, no email needed.</p>
     </div>
-    <div class="cards downloads"><article class="card download"><span class="tag">Leadership &amp; executive</span><h3>Executive Edge</h3><p>Twelve weeks for managers, directors and VPs: presence, influence, panel interviews and senior negotiation.</p><p class="guide-meta">PDF · 5 pages · 437 KB</p><a class="btn btn-dark" href="/assets/programs/executive-edge.pdf" download data-track="download-executive-edge">Download PDF</a></article><article class="card download"><span class="tag">Communication · C1–C2</span><h3>Executive Communication Program</h3><p>Twelve weeks on presence, concise messages, meetings, persuasion, difficult conversations and storytelling.</p><p class="guide-meta">PDF · 6 pages · 414 KB</p><a class="btn btn-dark" href="/assets/programs/executive-communication-program.pdf" download data-track="download-executive-communication-program">Download PDF</a></article><article class="card download"><span class="tag">Senior interviews</span><h3>The Executive Interview Edge</h3><p>Twelve weeks of strategic storytelling: a story bank, a job-description strategy, mock panels and negotiation.</p><p class="guide-meta">PDF · 5 pages · 403 KB</p><a class="btn btn-dark" href="/assets/programs/executive-interview-program.pdf" download data-track="download-executive-interview-program">Download PDF</a></article></div>
+    <div class="cards downloads"><article class="card download"><span class="tag">Leadership &amp; executive</span><h3>Executive Edge</h3><p>Twelve weeks for managers, directors and VPs: presence, influence, panel interviews and senior negotiation.</p><p class="guide-meta">PDF · 5 pages · 437 KB</p><a class="btn btn-dark" href="/assets/programs/executive-edge.pdf" download data-guide="executive-edge" data-track="download-executive-edge">Download PDF</a></article><article class="card download"><span class="tag">Communication · C1–C2</span><h3>Executive Communication Program</h3><p>Twelve weeks on presence, concise messages, meetings, persuasion, difficult conversations and storytelling.</p><p class="guide-meta">PDF · 6 pages · 414 KB</p><a class="btn btn-dark" href="/assets/programs/executive-communication-program.pdf" download data-guide="executive-communication-program" data-track="download-executive-communication-program">Download PDF</a></article><article class="card download"><span class="tag">Senior interviews</span><h3>The Executive Interview Edge</h3><p>Twelve weeks of strategic storytelling: a story bank, a job-description strategy, mock panels and negotiation.</p><p class="guide-meta">PDF · 5 pages · 403 KB</p><a class="btn btn-dark" href="/assets/programs/executive-interview-program.pdf" download data-guide="executive-interview-program" data-track="download-executive-interview-program">Download PDF</a></article></div>
+<dialog class="lead-dialog" aria-labelledby="lead-title" data-lead-dialog>
+  <form class="lead-form" action="/api/lead" method="post" data-lead-form>
+    <button class="dialog-close" type="button" aria-label="Close" data-lead-close>×</button>
+    <span class="eyebrow">Your guide is downloading</span>
+    <h2 id="lead-title">Want to talk it through?</h2>
+    <p>Leave your email and Mark will get in touch to arrange a free consultation about your goals. Completely optional.</p>
+    <div class="subscribe-row">
+      <label class="visually-hidden" for="lead-email">Email address</label>
+      <input id="lead-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="send" maxlength="254" required>
+      <button class="btn btn-primary" type="submit" data-track="lead-submit">Request a free consultation</button>
+    </div>
+    <div class="hp" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off"></label></div>
+    <input type="hidden" name="guide" value="">
+    <input type="hidden" name="t" value="">
+    <p class="fine">Your email is only used to arrange the consultation — see the <a class="text-link" href="/privacy/#consultation-requests">privacy policy</a>.</p>
+    <p class="form-status" aria-live="polite"></p>
+    <button class="text-button" type="button" data-lead-close>No thanks, just the guide</button>
+  </form>
+</dialog>
   </div>
 </section>
 

@@ -405,3 +405,20 @@ textarea { min-height: 120px; }
 .cards.downloads { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 .cards.downloads:has(> :only-child) { max-width: 560px; }
 .download .guide-meta { margin: 0 0 16px; }
+
+/* Consultation request after a guide download */
+.lead-dialog { width: min(560px, calc(100% - 32px)); border: 0; border-radius: var(--radius); padding: 0; color: var(--ink); box-shadow: 0 30px 80px #0b122066; }
+.lead-dialog::backdrop { background: rgba(11, 18, 32, .6); }
+.lead-form { position: relative; display: grid; gap: 12px; padding: 30px 28px 22px; }
+.lead-form h2 { margin: 0; font-size: 1.7rem; letter-spacing: -.045em; line-height: 1.1; }
+.lead-form p { margin: 0; }
+.lead-form > p:first-of-type { color: var(--muted); }
+.lead-form .form-status:empty { display: none; }
+.lead-form.is-done .subscribe-row, .lead-form.is-done .fine { display: none; }
+.lead-form.is-done .form-status { font-weight: 700; font-size: 1.05rem; }
+.lead-form.is-done .text-button { display: none; }
+.dialog-close { position: absolute; top: 10px; right: 12px; width: 40px; height: 40px; border: 0; background: none; font-size: 1.6rem; line-height: 1; color: var(--muted); cursor: pointer; border-radius: 8px; }
+.dialog-close:hover { background: var(--mist); color: var(--ink); }
+.text-button { justify-self: center; border: 0; background: none; padding: 8px; color: var(--muted); font: 700 .88rem var(--sans); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.text-button:hover { color: var(--ink); }
+@media (max-width: 560px) { .lead-form { padding: 26px 18px 16px; } .lead-form h2 { font-size: 1.45rem; padding-right: 32px; } }

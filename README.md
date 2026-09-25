@@ -79,6 +79,12 @@ in the SQL Editor and download the result as CSV).
 
 To mark someone as unsubscribed: `UPDATE subscribers SET unsubscribed_at = now() WHERE email = '…';`
 
+Consultation requests: after a program guide download starts, an optional dialog lets the visitor
+leave their email for a free consultation. `api/lead.js` saves these to the `leads` table (email,
+guide, page, date). To see new ones: `SELECT email, guide, page, created_at FROM leads WHERE
+contacted_at IS NULL ORDER BY created_at DESC;` — and after replying,
+`UPDATE leads SET contacted_at = now() WHERE email = '…';`
+
 ## Hosting
 
 Vercel deploys `public/` from the `main` branch (`vercel.json` sets the output directory, trailing
