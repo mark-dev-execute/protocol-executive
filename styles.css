@@ -329,3 +329,13 @@ textarea { min-height: 120px; }
   html { scroll-behavior: auto; }
   .video-facade .play { transition: none; }
 }
+
+/* Payment methods */
+.pay-methods { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
+.pay-methods li { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; padding: 20px 10px 16px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
+.pay-methods b { font-size: .95rem; margin-top: 6px; }
+.pay-methods small { font-size: .76rem; line-height: 1.35; color: var(--muted); }
+.pay-logo { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; }
+.pay-logo svg { width: 26px; height: 26px; }
+@media (max-width: 1080px) { .pay-methods { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 560px) { .pay-methods { grid-template-columns: repeat(2, 1fr); } .pay-methods li:last-child { grid-column: span 2; } }
