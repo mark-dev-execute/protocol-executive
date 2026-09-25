@@ -390,9 +390,13 @@ textarea { min-height: 120px; }
 .card > .tag { align-self: flex-start; }
 
 /* Mailing-list signup (guides) */
-.subscribe-form { display: grid; gap: 14px; }
-.subscribe-form .btn { justify-self: start; }
-.subscribe-form .form-status { margin: 0; }
-.consent { display: flex; gap: 10px; align-items: flex-start; font-size: .88rem; color: #394355; line-height: 1.5; }
-.consent input { width: 18px; height: 18px; min-height: 0; margin: 2px 0 0; padding: 0; flex: none; accent-color: var(--lime-ink); }
+.subscribe-form { display: grid; gap: 12px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
+.subscribe-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+.subscribe-row input { min-height: 52px; font-size: 1rem; }
+.subscribe-row .btn { min-height: 52px; white-space: nowrap; }
+.subscribe-form .fine, .subscribe-form .form-status { margin: 0; }
+.subscribe-form .form-status:empty { display: none; }
+.subscribe-form.is-done .subscribe-row, .subscribe-form.is-done .fine { display: none; }
+.subscribe-form.is-done .form-status { font-weight: 700; font-size: 1.05rem; }
 .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+@media (max-width: 560px) { .subscribe-row { grid-template-columns: 1fr; } .subscribe-row .btn { width: 100%; } }

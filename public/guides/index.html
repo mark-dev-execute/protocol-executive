@@ -19,9 +19,9 @@
 <meta name="theme-color" content="#0b1220">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css?v=6ea98856">
+<link rel="stylesheet" href="/styles.css?v=00ded447">
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "ProfessionalService", "@id": "https://www.fluentintechcoaching.com/#business", "name": "Fluent in Tech", "url": "https://www.fluentintechcoaching.com/", "email": "mark.parfenov@gmail.com", "image": "https://www.fluentintechcoaching.com/assets/og-image.jpg", "description": "Career, communication and leadership coaching for technology professionals.", "founder": {"@type": "Person", "name": "Mark Parfenov", "sameAs": ["https://www.linkedin.com/in/parfenov-mark/", "https://preply.com/en/tutor/4745825", "https://www.italki.com/en/teacher/22622933", "https://www.superprof.com/executive-interview-coaching-for-engineers-and-product-leaders-who-want-senior-offers.html"]}, "sameAs": ["https://www.linkedin.com/in/parfenov-mark/", "https://preply.com/en/tutor/4745825", "https://www.italki.com/en/teacher/22622933", "https://www.superprof.com/executive-interview-coaching-for-engineers-and-product-leaders-who-want-senior-offers.html"]}]}</script>
-<script src="/app.js?v=a9cead9e" defer></script>
+<script src="/app.js?v=2d8fa019" defer></script>
 <script src="/_vercel/insights/script.js" defer></script>
 </head>
 <body class="has-sticky">
@@ -83,15 +83,18 @@
     <div>
       <span class="eyebrow">Free guides by email</span>
       <h2>Get the next guide in your inbox.</h2>
-      <p>New practical guides on interviews, workplace communication and leadership for tech professionals — sent when they’re published. No spam, and you can unsubscribe at any time.</p>
+      <p>New practical guides on interviews, workplace communication and leadership for tech professionals — sent when they’re published.</p>
     </div>
-    <form class="form subscribe-form" action="/api/subscribe" method="post" data-subscribe-form>
-      <label class="field">Email address<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
+    <form class="subscribe-form" action="/api/subscribe" method="post" data-subscribe-form>
+      <div class="subscribe-row">
+        <label class="visually-hidden" for="subscribe-email">Email address</label>
+        <input id="subscribe-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="go" maxlength="254" required>
+        <button class="btn btn-primary" type="submit" data-track="subscribe-submit">Send me new guides</button>
+      </div>
       <div class="hp" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off"></label></div>
       <input type="hidden" name="source" value="unknown">
       <input type="hidden" name="t" value="">
-      <label class="consent"><input type="checkbox" name="consent" required><span>Email me new guides and occasional coaching tips from Fluent in Tech. I can unsubscribe at any time. See the <a class="text-link" href="/privacy/#email-list">privacy policy</a>.</span></label>
-      <button class="btn btn-primary" type="submit" data-track="subscribe-submit">Subscribe</button>
+      <p class="fine">Free, no spam, unsubscribe any time. By subscribing you agree to receive new guides and occasional coaching tips from Fluent in Tech — see the <a class="text-link" href="/privacy/#email-list">privacy policy</a>.</p>
       <p class="form-status" aria-live="polite"></p>
     </form>
   </div>

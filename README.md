@@ -55,7 +55,7 @@ cd .. && python3 -m http.server 8000
 ## Email list (`api/` and the database)
 
 The signup form at the end of each guide posts to `api/subscribe.js`, a Vercel Function that
-validates the address (consent box, honeypot, timing and same-origin checks) and saves it to the
+validates the address (honeypot, timing and same-origin checks) and saves it to the
 Neon Postgres database connected to the Vercel project (`DATABASE_URL`). The `subscribers` table
 is created automatically on the first signup.
 

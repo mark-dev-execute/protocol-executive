@@ -7,8 +7,10 @@
 import { neon } from '@neondatabase/serverless';
 
 // Stored with every signup as a record of what the person agreed to.
+// The form has no checkbox: submitting it is the consent, so the line shown under
+// the button is what the person agreed to.
 export const CONSENT_TEXT =
-  'Email me new guides and occasional coaching tips from Fluent in Tech. I can unsubscribe at any time.';
+  'By subscribing you agree to receive new guides and occasional coaching tips from Fluent in Tech. Unsubscribe any time.';
 
 const SOURCES = {
   '/guides/': 'guides',
@@ -17,7 +19,7 @@ const SOURCES = {
 };
 const EMAIL = /^[^\s@<>()[\],;:"]+@[^\s@<>()[\],;:"]+\.[^\s@<>()[\],;:"]{2,}$/;
 const MAX_BODY = 2048;
-const MIN_FILL_MS = 1500; // real people take longer than this to fill in the form
+const MIN_FILL_MS = 800; // faster than a person, even with autofill
 
 let schemaReady = null;
 
@@ -84,15 +86,12 @@ export async function handleSubscribe(request, db) {
   // Bots fill in the hidden field or submit instantly. Pretend it worked.
   const started = Number(fields.t);
   if (fields.company || (started && Date.now() - started < MIN_FILL_MS)) {
-    return reply(request, form, 200, 'Thanks — you’re on the list.');
+    return reply(request, form, 200, 'You’re in — new guides will arrive in your inbox.');
   }
 
   const email = String(fields.email || '').trim().toLowerCase();
   if (email.length > 254 || !EMAIL.test(email)) {
     return reply(request, form, 400, 'Please enter a valid email address.');
-  }
-  if (fields.consent !== true && fields.consent !== 'on' && fields.consent !== 'true') {
-    return reply(request, form, 400, 'Please tick the box to agree to receive emails.');
   }
   // The page sets the source; without JavaScript, fall back to the page it came from.
   const known = Object.values(SOURCES);
@@ -106,7 +105,7 @@ export async function handleSubscribe(request, db) {
     console.error('subscribe: could not save signup', error?.message);
     return reply(request, form, 500, 'Something went wrong. Please try again, or email mark.parfenov@gmail.com.');
   }
-  return reply(request, form, 200, 'Thanks — you’re on the list. New guides will arrive in your inbox.');
+  return reply(request, form, 200, 'You’re in — new guides will arrive in your inbox.');
 }
 
 export async function POST(request) {
