@@ -38,7 +38,7 @@ SITE = {
     "superprof": "https://www.superprof.com/executive-interview-coaching-for-engineers-and-product-leaders-who-want-senior-offers.html",
     "calendar": "https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2eS5Lf6RGvLqM1pWFJ0GsXA_FqX1tS_AikzrszcPdrp7m0Z0qSzaYY6Ge5_8584UGuAfR-041o?gv=true",
     "video_id": "eWnjK1nXoSw",
-    "video_embed": "https://www.youtube.com/embed/eWnjK1nXoSw?si=3QB_lXE4hLbpUrE2",
+    "video_embed": "https://www.youtube-nocookie.com/embed/eWnjK1nXoSw",
     # Local cover image, so no request goes to YouTube until the visitor presses play.
     "video_thumbnail": "thumbnail.jpg",
     "og_image": "assets/og-image.jpg",
@@ -60,8 +60,12 @@ TARGETS = {
 
 # Files the pages reference, copied into public/ for Vercel.
 STATIC = ["styles.css", "app.js", "coach_mark_portrait.jpg", "thumbnail.jpg",
-          "assets/favicon.svg", "assets/og-image.jpg",
-          *(f"assets/logos/strip/{name}.png" for name in ("tufts", "harvard", "caterpillar"))]
+          "assets/favicon.svg", "assets/og-image.jpg", "assets/fonts/OFL.txt",
+          *(f"assets/fonts/{name}" for name in (
+              "manrope-latin-wght-normal.woff2", "manrope-latin-ext-wght-normal.woff2",
+              "dm-mono-latin-400-normal.woff2", "dm-mono-latin-500-normal.woff2",
+              "dm-mono-latin-ext-400-normal.woff2", "dm-mono-latin-ext-500-normal.woff2")),
+          *(f"assets/logos/strip/{name}.png" for name in ("google", "tufts", "harvard", "caterpillar"))]
 
 NAV = [
     ("interview", "Interview", "interview-coaching/"),
@@ -307,9 +311,7 @@ def render(meta, body, versions):
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0b1220">
 <link rel="icon" href="{url("assets/favicon.svg")}" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap">
+<link rel="preload" href="{url("assets/fonts/manrope-latin-wght-normal.woff2")}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{url("styles.css")}?v={versions["styles.css"]}">
 {structured_data(meta, body)}
 {analytics}<script src="{url("app.js")}?v={versions["app.js"]}" defer></script>
@@ -335,7 +337,7 @@ def render(meta, body, versions):
 {footer_cols}
 <nav aria-label="Elsewhere"><p class="footer-title">Elsewhere</p><ul><li><a href="{SITE["linkedin"]}" target="_blank" rel="noopener">LinkedIn</a></li><li><a href="{SITE["preply"]}" target="_blank" rel="noopener">Preply</a></li><li><a href="{SITE["italki"]}" target="_blank" rel="noopener">italki</a></li><li><a href="{SITE["superprof"]}" target="_blank" rel="noopener">Superprof</a></li></ul></nav>
 </div>
-<div class="wrap footer-base"><p>© {YEAR} {SITE["name"]} · Mark Parfenov</p></div>
+<div class="wrap footer-base"><p>© {YEAR} {SITE["name"]} · Mark Parfenov · <a href="{url("privacy/")}">Privacy</a></p></div>
 </footer>
 {cta_link(meta, "sticky-cta btn btn-primary", "sticky-cta") if sticky else ""}
 </body>
@@ -401,8 +403,32 @@ def write_vercel_config():
         {"source": "/protocol-executive", "destination": "/", "permanent": True},
         {"source": "/protocol-executive/:path*", "destination": "/:path*", "permanent": True},
     ]
+    analytics = " https://www.googletagmanager.com" if SITE["ga_id"] else ""
+    csp = "; ".join([
+        "default-src 'self'",
+        f"script-src 'self'{analytics}" + (" 'unsafe-inline'" if SITE["ga_id"] else ""),
+        "style-src 'self' 'unsafe-inline'",
+        "font-src 'self'",
+        "img-src 'self' data:" + analytics.replace("googletagmanager", "google-analytics"),
+        "connect-src 'self'" + (" https://*.google-analytics.com" if SITE["ga_id"] else ""),
+        "frame-src https://www.youtube-nocookie.com",
+        "object-src 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "frame-ancestors 'none'",
+        "upgrade-insecure-requests",
+    ])
+    headers = [{"source": "/(.*)", "headers": [
+        {"key": "Content-Security-Policy", "value": csp},
+        {"key": "X-Content-Type-Options", "value": "nosniff"},
+        {"key": "X-Frame-Options", "value": "DENY"},
+        {"key": "Referrer-Policy", "value": "strict-origin-when-cross-origin"},
+        {"key": "Permissions-Policy",
+         "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()"},
+        {"key": "Cross-Origin-Opener-Policy", "value": "same-origin"},
+    ]}]
     config = {"framework": None, "outputDirectory": TARGETS["vercel"]["out"],
-              "trailingSlash": True, "redirects": redirects}
+              "trailingSlash": True, "redirects": redirects, "headers": headers}
     (ROOT / "vercel.json").write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
 
 
