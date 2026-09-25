@@ -339,3 +339,8 @@ textarea { min-height: 120px; }
 .pay-logo svg { width: 26px; height: 26px; }
 @media (max-width: 1080px) { .pay-methods { grid-template-columns: repeat(4, 1fr); } }
 @media (max-width: 560px) { .pay-methods { grid-template-columns: repeat(2, 1fr); } .pay-methods li:last-child { grid-column: span 2; } }
+
+/* Review platforms */
+.platform { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.platform b { font-size: 1.05rem; }
+.platform-logo { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font: 800 1.45rem/1 var(--sans); }
