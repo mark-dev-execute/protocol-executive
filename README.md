@@ -4,7 +4,7 @@ Website for Fluent in Tech, Mark Parfenov's coaching practice for technology pro
 interview and career coaching, professional communication (Business English and executive
 communication), and leadership coaching.
 
-Live site: https://fluentintechcoaching.com (Vercel) — previously https://mark-dev-execute.github.io/protocol-executive/ (GitHub Pages)
+Live site: https://www.fluentintechcoaching.com (Vercel) — previously https://mark-dev-execute.github.io/protocol-executive/ (GitHub Pages)
 
 ## How the site is built
 

@@ -45,7 +45,7 @@ SITE = {
 # site is served under; "origin" is its scheme and host.
 TARGETS = {
     # Vercel serves public/ at the custom domain (configured by vercel.json).
-    "vercel": {"out": "public", "base": "", "origin": "https://fluentintechcoaching.com"},
+    "vercel": {"out": "public", "base": "", "origin": "https://www.fluentintechcoaching.com"},
     # GitHub Pages serves the repository root under /protocol-executive/.
     # Set "redirect" to True once the domain is live: every old GitHub Pages
     # URL then forwards to the same page on the domain.
