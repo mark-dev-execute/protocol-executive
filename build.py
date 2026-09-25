@@ -169,10 +169,10 @@ REDIRECTS = {
 # Spanish and EU regulators expect; nothing loads from Google until "Accept".
 CONSENT_TEXT = {
     "en": {"label": "Cookie choice", "settings": "Cookie settings",
-           "text": "May this site use Google Analytics cookies to see which pages are useful? They’re never used for advertising.",
+           "text": "May this site use Google Analytics cookies to see which pages are useful?",
            "link": "Privacy policy", "href": "privacy/#analytics", "reject": "Reject", "accept": "Accept"},
     "es": {"label": "Preferencias de cookies", "settings": "Configurar cookies",
-           "text": "¿Nos permites usar cookies de Google Analytics para saber qué páginas son útiles? Nunca se usan con fines publicitarios.",
+           "text": "¿Nos permites usar cookies de Google Analytics para saber qué páginas son útiles?",
            "link": "Política de privacidad", "href": "es/privacidad/#analitica", "reject": "Rechazar", "accept": "Aceptar"},
 }
 
