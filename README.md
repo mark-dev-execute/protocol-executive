@@ -52,6 +52,19 @@ cd .. && python3 -m http.server 8000
   `github` builds the GitHub Pages copy. Set the GitHub target's `redirect` to `True` once the domain
   is live, and every old GitHub Pages URL forwards to the same page on the domain.
 
+## Email list (`api/` and the database)
+
+The signup form at the end of each guide posts to `api/subscribe.js`, a Vercel Function that
+validates the address (consent box, honeypot, timing and same-origin checks) and saves it to the
+Neon Postgres database connected to the Vercel project (`DATABASE_URL`). The `subscribers` table
+is created automatically on the first signup.
+
+To see or export the list: Vercel → Storage → fluent-in-tech-db → Open in Neon → Tables →
+`subscribers` (or run `SELECT email, source, created_at FROM subscribers WHERE unsubscribed_at IS NULL`
+in the SQL Editor and download the result as CSV).
+
+To mark someone as unsubscribed: `UPDATE subscribers SET unsubscribed_at = now() WHERE email = '…';`
+
 ## Hosting
 
 Vercel deploys `public/` from the `main` branch (`vercel.json` sets the output directory, trailing

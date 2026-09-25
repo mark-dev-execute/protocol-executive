@@ -83,10 +83,63 @@
     });
   };
 
+  // Mailing-list signup on the guide pages: saved by /api/subscribe.
+  const SIGNUP_SOURCES = {
+    '/guides/': 'guides',
+    '/guides/interview-questions/': 'guide-interview-questions',
+    '/guides/google-interview/': 'guide-google-interview',
+  };
+
+  const initSubscribeForms = () => {
+    document.querySelectorAll('[data-subscribe-form]').forEach((form) => {
+      const status = form.querySelector('.form-status');
+      const button = form.querySelector('button[type="submit"]');
+      const show = (message, error) => {
+        status.className = error ? 'form-status error' : 'form-status';
+        status.textContent = message;
+      };
+      form.elements.t.value = Date.now();
+      form.elements.source.value = SIGNUP_SOURCES[location.pathname.replace(/^\/protocol-executive/, '')] || 'unknown';
+      const returned = new URLSearchParams(location.search).get('subscribed');
+      if (returned === '1') show('Thanks — you’re on the list. New guides will arrive in your inbox.');
+      if (returned === '0') show('That didn’t work. Please check your email address and tick the box.', true);
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          show('Please enter your email address and tick the box.', true);
+          return;
+        }
+        const data = Object.fromEntries(new FormData(form));
+        data.consent = form.elements.consent.checked;
+        button.disabled = true;
+        show('Subscribing…');
+        try {
+          const response = await fetch(form.action, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+          });
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(result.message || 'Something went wrong. Please try again.');
+          track('newsletter_signup', { source: data.source });
+          form.reset();
+          show(result.message || 'Thanks — you’re on the list.');
+        } catch (error) {
+          show(error.message || 'Something went wrong. Please try again.', true);
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
     initMenu();
     initTracking();
     initVideos();
     initBookingForm();
+    initSubscribeForms();
   });
 })();

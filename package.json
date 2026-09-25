@@ -1,0 +1,10 @@
+{
+  "name": "fluent-in-tech",
+  "private": true,
+  "type": "module",
+  "description": "Serverless functions for www.fluentintechcoaching.com. The pages themselves are static and built by build.py.",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2"
+  }
+}

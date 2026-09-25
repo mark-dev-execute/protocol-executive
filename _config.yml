@@ -6,3 +6,7 @@ exclude:
   - README.md
   - public
   - vercel.json
+  - api
+  - package.json
+  - package-lock.json
+  - node_modules
