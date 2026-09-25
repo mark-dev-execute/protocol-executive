@@ -60,7 +60,8 @@ TARGETS = {
 
 # Files the pages reference, copied into public/ for Vercel.
 STATIC = ["styles.css", "app.js", "coach_mark_portrait.jpg", "thumbnail.jpg",
-          "assets/favicon.svg", "assets/og-image.jpg"]
+          "assets/favicon.svg", "assets/og-image.jpg",
+          *(f"assets/logos/strip/{name}.png" for name in ("google", "kpmg", "tufts", "harvard"))]
 
 NAV = [
     ("interview", "Interview", "interview-coaching/"),

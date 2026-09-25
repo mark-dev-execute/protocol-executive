@@ -358,3 +358,4 @@ textarea { min-height: 120px; }
   .logo-group ul { gap: 10px 22px; }
   .logo-group li { font-size: 1rem; }
 }
+.logo-group img { display: block; width: auto; max-width: none; }
