@@ -359,3 +359,22 @@ textarea { min-height: 120px; }
   .logo-group li { font-size: 1rem; }
 }
 .logo-group img { display: block; width: auto; max-width: none; }
+
+/* Resume (About) */
+.resume { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.resume-title, .card .resume-title { font: 500 .75rem/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--lime-ink); margin: 0 0 14px; }
+.resume-list { list-style: none; padding: 0; margin: 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); }
+.resume-list li { display: grid; grid-template-columns: 120px 1fr; gap: 20px; padding: 22px 24px; }
+.resume-list li + li { border-top: 1px solid var(--line); }
+.resume-dates { margin: 3px 0 0; font: 500 .8rem/1.4 var(--mono); color: var(--muted); }
+.resume-list h3 { margin: 0; font-size: 1.08rem; letter-spacing: -.02em; line-height: 1.3; }
+.resume-org { margin: 2px 0 8px; font-weight: 700; font-size: .9rem; color: #394355; }
+.resume-list li p:last-child { margin: 0; color: var(--muted); font-size: .94rem; }
+.resume-side { display: grid; gap: 16px; }
+.resume-side .card p { margin: 0 0 8px; font-size: .94rem; }
+.resume-side .card ul { margin: 0 0 4px; }
+.resume-side .card .btn { margin-top: 14px; }
+@media (max-width: 860px) {
+  .resume { grid-template-columns: 1fr; }
+  .resume-list li { grid-template-columns: 1fr; gap: 4px; padding: 18px; }
+}
