@@ -125,44 +125,95 @@
     group.classList.remove('is-loading');
   };
 
-  // Google Analytics runs only after the visitor accepts the cookie banner. Until then
-  // (and after "Reject") nothing is requested from Google. "Cookie settings" in the
-  // footer reopens the banner. The ID comes from <html data-ga> (SITE.ga_id in build.py).
+  // Google tags run only with consent from the cookie banner: "Analytics" loads Google
+  // Analytics, "Advertising" allows Google Ads cookies (and the Ads tag, if configured).
+  // Until a choice is made, and after "Reject all", nothing is requested from Google.
+  // "Cookie settings" in the footer reopens the banner. IDs come from <html data-ga
+  // data-ads> (SITE.ga_id / SITE.ads_id in build.py).
   const GA_ID = document.documentElement.dataset.ga;
+  const ADS_ID = document.documentElement.dataset.ads;
   const CONSENT_KEY = 'fit-analytics-consent';
+  const NO_CONSENT = { analytics: false, ads: false };
 
-  const loadAnalytics = () => {
-    if (!GA_ID || window.gtag) return;
+  const savedConsent = () => {
+    const raw = store.get(CONSENT_KEY);
+    if (raw === 'granted') return { analytics: true, ads: false }; // choice made before ads were added
+    if (raw === 'denied') return NO_CONSENT;
+    try {
+      const value = JSON.parse(raw);
+      return value && typeof value.analytics === 'boolean' && typeof value.ads === 'boolean' ? value : null;
+    } catch (e) { return null; }
+  };
+
+  const loadGoogle = (consent) => {
+    const ids = [consent.analytics && GA_ID, consent.ads && ADS_ID].filter(Boolean);
+    if (window.gtag || !ids.length) return;
     window.dataLayer = window.dataLayer || [];
     window.gtag = function gtag() { window.dataLayer.push(arguments); }; // gtag.js expects the arguments object
+    const ads = consent.ads ? 'granted' : 'denied';
     window.gtag('consent', 'default', {
-      analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
+      analytics_storage: consent.analytics ? 'granted' : 'denied',
+      ad_storage: ads, ad_user_data: ads, ad_personalization: ads,
     });
     window.gtag('js', new Date());
-    window.gtag('config', GA_ID);
+    ids.forEach((id) => window.gtag('config', id));
     const script = document.createElement('script');
     script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA_ID)}`;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ids[0])}`;
     document.head.appendChild(script);
   };
 
   const initConsent = () => {
     const banner = document.querySelector('[data-consent]');
     if (!GA_ID || !banner) return;
-    const choice = store.get(CONSENT_KEY);
-    if (choice === 'granted') loadAnalytics();
-    else if (choice !== 'denied') banner.hidden = false;
+    const options = banner.querySelector('[data-consent-options]');
+    const chooseButton = banner.querySelector('[data-consent-choose]');
+    const saveButton = banner.querySelector('[data-consent-choice="selected"]');
+    const showOptions = (show) => {
+      options.hidden = !show;
+      chooseButton.hidden = show;
+      saveButton.hidden = !show;
+    };
+
+    const current = savedConsent();
+    if (current) loadGoogle(current);
+    else banner.hidden = false;
+
+    chooseButton.addEventListener('click', () => {
+      const consent = savedConsent() || NO_CONSENT;
+      options.elements.analytics.checked = consent.analytics;
+      options.elements.ads.checked = consent.ads;
+      showOptions(true);
+      options.elements.analytics.focus();
+    });
 
     banner.querySelectorAll('[data-consent-choice]').forEach((button) => button.addEventListener('click', () => {
-      const value = button.dataset.consentChoice;
-      const wasGranted = store.get(CONSENT_KEY) === 'granted';
-      store.set(CONSENT_KEY, value);
+      const kind = button.dataset.consentChoice;
+      const consent = kind === 'all' ? { analytics: true, ads: true }
+        : kind === 'none' ? NO_CONSENT
+          : { analytics: options.elements.analytics.checked, ads: options.elements.ads.checked };
+      const before = savedConsent() || NO_CONSENT;
+      store.set(CONSENT_KEY, JSON.stringify(consent));
       banner.hidden = true;
-      if (value === 'granted') loadAnalytics();
-      else if (wasGranted) location.reload(); // withdrawing consent: reload so Google's tag is no longer on the page
+      showOptions(false);
+      const withdrawn = (before.analytics && !consent.analytics) || (before.ads && !consent.ads);
+      if (withdrawn && window.gtag) { location.reload(); return; } // reload so Google's tag leaves the page
+      if (window.gtag) {
+        const ads = consent.ads ? 'granted' : 'denied';
+        window.gtag('consent', 'update', {
+          analytics_storage: consent.analytics ? 'granted' : 'denied',
+          ad_storage: ads, ad_user_data: ads, ad_personalization: ads,
+        });
+        if (consent.analytics && !before.analytics) window.gtag('config', GA_ID);
+        if (consent.ads && !before.ads && ADS_ID) window.gtag('config', ADS_ID);
+      } else {
+        loadGoogle(consent);
+      }
     }));
+
     document.querySelectorAll('[data-consent-open]').forEach((button) => button.addEventListener('click', () => {
       banner.hidden = false;
+      showOptions(false);
       banner.querySelector('[data-consent-choice]').focus();
     }));
   };

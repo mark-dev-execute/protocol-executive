@@ -45,6 +45,9 @@ SITE = {
     # Google Analytics 4 measurement ID, e.g. "G-XXXXXXXXXX". Empty = no analytics.
     # app.js loads Google's tag only after the visitor accepts the cookie banner.
     "ga_id": "G-PREBSC40FZ",
+    # Google Ads tag ID ("AW-XXXXXXXXXX") for conversion tracking and remarketing. Optional:
+    # conversions can also be imported from Google Analytics. Loads only with advertising consent.
+    "ads_id": "",
 }
 
 # Each target is built from the same sources. "base" is the path prefix the
@@ -169,11 +172,17 @@ REDIRECTS = {
 # Spanish and EU regulators expect; nothing loads from Google until "Accept".
 CONSENT_TEXT = {
     "en": {"label": "Cookie choice", "settings": "Cookie settings",
-           "text": "May this site use Google Analytics cookies to see which pages are useful?",
-           "link": "Privacy policy", "href": "privacy/#analytics", "reject": "Reject", "accept": "Accept"},
+           "text": "May this site use Google cookies for analytics and advertising? They show which pages are useful and help measure and show Fluent in Tech ads on Google.",
+           "link": "Privacy policy", "href": "privacy/#analytics", "reject": "Reject all", "accept": "Accept all",
+           "choose": "Choose", "save": "Save choices",
+           "analytics": "Analytics", "analytics_note": "Google Analytics: which pages and buttons are used",
+           "ads": "Advertising", "ads_note": "Google Ads: measure ad results and show ads to past visitors"},
     "es": {"label": "Preferencias de cookies", "settings": "Configurar cookies",
-           "text": "¿Nos permites usar cookies de Google Analytics para saber qué páginas son útiles?",
-           "link": "Política de privacidad", "href": "es/privacidad/#analitica", "reject": "Rechazar", "accept": "Aceptar"},
+           "text": "¿Nos permites usar cookies de Google para analítica y publicidad? Sirven para saber qué páginas son útiles y para medir y mostrar anuncios de Fluent in Tech en Google.",
+           "link": "Política de privacidad", "href": "es/privacidad/#analitica", "reject": "Rechazar todo", "accept": "Aceptar todo",
+           "choose": "Elegir", "save": "Guardar selección",
+           "analytics": "Analítica", "analytics_note": "Google Analytics: qué páginas y botones se usan",
+           "ads": "Publicidad", "ads_note": "Google Ads: medir los anuncios y mostrarlos a quien ya visitó la web"},
 }
 
 YEAR = datetime.date.today().year
@@ -498,6 +507,8 @@ def render(meta, body, versions):
     sticky = meta.get("sticky", "yes") != "no"
     robots = f'<meta name="robots" content="{meta["robots"]}">' if "robots" in meta else ""
     ga_attr = f' data-ga="{SITE["ga_id"]}"' if SITE["ga_id"] else ""
+    if SITE["ga_id"] and SITE["ads_id"]:
+        ga_attr += f' data-ads="{SITE["ads_id"]}"'
 
     lang = meta["lang"]
     t = STRINGS[lang]
@@ -547,9 +558,16 @@ def render(meta, body, versions):
         consent_banner = (
             f'<div class="consent" role="region" aria-label="{c["label"]}" data-consent hidden>'
             f'<p>{c["text"]} <a href="{url(c["href"])}">{c["link"]}</a></p>'
+            '<fieldset class="consent-options" data-consent-options hidden>'
+            f'<legend class="visually-hidden">{c["label"]}</legend>'
+            f'<label><input type="checkbox" name="analytics"><span><b>{c["analytics"]}</b>{c["analytics_note"]}</span></label>'
+            f'<label><input type="checkbox" name="ads"><span><b>{c["ads"]}</b>{c["ads_note"]}</span></label>'
+            '</fieldset>'
             '<div class="consent-actions">'
-            f'<button class="btn btn-consent" type="button" data-consent-choice="denied">{c["reject"]}</button>'
-            f'<button class="btn btn-consent" type="button" data-consent-choice="granted">{c["accept"]}</button>'
+            f'<button class="btn btn-consent" type="button" data-consent-choice="none">{c["reject"]}</button>'
+            f'<button class="btn btn-consent" type="button" data-consent-choose>{c["choose"]}</button>'
+            f'<button class="btn btn-consent" type="button" data-consent-choice="selected" hidden>{c["save"]}</button>'
+            f'<button class="btn btn-consent" type="button" data-consent-choice="all">{c["accept"]}</button>'
             '</div></div>\n')
 
     return f"""<!doctype html>
@@ -673,13 +691,15 @@ def write_vercel_config():
     ga = bool(SITE["ga_id"])
     csp = "; ".join([
         "default-src 'self'",
-        "script-src 'self'" + (" https://www.googletagmanager.com" if ga else ""),
+        "script-src 'self'" + (" https://*.googletagmanager.com https://www.googleadservices.com"
+                               " https://www.google.com https://googleads.g.doubleclick.net" if ga else ""),
         "style-src 'self' 'unsafe-inline'",
         "font-src 'self'",
-        "img-src 'self' data:" + (" https://*.google-analytics.com https://*.googletagmanager.com" if ga else ""),
+        "img-src 'self' data:" + (" https:" if ga else ""),
         "connect-src 'self'" + (" https://*.google-analytics.com https://*.analytics.google.com"
-                                " https://*.googletagmanager.com" if ga else ""),
-        "frame-src https://www.youtube-nocookie.com",
+                                " https://*.googletagmanager.com https://*.doubleclick.net https://www.google.com"
+                                " https://pagead2.googlesyndication.com https://www.googleadservices.com" if ga else ""),
+        "frame-src https://www.youtube-nocookie.com" + (" https://td.doubleclick.net https://www.googletagmanager.com" if ga else ""),
         "object-src 'none'",
         "base-uri 'self'",
         "form-action 'self'",
