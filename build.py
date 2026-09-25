@@ -44,6 +44,7 @@ NAV = [
     ("communication", "Communication", "professional-communication/"),
     ("leadership", "Leadership", "leadership-coaching/"),
     ("corporate", "Corporate", "corporate/"),
+    ("pricing", "Pricing", "pricing/"),
     ("guides", "Guides", "guides/"),
     ("about", "About", "about/"),
 ]
@@ -62,6 +63,7 @@ FOOTER = [
         ("About Mark", "about/"),
         ("Client results", "results/"),
         ("Guides", "guides/"),
+        ("Pricing", "pricing/"),
         ("Corporate programs", "corporate/"),
         ("Contact", "contact/"),
         ("Book a free call", "book/"),
@@ -287,8 +289,9 @@ def render(meta, body, versions):
 <header class="site-header">
 <nav class="nav wrap" aria-label="Main">
 <a class="brand" href="{url()}"><span class="brand-mark" aria-hidden="true">P</span>Protocol</a>
+<div class="nav-links" id="nav-links">{nav_links}{cta_link(meta, "btn btn-primary menu-cta", "menu-cta")}</div>
+{cta_link(meta, "btn btn-primary nav-cta", "header-cta")}
 <button class="menu" type="button" aria-expanded="false" aria-controls="nav-links" data-menu><span class="visually-hidden">Menu</span><span aria-hidden="true">☰</span></button>
-<div class="nav-links" id="nav-links">{nav_links}{cta_link(meta, "btn btn-primary nav-cta", "header-cta")}</div>
 </nav>
 </header>
 <main id="main">
