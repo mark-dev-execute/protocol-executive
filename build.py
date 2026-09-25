@@ -44,6 +44,7 @@ NAV = [
     ("communication", "Communication", "professional-communication/"),
     ("leadership", "Leadership", "leadership-coaching/"),
     ("corporate", "Corporate", "corporate/"),
+    ("guides", "Guides", "guides/"),
     ("about", "About", "about/"),
 ]
 
@@ -60,6 +61,7 @@ FOOTER = [
     ("Protocol", [
         ("About Mark", "about/"),
         ("Client results", "results/"),
+        ("Guides", "guides/"),
         ("Corporate programs", "corporate/"),
         ("Contact", "contact/"),
         ("Book a free call", "book/"),
@@ -201,6 +203,17 @@ def structured_data(meta, body):
             "offers": {"@type": "Offer", "price": price, "priceCurrency": "USD",
                        "priceSpecification": {"@type": "UnitPriceSpecification", "price": price,
                                               "priceCurrency": "USD", "unitText": "hour"}},
+        })
+    if meta.get("schema") == "article":
+        graph.append({
+            "@type": "Article",
+            "headline": meta.get("headline", meta["title"]),
+            "description": meta["description"],
+            "datePublished": meta["published"],
+            "image": absolute(SITE["og_image"]),
+            "url": absolute(meta["path"]),
+            "publisher": {"@id": org_id},
+            "inLanguage": "en",
         })
     faqs = faq_entries(body)
     if faqs:
