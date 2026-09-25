@@ -10,7 +10,7 @@ import { cleanEmail, json, looksLikeBot, notifyMark, readFields, sameOrigin } fr
 const GUIDES = new Set([
   'communication-program', 'executive-communication-program', 'career-accelerator',
   'executive-interview-program', 'career-coaching-program', 'leadership-program',
-  'executive-edge', 'corporate-programs',
+  'leadership-circle', 'executive-edge', 'corporate-programs',
 ]);
 const THANKS = 'Thanks — Mark will email you to arrange your free consultation.';
 

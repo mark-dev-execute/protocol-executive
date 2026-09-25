@@ -169,6 +169,8 @@ PROGRAM_GUIDES = {
                                 "Eight sessions from career assessment and positioning to leadership, networking and a 90-day plan."),
     "leadership-program": ("Leadership Program for International Tech Leaders", "Leadership",
                            "A 10–12 week journey: identity, presence, influence, cross-cultural leadership and a capstone project."),
+    "leadership-circle": ("The Leadership Circle", "Group cohort · Managers",
+                          "Six biweekly group sessions: presence, managing up, feedback, leading across cultures and peer case clinics."),
     "executive-edge": ("Executive Edge", "Leadership & executive",
                        "Twelve weeks for managers, directors and VPs: presence, influence, panel interviews and senior negotiation."),
     "corporate-programs": ("Corporate Programs & Team Workshops", "For companies",
