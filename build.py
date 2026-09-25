@@ -315,6 +315,7 @@ def render(meta, body, versions):
 <link rel="stylesheet" href="{url("styles.css")}?v={versions["styles.css"]}">
 {structured_data(meta, body)}
 {analytics}<script src="{url("app.js")}?v={versions["app.js"]}" defer></script>
+<script src="/_vercel/insights/script.js" defer></script>
 </head>
 <body{' class="has-sticky"' if sticky else ""}>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -374,6 +375,8 @@ def check_links(pages):
     for out, content in pages.items():
         for ref in re.findall(r'(?:href|src)="(' + re.escape(SITE["base"]) + r'/[^"#?]*)', content):
             rel = ref[len(SITE["base"]) + 1:]
+            if rel.startswith("_vercel/"):  # served by Vercel at runtime (Web Analytics)
+                continue
             target = OUT / rel / "index.html" if rel == "" or rel.endswith("/") else OUT / rel
             if not target.exists():
                 missing.append(f"{out.relative_to(ROOT)} -> {ref}")
