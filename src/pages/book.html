@@ -1,0 +1,71 @@
+---
+path: book/
+title: Book a Free Intro Call | Protocol
+description: Choose a time for a free, no-obligation intro call about interview, communication or leadership coaching. The calendar shows your local time zone.
+cta: Choose a time
+cta_href: calendar
+sticky: no
+---
+<section class="page-hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="tag">Booking</span>
+      <h1>Book your free intro call.</h1>
+      <p>Pick a time that suits you — the calendar shows your local time zone. No payment and no obligation.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="{{calendar}}" target="_blank" rel="noopener" data-track="book-calendar">Choose a time →</a>
+        <a class="btn btn-ghost" href="#message">Prefer to write first?</a>
+      </div>
+      <p class="hero-note"><b>Interview coming up?</b> Mention the date so preparation can be planned around it.</p>
+    </div>
+    {{video}}
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">What happens next</span>
+      <h2>Three simple steps.</h2>
+    </div>
+    <ol class="process">
+      <li><h3>Free intro call</h3><p>Talk through your goal, timeline and the situations you want to handle better. About 30 minutes, or 45 for leadership and executive work.</p></li>
+      <li><h3>Your plan</h3><p>The first session is a diagnostic. You leave with a plan built around your role, goal and deadline.</p></li>
+      <li><h3>Regular sessions</h3><p>One-to-one on Google Meet, with progress reviewed against the plan every month.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section alt" id="message">
+  <div class="wrap split">
+    <div>
+      <span class="eyebrow">Prefer to write first?</span>
+      <h2>Send Mark a message.</h2>
+      <p>Tell Mark what you need to work on. Include your current role, what you’re aiming for and your biggest obstacle right now — you’ll get a reply within 24 hours.</p>
+      <p class="fine">Or email <a class="text-link" href="mailto:{{email}}">{{email}}</a> directly.</p>
+    </div>
+    <form class="form" data-booking-form data-email="{{email}}" novalidate>
+      <div class="form-grid">
+        <label class="field">Name<input name="name" autocomplete="name" required></label>
+        <label class="field">Email<input name="email" type="email" autocomplete="email" required></label>
+        <label class="field">What do you need help with?
+          <select name="service" required>
+            <option value="">Choose one</option>
+            <option>Career &amp; interview coaching</option>
+            <option>Professional communication</option>
+            <option>Leadership &amp; executive coaching</option>
+            <option>Corporate program</option>
+            <option>Not sure yet</option>
+          </select>
+        </label>
+        <label class="field">Interview date (if you have one)<input name="interview-date" type="date"></label>
+        <label class="field full">What’s the situation, and what outcome do you want?
+          <textarea name="message" required placeholder="For example: an engineering manager interview in two weeks, or a presentation to senior stakeholders."></textarea>
+        </label>
+      </div>
+      <p class="notice">Sending opens your email app with this message ready to go.</p>
+      <button class="btn btn-primary" type="submit" data-track="booking-submit">Send message</button>
+      <p class="form-status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>

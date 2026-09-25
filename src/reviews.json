@@ -1,0 +1,50 @@
+{
+  "serhii": {
+    "name": "Serhii",
+    "role": "Software engineer",
+    "platform": "Preply",
+    "text": "Mark is a great English teacher and a kind, friendly person. What I like most is how personalized lessons are. As an IT developer, I wanted to focus on work topics. He doesn’t just teach grammar — he discusses programming concepts and company workflows."
+  },
+  "alexandra": {
+    "name": "Alexandra",
+    "role": "Tech candidate",
+    "platform": "Preply",
+    "text": "After many attempts on Preply, I finally found the right teacher. Mark is an exceptional teacher with deep technical knowledge. He inspires, encourages, and helps me excel in job interviews. Highly recommend to anyone in tech!"
+  },
+  "dani": {
+    "name": "Dani",
+    "role": "Tech professional",
+    "platform": "Preply",
+    "text": "Mark is an awesome teacher. He has it all perfectly structured and organized, with a highly professional method tailored exactly to my needs. On top of that, his technical background is directly aligned with my goals. Highly recommended!"
+  },
+  "carlos": {
+    "name": "Carlos",
+    "role": "Software engineer",
+    "platform": "Preply",
+    "text": "I've been learning with Mark to boost my technical English and get ready for IT job interviews. Lessons are focused on what I need — learning new words and speaking fluently. His tips made me feel confident talking about tech stuff in English!"
+  },
+  "estefania": {
+    "name": "Estefanía",
+    "role": "Tech leader",
+    "platform": "Preply",
+    "text": "Mark prepares classes very thoroughly and has a great method for practicing public speaking, new vocabulary, and mock interviews. He follows up on the agreed lesson plan, but is also flexible enough if you wanna practice something specific."
+  },
+  "aleksandr": {
+    "name": "Aleksandr",
+    "role": "IT professional",
+    "platform": "Preply",
+    "text": "A very structured tutor with plenty of well-chosen materials on topics I care about, especially business, IT, and tech. Lessons stay focused and practical, which makes progress clear and consistent."
+  },
+  "sergei": {
+    "name": "Sergei",
+    "role": "Engineering leader",
+    "platform": "",
+    "text": "I highly recommend this coach! He is a true professional with a unique and well-structured teaching method tailored to individual executive needs."
+  },
+  "anton": {
+    "name": "Anton",
+    "role": "Director of Engineering",
+    "platform": "",
+    "text": "Mark is a great professional. I would strongly recommend him if you want to improve your business English, fine-tune your presentations, or improve your speaking skills."
+  }
+}
