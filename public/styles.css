@@ -82,6 +82,7 @@ h1, h2 { text-wrap: balance; }
 .currency-switch button:focus-visible, .lang-switch:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
 .currency-switch .cur-short { display: none; }
 .money { white-space: nowrap; }
+.money-usd { font-size: .78em; font-weight: inherit; opacity: .72; }
 
 /* Small phones: shorter switch labels so the header stays on one line. */
 @media (max-width: 480px) {

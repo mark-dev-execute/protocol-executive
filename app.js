@@ -1,4 +1,4 @@
-// Fluent in Tech — small progressive enhancements. Every page works without this file.
+// Fluent in Tech: small progressive enhancements. Every page works without this file.
 (() => {
   // Conversion events go to Google Analytics when it is configured (SITE.ga_id in build.py).
   const track = (name, params = {}) => {
@@ -9,20 +9,20 @@
   const SPANISH = document.documentElement.lang === 'es';
   const T = SPANISH ? {
     fields: 'Completa los campos marcados.',
-    mailto: (email) => `Tu aplicación de correo debería abrirse con el mensaje listo para enviar. Si no se abre, escribe directamente a ${email}.`,
+    contactThanks: 'Gracias. Mark te escribirá en un plazo de 24 horas.',
     invalidEmail: 'Introduce un email válido.',
     failed: 'Algo ha fallado. Inténtalo de nuevo.',
     sending: 'Enviando…',
     leadThanks: 'Gracias. Mark te escribirá para organizar tu consulta gratuita.',
-    fxNote: (date, rate) => `Los precios se fijan en dólares estadounidenses. Los importes en euros son aproximados, según el tipo de cambio de referencia del Banco Central Europeo del ${date} (1 USD = ${rate} EUR).`,
+    fxNote: (date, rate) => `Los precios se fijan en dólares estadounidenses y se muestran en euros al tipo de cambio de referencia del Banco Central Europeo del ${date} (1 USD = ${rate} EUR). Los importes en euros están redondeados; tu factura indica el importe exacto.`,
   } : {
     fields: 'Please complete the highlighted fields.',
-    mailto: (email) => `Your email app should open with your message ready to send. If nothing opens, email ${email} directly.`,
+    contactThanks: 'Thanks. Mark will email you within 24 hours.',
     invalidEmail: 'Please enter a valid email address.',
     failed: 'Something went wrong. Please try again.',
     sending: 'Sending…',
-    leadThanks: 'Thanks — Mark will email you to arrange your free consultation.',
-    fxNote: (date, rate) => `Prices are set in US dollars. Euro amounts are approximate, converted at the European Central Bank reference rate of ${date} (1 USD = ${rate} EUR).`,
+    leadThanks: 'Thanks. Mark will email you to arrange your free consultation.',
+    fxNote: (date, rate) => `Prices are set in US dollars and shown in euros at the European Central Bank reference rate of ${date} (1 USD = ${rate} EUR). Euro amounts are rounded; your invoice shows the exact amount.`,
   };
   const LOCALE = SPANISH ? 'es-ES' : 'en-US';
 
@@ -31,20 +31,15 @@
     set: (key, value) => { try { localStorage.setItem(key, value); } catch (e) { /* storage unavailable */ } },
   };
 
-  // Prices are set in USD. The currency switch also shows them in euros, at the
+  // Prices are set in USD and shown euro first, dollars second ("€77 ($90)"), at the
   // European Central Bank rate served by /api/rates (kept in the browser for 12 hours).
-  // Visitors on Spanish pages or in a euro-area time zone see euros first.
+  // The EUR/USD switch shows dollars only; the choice is remembered. Without a rate
+  // (or without JavaScript) prices show in dollars.
   const FX_KEY = 'fit-fx';
   const CURRENCY_KEY = 'fit-currency';
-  const EURO_ZONES = /^(Europe\/(Madrid|Paris|Berlin|Rome|Amsterdam|Brussels|Vienna|Dublin|Lisbon|Helsinki|Athens|Luxembourg|Bratislava|Ljubljana|Tallinn|Riga|Vilnius|Zagreb|Malta|Monaco|Andorra|San_Marino|Vatican|Busingen|Nicosia)|Atlantic\/(Canary|Madeira|Azores)|Africa\/Ceuta|Asia\/Nicosia)$/;
   const HOUR = 3600 * 1000;
 
-  const preferredCurrency = () => {
-    const saved = store.get(CURRENCY_KEY);
-    if (saved === 'USD' || saved === 'EUR') return saved;
-    if (SPANISH) return 'EUR';
-    try { return EURO_ZONES.test(Intl.DateTimeFormat().resolvedOptions().timeZone) ? 'EUR' : 'USD'; } catch (e) { return 'USD'; }
-  };
+  const preferredCurrency = () => (store.get(CURRENCY_KEY) === 'USD' ? 'USD' : 'EUR');
 
   const plausible = (fx) => fx && fx.rate > 0.5 && fx.rate < 1.5 && /^\d{4}-\d{2}-\d{2}$/.test(fx.date);
 
@@ -80,16 +75,15 @@
     };
     document.querySelectorAll('.money[data-usd]').forEach((el) => {
       if (el.dataset.original === undefined) el.dataset.original = el.textContent;
-      if (currency === 'USD') {
-        el.textContent = el.dataset.original;
-        el.removeAttribute('title');
-        return;
-      }
+      el.textContent = currency === 'USD' ? el.dataset.original : '';
+      if (currency === 'USD') return;
       const [low, high] = el.dataset.usd.split('-').map(convert);
       const range = !high ? euros(low, true)
         : SPANISH ? `${euros(low)}–${euros(high, true)}` : `${euros(low, true)}–${euros(high)}`;
-      el.textContent = `≈\u00a0${range}`;
-      el.title = el.dataset.original.trim() + (SPANISH ? '' : ' (USD)');
+      const dollars = document.createElement('span');
+      dollars.className = 'money-usd';
+      dollars.textContent = ` (${el.dataset.original.trim()})`;
+      el.append(range, dollars);
     });
     const date = new Intl.DateTimeFormat(LOCALE, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
       .format(new Date(`${fx.date}T12:00:00Z`));
@@ -254,45 +248,49 @@
     }));
   };
 
-  const SERVICES = {
-    interview: 'Career & interview coaching',
-    communication: 'Professional communication',
-    leadership: 'Leadership & executive coaching',
-    corporate: 'Corporate program',
-    cohort: 'Group or cohort program',
-    business: 'Business coaching',
-  };
-
-  const initBookingForm = () => {
-    const form = document.querySelector('[data-booking-form]');
+  // Message form on the booking page: name and email, saved by /api/lead. A booking
+  // link like book/?service=interview tells Mark which service the visitor looked at.
+  const initContactForm = () => {
+    const form = document.querySelector('[data-contact-form]');
     if (!form) return;
     const status = form.querySelector('.form-status');
-    const preset = SERVICES[new URLSearchParams(location.search).get('service')];
-    if (preset) form.elements.service.value = preset;
+    const button = form.querySelector('button[type="submit"]');
+    const show = (message, error) => {
+      status.className = error ? 'form-status error' : 'form-status';
+      status.textContent = message;
+    };
+    form.elements.t.value = Date.now();
+    form.elements.topic.value = new URLSearchParams(location.search).get('service') || '';
+    const returned = new URLSearchParams(location.search).get('sent');
+    if (returned === '1') show(T.contactThanks);
+    if (returned === '0') show(T.fields, true);
 
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (!form.checkValidity()) {
         form.reportValidity();
-        status.className = 'form-status error';
-        status.textContent = T.fields;
+        show(T.fields, true);
         return;
       }
-      const data = new FormData(form);
-      const email = form.dataset.email;
-      const subject = `Coaching enquiry — ${data.get('service')}`;
-      const body = [
-        `Name: ${data.get('name')}`,
-        `Email: ${data.get('email')}`,
-        `Service: ${data.get('service')}`,
-        `Interview date: ${data.get('interview-date') || 'Not supplied'}`,
-        '',
-        data.get('message'),
-      ].join('\n');
-      track('booking_submitted', { service: data.get('service') });
-      status.className = 'form-status';
-      status.textContent = T.mailto(email);
-      location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      button.disabled = true;
+      show(T.sending);
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(SPANISH ? T.failed : result.message || T.failed);
+        track('contact_request', { topic: form.elements.topic.value || 'none' });
+        form.reset();
+        form.classList.add('is-done');
+        show(T.contactThanks);
+      } catch (error) {
+        show(error.message || T.failed, true);
+      } finally {
+        button.disabled = false;
+      }
     });
   };
 
@@ -314,7 +312,7 @@
       form.elements.t.value = Date.now();
       form.elements.source.value = SIGNUP_SOURCES[location.pathname.replace(/^\/protocol-executive/, '')] || 'unknown';
       const returned = new URLSearchParams(location.search).get('subscribed');
-      if (returned === '1') show('You’re in — new guides will arrive in your inbox.');
+      if (returned === '1') show('You’re in. New guides will arrive in your inbox.');
       if (returned === '0') show('That didn’t work. Please check your email address.', true);
 
       form.addEventListener('submit', async (event) => {
@@ -338,7 +336,7 @@
           track('newsletter_signup', { source: data.source });
           form.reset();
           form.classList.add('is-done');
-          show(result.message || 'You’re in — new guides will arrive in your inbox.');
+          show(result.message || 'You’re in. New guides will arrive in your inbox.');
         } catch (error) {
           show(error.message || T.failed, true);
         } finally {
@@ -414,7 +412,7 @@
     initMenu();
     initTracking();
     initVideos();
-    initBookingForm();
+    initContactForm();
     initSubscribeForms();
     initLeadDialog();
     initCurrency();

@@ -65,7 +65,7 @@ export async function handleSubscribe(request, db) {
   const { fields, form } = parsed;
 
   // Pretend bot submissions worked, so they don't retry.
-  if (looksLikeBot(fields)) return reply(request, form, 200, 'You’re in — new guides will arrive in your inbox.');
+  if (looksLikeBot(fields)) return reply(request, form, 200, 'You’re in. New guides will arrive in your inbox.');
 
   const email = cleanEmail(fields.email);
   if (!email) return reply(request, form, 400, 'Please enter a valid email address.');
@@ -81,7 +81,7 @@ export async function handleSubscribe(request, db) {
     console.error('subscribe: could not save signup', error?.message);
     return reply(request, form, 500, 'Something went wrong. Please try again, or email mark.parfenov@gmail.com.');
   }
-  return reply(request, form, 200, 'You’re in — new guides will arrive in your inbox.');
+  return reply(request, form, 200, 'You’re in. New guides will arrive in your inbox.');
 }
 
 export async function POST(request) {

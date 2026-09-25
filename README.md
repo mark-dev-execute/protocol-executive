@@ -100,11 +100,12 @@ in the SQL Editor and download the result as CSV).
 
 To mark someone as unsubscribed: `UPDATE subscribers SET unsubscribed_at = now() WHERE email = '…';`
 
-Consultation requests: after a program guide download starts, an optional dialog lets the visitor
-leave their email for a free consultation. `api/lead.js` saves these to the `leads` table (email,
-guide, page, date). To see new ones: `SELECT email, guide, page, created_at FROM leads WHERE
-contacted_at IS NULL ORDER BY created_at DESC;` — and after replying,
-`UPDATE leads SET contacted_at = now() WHERE email = '…';`
+Contact and consultation requests: `api/lead.js` saves two kinds of request to the `leads` table
+(email, name, guide, topic, page, date) and emails Mark about each one. The message form on the
+booking page sends a name and email (plus the service from `book/?service=…` as `topic`); the
+optional dialog after a program guide download sends an email and the guide. To see new ones:
+`SELECT name, email, guide, topic, page, created_at FROM leads WHERE contacted_at IS NULL ORDER BY
+created_at DESC;` and after replying, `UPDATE leads SET contacted_at = now() WHERE email = '…';`
 
 New consultation requests are also emailed to Mark through Gmail once these environment variables
 are set in Vercel (Project → Settings → Environment Variables, Production and Preview):

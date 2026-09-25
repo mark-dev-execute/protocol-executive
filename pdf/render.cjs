@@ -21,14 +21,14 @@ const CLOSING = `
 <section class="closing">
   <span class="eyebrow">Next step</span>
   <h2>Start with a free call.</h2>
-  <p>Tell Mark where you are now, where you want to be and what’s in the way. You’ll leave the call with a clear recommendation — whether or not you decide to work together.</p>
+  <p>Tell Mark where you are now, where you want to be and what’s in the way. You’ll leave the call with a clear recommendation, whether or not you decide to work together.</p>
   <div class="contact">
     <div><span>Book</span><a href="https://www.fluentintechcoaching.com/book/">fluentintechcoaching.com/book</a></div>
     <div><span>Email</span><a href="mailto:mark.parfenov@gmail.com">mark.parfenov@gmail.com</a></div>
     <div><span>Pricing</span><a href="https://www.fluentintechcoaching.com/pricing/">fluentintechcoaching.com/pricing</a></div>
   </div>
 </section>
-<p class="fine" style="margin-top:10pt">Prices in USD, correct at the time of publishing — the website shows current prices. Every result depends on your market and the work you put in; no outcome is guaranteed. © Fluent in Tech · Mark Parfenov. All rights reserved.</p>
+<p class="fine" style="margin-top:10pt">Prices in USD, correct at the time of publishing; the website shows current prices. Every result depends on your market and the work you put in; no outcome is guaranteed. © Fluent in Tech · Mark Parfenov. All rights reserved.</p>
 </div>`;
 
 async function main() {

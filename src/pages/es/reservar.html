@@ -13,7 +13,7 @@ sticky: no
     <div>
       <span class="tag">Reservas</span>
       <h1>Reserva tu llamada gratuita.</h1>
-      <p>Elige el horario que mejor te venga — el calendario muestra tu zona horaria. Sin pago y sin compromiso.</p>
+      <p>Elige el horario que mejor te venga: el calendario muestra tu zona horaria. Sin pago y sin compromiso.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="{{calendar}}" target="_blank" rel="noopener" data-track="book-calendar">Elegir horario →</a>
         <a class="btn btn-ghost" href="#mensaje">¿Prefieres escribir antes?</a>
@@ -42,33 +42,20 @@ sticky: no
   <div class="wrap split">
     <div>
       <span class="eyebrow">¿Prefieres escribir antes?</span>
-      <h2>Envía un mensaje a Mark.</h2>
-      <p>Cuéntale a Mark en qué necesitas trabajar. Incluye tu puesto actual, a qué aspiras y cuál es tu mayor obstáculo ahora mismo — recibirás respuesta en 24 horas. Puedes escribir en inglés o en español.</p>
+      <h2>Déjanos tu nombre y tu email.</h2>
+      <p>Mark te escribirá en un plazo de 24 horas para saber qué necesitas y buscar un hueco para tu llamada gratuita.</p>
       <p class="fine">O escribe directamente a <a class="text-link" href="mailto:{{email}}">{{email}}</a>.</p>
     </div>
-    <form class="form" data-booking-form data-email="{{email}}" novalidate>
+    <form class="form" action="{{base}}/api/lead" method="post" data-contact-form novalidate>
       <div class="form-grid">
-        <label class="field">Nombre<input name="name" autocomplete="name" required></label>
-        <label class="field">Email<input name="email" type="email" autocomplete="email" required></label>
-        <label class="field">¿En qué necesitas ayuda?
-          <select name="service" required>
-            <option value="">Elige una opción</option>
-            <option value="Career &amp; interview coaching">Coaching de carrera y entrevistas</option>
-            <option value="Professional communication">Comunicación profesional e inglés de negocios</option>
-            <option value="Leadership &amp; executive coaching">Coaching de liderazgo y ejecutivo</option>
-            <option value="Corporate program">Programa para empresas</option>
-            <option value="Group or cohort program">Programa en grupo</option>
-            <option value="Business coaching">Coaching de negocio</option>
-            <option value="Not sure yet">Aún no lo sé</option>
-          </select>
-        </label>
-        <label class="field">Fecha de la entrevista (si la tienes)<input name="interview-date" type="date"></label>
-        <label class="field full">¿Cuál es la situación y qué resultado buscas?
-          <textarea name="message" required placeholder="Por ejemplo: una entrevista para engineering manager dentro de dos semanas, o una presentación ante la dirección."></textarea>
-        </label>
+        <label class="field">Nombre<input name="name" autocomplete="name" maxlength="100" required></label>
+        <label class="field">Email<input name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" maxlength="254" required></label>
       </div>
-      <p class="notice">Al enviar se abrirá tu aplicación de correo con el mensaje listo — esta web no envía nada. Consulta la <a class="text-link" href="{{base}}/es/privacidad/">política de privacidad</a>.</p>
-      <button class="btn btn-primary" type="submit" data-track="booking-submit">Enviar mensaje</button>
+      <div class="hp" aria-hidden="true"><label>Empresa<input name="company" tabindex="-1" autocomplete="off"></label></div>
+      <input type="hidden" name="topic" value="">
+      <input type="hidden" name="t" value="">
+      <p class="notice">Solo usamos tu nombre y tu email para responderte. Consulta la <a class="text-link" href="{{base}}/es/privacidad/#contacto">política de privacidad</a>.</p>
+      <button class="btn btn-primary" type="submit" data-track="booking-submit">Enviar</button>
       <p class="form-status" aria-live="polite"></p>
     </form>
   </div>

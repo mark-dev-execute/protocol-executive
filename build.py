@@ -273,13 +273,12 @@ PROGRAM_GUIDES_ES = {
 }
 
 
-def pdf_facts(slug):
+def pdf_pages(slug):
     path = ROOT / "assets" / "programs" / f"{slug}.pdf"
     if not path.exists():
         sys.exit(f"Missing program guide {path.relative_to(ROOT)} — run pdf/render.cjs")
     data = path.read_bytes()
-    pages = len(re.findall(rb"/Type\s*/Page[^s]", data))
-    return pages, round(len(data) / 1024)
+    return len(re.findall(rb"/Type\s*/Page[^s]", data))
 
 
 def downloads_html(slugs, lang):
@@ -290,8 +289,8 @@ def downloads_html(slugs, lang):
         title, tag, text = PROGRAM_GUIDES[slug]
         if lang == "es":
             tag, text = PROGRAM_GUIDES_ES[slug]
-        pages, size = pdf_facts(slug)
-        facts = f"PDF en inglés · {pages} páginas · {size} KB" if lang == "es" else f"PDF · {pages} pages · {size} KB"
+        pages = pdf_pages(slug)
+        facts = f"PDF en inglés · {pages} páginas" if lang == "es" else f"PDF · {pages} pages"
         cards.append(
             f'<article class="card download"><span class="tag">{esc(tag)}</span>'
             f'<h3>{esc(title)}</h3><p>{esc(text)}</p>'
@@ -305,12 +304,12 @@ LEAD_TEXT = {
     "en": {"close": "Close", "eyebrow": "Your guide is downloading", "title": "Want to talk it through?",
            "intro": "Leave your email and Mark will get in touch to arrange a free consultation about your goals. Completely optional.",
            "label": "Email address", "placeholder": "you@example.com", "submit": "Request a free consultation",
-           "company": "Company", "privacy": "Your email is only used to arrange the consultation — see the",
+           "company": "Company", "privacy": "Your email is only used to arrange the consultation. See the",
            "privacy_link": "privacy policy", "privacy_href": "privacy/#consultation-requests", "skip": "No thanks, just the guide"},
     "es": {"close": "Cerrar", "eyebrow": "Tu guía se está descargando", "title": "¿Quieres comentarla?",
            "intro": "Déjanos tu email y Mark se pondrá en contacto contigo para organizar una consulta gratuita sobre tus objetivos. Es totalmente opcional.",
            "label": "Correo electrónico", "placeholder": "tu@ejemplo.com", "submit": "Solicitar consulta gratuita",
-           "company": "Empresa", "privacy": "Solo usamos tu email para organizar la consulta — consulta la",
+           "company": "Empresa", "privacy": "Solo usamos tu email para organizar la consulta. Consulta la",
            "privacy_link": "política de privacidad", "privacy_href": "es/privacidad/#solicitudes-de-consulta", "skip": "No, gracias, solo la guía"},
 }
 
@@ -543,10 +542,10 @@ def render(meta, body, versions):
     switches = (
         f'<div class="nav-tools">'
         f'<div class="currency-switch" role="group" aria-label="{t["currency"]}" data-currency hidden>'
-        '<button type="button" data-cur="USD" aria-pressed="true" aria-label="USD">'
-        '<span class="cur-long">USD</span><span class="cur-short">$</span></button>'
-        '<button type="button" data-cur="EUR" aria-pressed="false" aria-label="EUR">'
-        '<span class="cur-long">EUR</span><span class="cur-short">€</span></button></div>'
+        '<button type="button" data-cur="EUR" aria-pressed="true" aria-label="EUR">'
+        '<span class="cur-long">EUR</span><span class="cur-short">€</span></button>'
+        '<button type="button" data-cur="USD" aria-pressed="false" aria-label="USD">'
+        '<span class="cur-long">USD</span><span class="cur-short">$</span></button></div>'
         f'<a class="lang-switch" href="{url(other)}" hreflang="{t["other_lang"]}" lang="{t["other_lang"]}" '
         f'aria-label="{t["other_name"]}" data-track="lang-{t["other_lang"]}">{t["other_label"]}</a></div>'
     )
