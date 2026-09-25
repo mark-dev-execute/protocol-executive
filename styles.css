@@ -97,6 +97,9 @@ h1, h2 { text-wrap: balance; }
 .section.dark { background: var(--ink); color: #fff; }
 .section.dark .eyebrow { color: #9fb0c8; }
 .section.dark .section-head p { color: #c9d1df; }
+.section.dark p { color: #c9d1df; }
+.section.dark .link-row a { color: var(--lime); }
+.section.dark .pullquote p { color: #fff; }
 .section-head { max-width: 720px; margin-bottom: 36px; }
 .section h2 { font-size: clamp(1.9rem, 3.6vw, 2.9rem); letter-spacing: -.05em; line-height: 1.08; margin: 10px 0 12px; }
 .section-head p { color: var(--muted); margin: 0; font-size: 1.02rem; }

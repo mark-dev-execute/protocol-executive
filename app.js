@@ -46,6 +46,8 @@
     communication: 'Professional communication',
     leadership: 'Leadership & executive coaching',
     corporate: 'Corporate program',
+    cohort: 'Group or cohort program',
+    business: 'Business coaching',
   };
 
   const initBookingForm = () => {
