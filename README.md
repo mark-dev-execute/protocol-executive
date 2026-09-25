@@ -33,7 +33,7 @@ Generated output (don't edit by hand; it's overwritten on every build):
 3. Commit the source and the regenerated files together.
 
 In page sources, use `{{base}}` in front of internal links (`href="{{base}}/book/"`), `{{video}}` for
-the hero video, `{{calendar}}`, `{{email}}`, `{{linkedin}}` and `{{preply}}` for the shared links, and
+the hero video, `{{calendar}}`, `{{email}}`, `{{linkedin}}`, `{{preply}}`, `{{italki}}` and `{{superprof}}` for the shared links, and
 `{{> partial-name}}` to include a snippet.
 
 ### Preview locally

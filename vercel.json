@@ -24,6 +24,11 @@
       "permanent": true
     },
     {
+      "source": "/results/",
+      "destination": "/reviews/",
+      "permanent": true
+    },
+    {
       "source": "/syllabus.html",
       "destination": "/professional-communication/",
       "permanent": true

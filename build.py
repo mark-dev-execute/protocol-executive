@@ -30,7 +30,12 @@ SITE = {
     "mark": "F",  # letter in the logo square
     "email": "mark.parfenov@gmail.com",
     "linkedin": "https://www.linkedin.com/in/parfenov-mark/",
-    "preply": "https://preply.com/en/tutor/4745825",
+    # Review platforms. "preply" is the link shown to visitors; "preply_profile"
+    # is the canonical profile URL used in structured data.
+    "preply": "https://preply.in/MARK6EN17817156102?ts=17903702",
+    "preply_profile": "https://preply.com/en/tutor/4745825",
+    "italki": "https://www.italki.com/en/teacher/22622933",
+    "superprof": "https://www.superprof.com/executive-interview-coaching-for-engineers-and-product-leaders-who-want-senior-offers.html",
     "calendar": "https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2eS5Lf6RGvLqM1pWFJ0GsXA_FqX1tS_AikzrszcPdrp7m0Z0qSzaYY6Ge5_8584UGuAfR-041o?gv=true",
     "video_id": "eWnjK1nXoSw",
     "video_embed": "https://www.youtube.com/embed/eWnjK1nXoSw?si=3QB_lXE4hLbpUrE2",
@@ -60,8 +65,8 @@ STATIC = ["styles.css", "app.js", "coach_mark_portrait.jpg", "thumbnail.jpg",
 NAV = [
     ("interview", "Interview", "interview-coaching/"),
     ("communication", "Communication", "professional-communication/"),
-    ("leadership", "Leadership", "leadership-coaching/"),
     ("programs", "Programs", "programs/"),
+    ("reviews", "Reviews", "reviews/"),
     ("pricing", "Pricing", "pricing/"),
     ("guides", "Guides", "guides/"),
     ("about", "About", "about/"),
@@ -79,7 +84,7 @@ FOOTER = [
     ]),
     ("Company", [
         ("About Mark", "about/"),
-        ("Client results", "results/"),
+        ("Reviews", "reviews/"),
         ("Guides", "guides/"),
         ("Pricing", "pricing/"),
         ("Programs", "programs/"),
@@ -95,6 +100,7 @@ REDIRECTS = {
     "par-toolkit.html": "interview-coaching/",
     "executive-presence.html": "executive-coaching/",
     "corporate-training.html": "corporate/",
+    "results/": "reviews/",
     "syllabus.html": "professional-communication/",
 }
 
@@ -177,6 +183,8 @@ def expand(body, source):
         "email": SITE["email"],
         "linkedin": SITE["linkedin"],
         "preply": SITE["preply"],
+        "italki": SITE["italki"],
+        "superprof": SITE["superprof"],
         "video": video_html(),
         "year": str(YEAR),
     }
@@ -202,7 +210,8 @@ def faq_entries(body):
 
 
 def structured_data(meta, body):
-    org_id = absolute() + "#protocol"
+    org_id = absolute() + "#business"
+    profiles = [SITE["linkedin"], SITE["preply_profile"], SITE["italki"], SITE["superprof"]]
     graph = [{
         "@type": "ProfessionalService",
         "@id": org_id,
@@ -211,8 +220,8 @@ def structured_data(meta, body):
         "email": SITE["email"],
         "image": absolute(SITE["og_image"]),
         "description": "Career, communication and leadership coaching for technology professionals.",
-        "founder": {"@type": "Person", "name": "Mark Parfenov", "sameAs": [SITE["linkedin"], SITE["preply"]]},
-        "sameAs": [SITE["linkedin"], SITE["preply"]],
+        "founder": {"@type": "Person", "name": "Mark Parfenov", "sameAs": profiles},
+        "sameAs": profiles,
     }]
     if "offer" in meta:
         name, price = [part.strip() for part in meta["offer"].split("|")]
@@ -323,7 +332,7 @@ def render(meta, body, versions):
 <p>Career, communication and leadership coaching for technology professionals.</p>
 <p><a href="mailto:{SITE["email"]}">{SITE["email"]}</a></p></div>
 {footer_cols}
-<nav aria-label="Elsewhere"><p class="footer-title">Elsewhere</p><ul><li><a href="{SITE["linkedin"]}" target="_blank" rel="noopener">LinkedIn</a></li><li><a href="{SITE["preply"]}" target="_blank" rel="noopener">Reviews on Preply</a></li></ul></nav>
+<nav aria-label="Elsewhere"><p class="footer-title">Elsewhere</p><ul><li><a href="{SITE["linkedin"]}" target="_blank" rel="noopener">LinkedIn</a></li><li><a href="{SITE["preply"]}" target="_blank" rel="noopener">Preply</a></li><li><a href="{SITE["italki"]}" target="_blank" rel="noopener">italki</a></li><li><a href="{SITE["superprof"]}" target="_blank" rel="noopener">Superprof</a></li></ul></nav>
 </div>
 <div class="wrap footer-base"><p>© {YEAR} {SITE["name"]} · Mark Parfenov</p></div>
 </footer>
@@ -341,6 +350,13 @@ def redirect_stub(target):
 <link rel="canonical" href="{absolute(target)}"></head>
 <body><p><a href="{url(target)}">Continue to the new page</a></p></body></html>
 """
+
+
+def redirect_path(old):
+    """File that serves an old URL: "page.html" or "folder/" (-> folder/index.html)."""
+    path = OUT / old / "index.html" if old.endswith("/") else OUT / old
+    path.parent.mkdir(parents=True, exist_ok=True)
+    return path
 
 
 def output_path(route):
@@ -405,7 +421,7 @@ def build_target(name, target, pages, versions):
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(domain_redirect_stub("" if meta["path"] == "404.html" else meta["path"]), encoding="utf-8")
         for old, new in REDIRECTS.items():
-            (OUT / old).write_text(domain_redirect_stub(new), encoding="utf-8")
+            redirect_path(old).write_text(domain_redirect_stub(new), encoding="utf-8")
         (OUT / "sitemap.xml").unlink(missing_ok=True)
         (OUT / "robots.txt").write_text("User-agent: *\nAllow: /\n", encoding="utf-8")
         print(f"{name}: {len(pages)} pages now redirect to {domain_url()}")
@@ -424,7 +440,7 @@ def build_target(name, target, pages, versions):
 
     if OUT == ROOT:  # static hosts without redirect rules get HTML stubs
         for old, new in REDIRECTS.items():
-            (OUT / old).write_text(redirect_stub(new), encoding="utf-8")
+            redirect_path(old).write_text(redirect_stub(new), encoding="utf-8")
 
     (OUT / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n'
