@@ -251,7 +251,8 @@ textarea { min-height: 120px; }
 
 /* Footer */
 .footer { padding: 56px 0 30px; background: var(--ink); color: #d5ddea; }
-.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr .8fr; gap: 32px; }
+.footer-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr .9fr .8fr; gap: 28px; }
+@media (max-width: 1100px) { .footer-grid { grid-template-columns: 1.3fr 1fr 1fr; } }
 .footer p { font-size: .88rem; color: #aeb9cc; margin: .6rem 0; }
 .footer .footer-title { font: 500 .72rem var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #7f8ca3; margin: 0 0 12px; }
 .footer ul { list-style: none; padding: 0; margin: 0; }

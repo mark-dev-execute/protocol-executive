@@ -86,6 +86,7 @@ FOOTER = [
         ("Business English", "business-english/"),
         ("Leadership coaching", "leadership-coaching/"),
         ("Executive coaching", "executive-coaching/"),
+        ("Business coaching", "programs/#business-coaching"),
     ]),
     ("Company", [
         ("About Mark", "about/"),
@@ -96,6 +97,10 @@ FOOTER = [
         ("Corporate programs", "corporate/"),
         ("Contact", "contact/"),
         ("Book a free call", "book/"),
+    ]),
+    ("Policies", [
+        ("Privacy policy", "privacy/"),
+        ("Lesson & cancellation policy", "cancellation-policy/"),
     ]),
 ]
 
@@ -126,6 +131,11 @@ FOOTER_ES = [
         ("Coaching de liderazgo", "leadership-coaching/"),
         ("Coaching ejecutivo", "executive-coaching/"),
         ("Programas para empresas", "corporate/"),
+        ("Coaching de negocio", "programs/#business-coaching"),
+    ]),
+    ("Políticas", [
+        ("Política de privacidad", "es/privacidad/"),
+        ("Política de clases y cancelación", "es/politica-de-cancelacion/"),
     ]),
 ]
 
@@ -133,13 +143,13 @@ STRINGS = {
     "en": {
         "locale": "en_US", "skip": "Skip to content", "menu": "Menu", "main_nav": "Main",
         "cta": "Book a free call", "tagline": "Career, communication and leadership coaching for technology professionals.",
-        "elsewhere": "Elsewhere", "privacy": "Privacy", "cancellation": "Cancellation policy",
+        "elsewhere": "Elsewhere",
         "currency": "Show prices in", "other_lang": "es", "other_label": "ES", "other_name": "Ver esta página en español",
     },
     "es": {
         "locale": "es_ES", "skip": "Saltar al contenido", "menu": "Menú", "main_nav": "Principal",
         "cta": "Reserva una llamada gratuita", "tagline": "Coaching de carrera, comunicación y liderazgo para profesionales de la tecnología.",
-        "elsewhere": "En otras webs", "privacy": "Privacidad", "cancellation": "Política de cancelación",
+        "elsewhere": "En otras webs",
         "currency": "Mostrar precios en", "other_lang": "en", "other_label": "EN", "other_name": "View this page in English",
     },
 }
@@ -521,8 +531,6 @@ def render(meta, body, versions):
         f'<a class="lang-switch" href="{url(other)}" hreflang="{t["other_lang"]}" lang="{t["other_lang"]}" '
         f'aria-label="{t["other_name"]}" data-track="lang-{t["other_lang"]}">{t["other_label"]}</a></div>'
     )
-    privacy_href = "es/privacidad/" if spanish else "privacy/"
-    cancel_href = "es/politica-de-cancelacion/" if spanish else "cancellation-policy/"
     body = wrap_money(body, lang)
 
     return f"""<!doctype html>
@@ -574,7 +582,7 @@ def render(meta, body, versions):
 {footer_cols}
 <nav aria-label="{t["elsewhere"]}"><p class="footer-title">{t["elsewhere"]}</p><ul><li><a href="{SITE["linkedin"]}" target="_blank" rel="noopener">LinkedIn</a></li><li><a href="{SITE["preply"]}" target="_blank" rel="noopener">Preply</a></li><li><a href="{SITE["italki"]}" target="_blank" rel="noopener">italki</a></li><li><a href="{SITE["superprof"]}" target="_blank" rel="noopener">Superprof</a></li></ul></nav>
 </div>
-<div class="wrap footer-base"><p>© {YEAR} {SITE["name"]} · Mark Parfenov · <a href="{url(privacy_href)}">{t["privacy"]}</a> · <a href="{url(cancel_href)}">{t["cancellation"]}</a></p>
+<div class="wrap footer-base"><p>© {YEAR} {SITE["name"]} · Mark Parfenov</p>
 <p class="fx-note" data-fx-note hidden></p></div>
 </footer>
 {cta_link(meta, "sticky-cta btn btn-primary", "sticky-cta") if sticky else ""}
