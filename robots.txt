@@ -1,3 +1,2 @@
 User-agent: *
 Allow: /
-Sitemap: https://mark-dev-execute.github.io/protocol-executive/sitemap.xml

@@ -50,7 +50,7 @@ TARGETS = {
     # Set "redirect" to True once the domain is live: every old GitHub Pages
     # URL then forwards to the same page on the domain.
     "github": {"out": ".", "base": "/protocol-executive",
-               "origin": "https://mark-dev-execute.github.io", "redirect": False},
+               "origin": "https://mark-dev-execute.github.io", "redirect": True},
 }
 
 # Files the pages reference, copied into public/ for Vercel.
