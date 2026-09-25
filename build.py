@@ -301,37 +301,40 @@ def downloads_html(slugs, lang):
     return f'<div class="cards downloads">{"".join(cards)}</div>'
 
 
-# Download dialogs. Clicking "Download PDF" opens a dialog first with an optional email
-# field; the PDF downloads from the dialog either way (app.js). Without JavaScript the
-# link downloads directly. "lead": program guides, the email requests a consultation
-# (api/lead.js). "guide": article guides, the email joins the guide list (api/subscribe.js).
+# Download dialogs. Clicking "Download PDF" opens a dialog: the PDF downloads only after
+# the visitor shares their name and email, or chooses "No thanks" (app.js). Without
+# JavaScript the link downloads directly. "lead": program guides, the details go to
+# api/lead.js as a consultation request. "guide": article guides, the details join the
+# guide list (api/subscribe.js; its DOWNLOAD_CONSENT_TEXT matches the "fine" line here).
 DIALOG_TEXT = {
     ("lead", "en"): {
         "eyebrow": "Free program guide", "api": "api/lead",
-        "intro": "Want to talk it through? Leave your email and Mark will get in touch to arrange a free consultation. It’s optional: the guide downloads either way.",
-        "fine": "Your email is only used to arrange the consultation. See the",
+        "intro": "Share your name and email to get the guide, and Mark will get in touch to offer a free consultation. Or choose “No thanks” to just download it.",
+        "fine": "Your details are only used to arrange the consultation. See the",
         "privacy_href": "privacy/#consultation-requests",
         "done": "Your download has started. Thanks, Mark will email you to arrange your free consultation."},
     ("lead", "es"): {
         "eyebrow": "Guía del programa gratuita", "api": "api/lead",
-        "intro": "¿Quieres comentarla? Déjanos tu email y Mark se pondrá en contacto contigo para organizar una consulta gratuita. Es opcional: la guía se descarga igualmente.",
-        "fine": "Solo usamos tu email para organizar la consulta. Consulta la",
+        "intro": "Déjanos tu nombre y tu email para recibir la guía, y Mark se pondrá en contacto contigo para ofrecerte una consulta gratuita. O elige «No, gracias» para descargarla sin más.",
+        "fine": "Solo usamos tus datos para organizar la consulta. Consulta la",
         "privacy_href": "es/privacidad/#solicitudes-de-consulta",
         "done": "Tu descarga ha empezado. Gracias, Mark te escribirá para organizar tu consulta gratuita."},
     ("guide", "en"): {
         "eyebrow": "Free guide", "api": "api/subscribe",
-        "intro": "Want the next guide too? Leave your email and new guides will come straight to your inbox. It’s optional: the guide downloads either way.",
-        "fine": "If you leave your email, you agree to receive new guides and occasional coaching tips from Fluent in Tech. Unsubscribe any time. See the",
+        "intro": "Share your name and email to get the guide, and new guides will come straight to your inbox. Or choose “No thanks” to just download it.",
+        "fine": "By sharing your email you agree to receive new guides and occasional coaching tips from Fluent in Tech. Unsubscribe any time. See the",
         "privacy_href": "privacy/#email-list",
         "done": "Your download has started. You’re on the list for new guides."},
 }
 DIALOG_UI = {
-    "en": {"close": "Close", "label": "Email address (optional)", "placeholder": "Your email (optional)",
-           "submit": "Download the guide", "skip": "Download without email", "company": "Company",
-           "privacy_link": "privacy policy", "started": "Your download has started."},
-    "es": {"close": "Cerrar", "label": "Correo electrónico (opcional)", "placeholder": "Tu email (opcional)",
-           "submit": "Descargar la guía", "skip": "Descargar sin dejar el email", "company": "Empresa",
-           "privacy_link": "política de privacidad", "started": "Tu descarga ha empezado."},
+    "en": {"close": "Close", "name": "Name", "email": "Email", "name_placeholder": "Your name",
+           "email_placeholder": "you@example.com", "submit": "Download the guide",
+           "skip": "No thanks, just download", "company": "Company", "privacy_link": "privacy policy",
+           "started": "Your download has started."},
+    "es": {"close": "Cerrar", "name": "Nombre", "email": "Email", "name_placeholder": "Tu nombre",
+           "email_placeholder": "tu@ejemplo.com", "submit": "Descargar la guía",
+           "skip": "No, gracias, solo descargar", "company": "Empresa", "privacy_link": "política de privacidad",
+           "started": "Tu descarga ha empezado."},
 }
 
 
@@ -345,11 +348,11 @@ def download_dialog(kind, lang):
     <span class="eyebrow">{t["eyebrow"]}</span>
     <h2 id="{kind}-dialog-title" data-dialog-title></h2>
     <p>{t["intro"]}</p>
-    <div class="subscribe-row">
-      <label class="visually-hidden" for="{kind}-dialog-email">{ui["label"]}</label>
-      <input id="{kind}-dialog-email" name="email" type="email" placeholder="{ui["placeholder"]}" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="go" maxlength="254">
-      <button class="btn btn-primary" type="submit">{ui["submit"]}</button>
+    <div class="dialog-fields">
+      <label class="field">{ui["name"]}<input name="name" placeholder="{ui["name_placeholder"]}" autocomplete="name" maxlength="100" required></label>
+      <label class="field">{ui["email"]}<input name="email" type="email" placeholder="{ui["email_placeholder"]}" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="go" maxlength="254" required></label>
     </div>
+    <button class="btn btn-primary dialog-submit" type="submit">{ui["submit"]}</button>
     <div class="hp" aria-hidden="true"><label>{ui["company"]}<input name="company" tabindex="-1" autocomplete="off"></label></div>
     <input type="hidden" name="guide" value="">
     <input type="hidden" name="t" value="">{source}

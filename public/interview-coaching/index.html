@@ -24,9 +24,9 @@
 <meta name="theme-color" content="#0b1220">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css?v=26a039d7">
+<link rel="stylesheet" href="/styles.css?v=0f499400">
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "ProfessionalService", "@id": "https://www.fluentintechcoaching.com/#business", "name": "Fluent in Tech", "url": "https://www.fluentintechcoaching.com/", "email": "mark.parfenov@gmail.com", "image": "https://www.fluentintechcoaching.com/assets/og-image.jpg", "description": "Career, communication and leadership coaching for technology professionals.", "areaServed": [{"@type": "Country", "name": "Spain"}, {"@type": "City", "name": "Madrid"}, {"@type": "City", "name": "Barcelona"}, "Worldwide (online)"], "availableLanguage": "English", "founder": {"@type": "Person", "name": "Mark Parfenov", "sameAs": ["https://www.linkedin.com/in/parfenov-mark/", "https://preply.com/en/tutor/4745825", "https://www.italki.com/en/teacher/22622933", "https://www.superprof.com/executive-interview-coaching-for-engineers-and-product-leaders-who-want-senior-offers.html"]}, "sameAs": ["https://www.linkedin.com/in/parfenov-mark/", "https://preply.com/en/tutor/4745825", "https://www.italki.com/en/teacher/22622933", "https://www.superprof.com/executive-interview-coaching-for-engineers-and-product-leaders-who-want-senior-offers.html"]}, {"@type": "Service", "name": "Career & Interview Coaching", "serviceType": "Career & Interview Coaching", "provider": {"@id": "https://www.fluentintechcoaching.com/#business"}, "url": "https://www.fluentintechcoaching.com/interview-coaching/", "offers": {"@type": "Offer", "price": "90", "priceCurrency": "USD", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "90", "priceCurrency": "USD", "unitText": "hour"}}}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How many sessions will I need?", "acceptedAnswer": {"@type": "Answer", "text": "It depends on your timeline. With an interview next week, a few focused sessions on your stories plus a mock interview make a real difference. With more time, we can also work through your CV, LinkedIn and search strategy."}}, {"@type": "Question", "name": "What should I send before the first session?", "acceptedAnswer": {"@type": "Answer", "text": "Your CV and the job description, if you have one. Add your interview date when you book so the preparation can be planned around it."}}, {"@type": "Question", "name": "Do you run mock interviews?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, they’re central to the work. Behavioral, technical-communication or panel format, followed by specific feedback on content, language, pacing and confidence."}}, {"@type": "Question", "name": "Can you help with salary negotiation?", "acceptedAnswer": {"@type": "Answer", "text": "Yes: negotiation language, responses to counter-offers and low offers, and professional follow-up emails."}}, {"@type": "Question", "name": "Are sessions online?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, via Google Meet. The booking calendar shows available times in your own time zone."}}]}]}</script>
-<script src="/app.js?v=a45590b0" defer></script>
+<script src="/app.js?v=9e5e85bb" defer></script>
 <script src="/_vercel/insights/script.js" defer></script>
 </head>
 <body class="has-sticky">
@@ -223,18 +223,18 @@
     <button class="dialog-close" type="button" aria-label="Close" data-dialog-close>×</button>
     <span class="eyebrow">Free program guide</span>
     <h2 id="lead-dialog-title" data-dialog-title></h2>
-    <p>Want to talk it through? Leave your email and Mark will get in touch to arrange a free consultation. It’s optional: the guide downloads either way.</p>
-    <div class="subscribe-row">
-      <label class="visually-hidden" for="lead-dialog-email">Email address (optional)</label>
-      <input id="lead-dialog-email" name="email" type="email" placeholder="Your email (optional)" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="go" maxlength="254">
-      <button class="btn btn-primary" type="submit">Download the guide</button>
+    <p>Share your name and email to get the guide, and Mark will get in touch to offer a free consultation. Or choose “No thanks” to just download it.</p>
+    <div class="dialog-fields">
+      <label class="field">Name<input name="name" placeholder="Your name" autocomplete="name" maxlength="100" required></label>
+      <label class="field">Email<input name="email" type="email" placeholder="you@example.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="go" maxlength="254" required></label>
     </div>
+    <button class="btn btn-primary dialog-submit" type="submit">Download the guide</button>
     <div class="hp" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off"></label></div>
     <input type="hidden" name="guide" value="">
     <input type="hidden" name="t" value="">
-    <p class="fine">Your email is only used to arrange the consultation. See the <a class="text-link" href="/privacy/#consultation-requests">privacy policy</a>.</p>
+    <p class="fine">Your details are only used to arrange the consultation. See the <a class="text-link" href="/privacy/#consultation-requests">privacy policy</a>.</p>
     <p class="form-status" aria-live="polite"></p>
-    <button class="text-button" type="button" data-download-skip>Download without email</button>
+    <button class="text-button" type="button" data-download-skip>No thanks, just download</button>
   </form>
 </dialog>
 </main>

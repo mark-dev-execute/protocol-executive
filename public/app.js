@@ -9,6 +9,7 @@
   const SPANISH = document.documentElement.lang === 'es';
   const T = SPANISH ? {
     fields: 'Completa los campos marcados.',
+    nameEmail: 'Escribe tu nombre y un email válido, o elige «No, gracias».',
     contactThanks: 'Gracias. Mark te escribirá en un plazo de 24 horas.',
     invalidEmail: 'Introduce un email válido.',
     failed: 'Algo ha fallado. Inténtalo de nuevo.',
@@ -16,6 +17,7 @@
     fxNote: (date, rate) => `Los precios se fijan en dólares estadounidenses y se muestran en euros al tipo de cambio de referencia del Banco Central Europeo del ${date} (1 USD = ${rate} EUR). Los importes en euros están redondeados; tu factura indica el importe exacto.`,
   } : {
     fields: 'Please complete the highlighted fields.',
+    nameEmail: 'Please enter your name and a valid email, or choose “No thanks”.',
     contactThanks: 'Thanks. Mark will email you within 24 hours.',
     invalidEmail: 'Please enter a valid email address.',
     failed: 'Something went wrong. Please try again.',
@@ -344,15 +346,11 @@
     });
   };
 
-  // Guide downloads. "Download PDF" opens a dialog first with an optional email field;
-  // the PDF downloads from the dialog whether or not an email is given. Program guides
-  // (data-dialog="lead") send the email to /api/lead as a consultation request; article
-  // guides (data-dialog="guide") add it to the guide list via /api/subscribe. Once a
-  // visitor has left their email, later downloads in the same visit start straight away.
+  // Guide downloads. "Download PDF" opens a dialog, and the PDF downloads only after
+  // the visitor shares their name and email or chooses "No thanks". Program guides
+  // (data-dialog="lead") send the details to /api/lead as a consultation request;
+  // article guides (data-dialog="guide") add them to the guide list via /api/subscribe.
   // Without JavaScript (or <dialog> support) the link simply downloads the file.
-  const SENT_KEY = (kind) => `fit-download-email-${kind}`;
-  const emailSent = (kind) => { try { return sessionStorage.getItem(SENT_KEY(kind)) === '1'; } catch (e) { return false; } };
-  const markEmailSent = (kind) => { try { sessionStorage.setItem(SENT_KEY(kind), '1'); } catch (e) { /* storage unavailable */ } };
   const EMAIL_RE = /^[^\s@<>()[\],;:"]+@[^\s@<>()[\],;:"]+\.[^\s@<>()[\],;:"]{2,}$/;
 
   const startDownload = (link) => {
@@ -371,7 +369,7 @@
       if (typeof dialog.showModal !== 'function') return;
       const form = dialog.querySelector('form');
       const status = form.querySelector('.form-status');
-      const email = form.elements.email;
+      const { name, email } = form.elements;
       let current = null;
       const show = (message, error) => {
         status.className = error ? 'form-status error' : 'form-status';
@@ -379,7 +377,6 @@
       };
 
       document.querySelectorAll(`a[data-dialog="${kind}"]`).forEach((link) => link.addEventListener('click', (event) => {
-        if (emailSent(kind)) return; // download straight away
         event.preventDefault();
         current = link;
         form.reset();
@@ -390,6 +387,7 @@
         if (form.elements.source) form.elements.source.value = `download-${link.dataset.guide}`;
         form.elements.t.value = Date.now();
         dialog.showModal();
+        name.focus();
         track('download_dialog_open', { guide: link.dataset.guide });
       }));
 
@@ -402,14 +400,12 @@
 
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
-        const value = email.value.trim();
-        if (value && !EMAIL_RE.test(value)) {
-          show(T.invalidEmail, true);
-          email.focus();
+        if (!name.value.trim() || !EMAIL_RE.test(email.value.trim())) {
+          show(T.nameEmail, true);
+          (name.value.trim() ? email : name).focus();
           return;
         }
         if (current) startDownload(current); // start right away, while the click still counts as a user action
-        if (!value) { dialog.close(); return; }
         form.classList.add('is-done');
         show(form.dataset.started);
         try {
@@ -419,7 +415,6 @@
             body: JSON.stringify(Object.fromEntries(new FormData(form))),
           });
           if (!response.ok) throw new Error('not saved');
-          markEmailSent(kind);
           track(kind === 'lead' ? 'consultation_request' : 'newsletter_signup', { guide: form.elements.guide.value });
           show(form.dataset.done);
         } catch (error) {

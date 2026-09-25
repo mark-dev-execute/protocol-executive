@@ -1,5 +1,6 @@
 // POST /api/lead — records a request for Mark to get in touch. Two forms use it:
-//   - after a program guide download: email only, plus the guide (optional for visitors)
+//   - the form shown before a program guide downloads: name, email and the guide
+//     (visitors can also skip it with "No thanks" and download without sending anything)
 //   - the message form on the booking page: name and email
 // Requests are stored in the "leads" table of the Neon Postgres database, and Mark is
 // emailed about each one (see notifyMark in _shared.js).
@@ -66,7 +67,8 @@ export async function handleLead(request, db, notify = notifyMark) {
   const parsed = await readFields(request);
   if (!parsed) return json(400, 'Bad request.');
   const { fields, form } = parsed;
-  const isMessage = 'name' in fields; // the booking-page form always sends a name field
+  const guide = GUIDES.has(fields.guide) ? fields.guide : null;
+  const isMessage = !guide; // no guide: the booking-page message form
   const thanks = isMessage ? THANKS_MESSAGE : THANKS;
 
   if (looksLikeBot(fields)) return reply(request, form, 200, thanks);
@@ -74,8 +76,7 @@ export async function handleLead(request, db, notify = notifyMark) {
   const email = cleanEmail(fields.email);
   if (!email) return reply(request, form, 400, 'Please enter a valid email address.');
   const name = cleanName(fields.name);
-  if (isMessage && !name) return reply(request, form, 400, 'Please enter your name.');
-  const guide = GUIDES.has(fields.guide) ? fields.guide : null;
+  if ('name' in fields && !name) return reply(request, form, 400, 'Please enter your name.');
   const topic = TOPICS.has(fields.topic) ? fields.topic : null;
   const referer = request.headers.get('referer');
   const page = referer ? new URL(referer, request.url).pathname.slice(0, 200) : null;
@@ -87,9 +88,10 @@ export async function handleLead(request, db, notify = notifyMark) {
     return reply(request, form, 500, 'Something went wrong. Please email mark.parfenov@gmail.com instead.');
   }
   const pageUrl = page ? `https://www.fluentintechcoaching.com${page}` : 'unknown';
-  await notify(isMessage ? `New message request: ${name} <${email}>` : `New consultation request: ${email}`, [
+  const who = name ? `${name} <${email}>` : email;
+  await notify(isMessage ? `New message request: ${who}` : `New consultation request: ${who}`, [
     isMessage ? 'Someone left their name and email on the booking page.'
-      : 'Someone asked for a free consultation after downloading a program guide.',
+      : 'Someone downloaded a program guide and left their name and email for a free consultation.',
     '',
     ...(name ? [`Name: ${name}`] : []),
     `Email: ${email}`,

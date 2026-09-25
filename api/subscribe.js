@@ -13,8 +13,11 @@ import { cleanEmail, json, looksLikeBot, readFields, sameOrigin } from './_share
 export const CONSENT_TEXT =
   'By subscribing you agree to receive new guides and occasional coaching tips from Fluent in Tech. Unsubscribe any time.';
 
-// Signups from the optional email field shown before an article guide PDF downloads.
+// Signups from the form shown before an article guide PDF downloads (name and email),
+// with the wording shown in that form (build.py DIALOG_TEXT) as the consent record.
 const DOWNLOAD_SOURCES = ['download-interview-questions', 'download-google-interview'];
+export const DOWNLOAD_CONSENT_TEXT =
+  'By sharing your email you agree to receive new guides and occasional coaching tips from Fluent in Tech. Unsubscribe any time.';
 const SOURCES = {
   '/guides/': 'guides',
   '/guides/interview-questions/': 'guide-interview-questions',
@@ -25,25 +28,29 @@ let schemaReady = null;
 
 function database() {
   const sql = neon(process.env.DATABASE_URL);
-  schemaReady ??= sql`
-    CREATE TABLE IF NOT EXISTS subscribers (
-      id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-      email text NOT NULL UNIQUE,
-      source text,
-      consent_text text NOT NULL,
-      consented_at timestamptz NOT NULL DEFAULT now(),
-      created_at timestamptz NOT NULL DEFAULT now(),
-      unsubscribed_at timestamptz
-    )`.catch((error) => { schemaReady = null; throw error; });
+  schemaReady ??= (async () => {
+    await sql`
+      CREATE TABLE IF NOT EXISTS subscribers (
+        id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        email text NOT NULL UNIQUE,
+        source text,
+        consent_text text NOT NULL,
+        consented_at timestamptz NOT NULL DEFAULT now(),
+        created_at timestamptz NOT NULL DEFAULT now(),
+        unsubscribed_at timestamptz
+      )`;
+    await sql`ALTER TABLE subscribers ADD COLUMN IF NOT EXISTS name text`;
+  })().catch((error) => { schemaReady = null; throw error; });
   return {
-    async save({ email, source }) {
+    async save({ email, source, name = null, consent = CONSENT_TEXT }) {
       await schemaReady;
       // A returning subscriber re-consents, so clear any earlier unsubscribe.
       await sql`
-        INSERT INTO subscribers (email, source, consent_text)
-        VALUES (${email}, ${source}, ${CONSENT_TEXT})
+        INSERT INTO subscribers (email, source, consent_text, name)
+        VALUES (${email}, ${source}, ${consent}, ${name})
         ON CONFLICT (email) DO UPDATE
-          SET consent_text = EXCLUDED.consent_text, consented_at = now(), unsubscribed_at = NULL`;
+          SET consent_text = EXCLUDED.consent_text, consented_at = now(), unsubscribed_at = NULL,
+              name = COALESCE(EXCLUDED.name, subscribers.name)`;
     },
   };
 }
@@ -78,7 +85,10 @@ export async function handleSubscribe(request, db) {
     : (referer && SOURCES[new URL(referer, request.url).pathname]) || 'unknown';
 
   try {
-    await db.save({ email, source });
+    const fromDownload = DOWNLOAD_SOURCES.includes(source);
+    const name = String(fields.name || '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 100) || null;
+    if (fromDownload && !name) return reply(request, form, 400, 'Please enter your name.');
+    await db.save({ email, source, name, consent: fromDownload ? DOWNLOAD_CONSENT_TEXT : CONSENT_TEXT });
   } catch (error) {
     console.error('subscribe: could not save signup', error?.message);
     return reply(request, form, 500, 'Something went wrong. Please try again, or email mark.parfenov@gmail.com.');

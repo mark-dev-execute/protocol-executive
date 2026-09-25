@@ -514,3 +514,7 @@ textarea { min-height: 120px; }
 .btn-outline { border-color: var(--ink); color: var(--ink); background: transparent; }
 .btn-outline:hover { background: var(--ink); color: #fff; }
 @media print { .final::after { content: "Book a free call: fluentintechcoaching.com/book"; display: block; margin-top: 10px; font: 700 1rem var(--sans); } }
+.dialog-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dialog-submit { width: 100%; }
+.lead-form.is-done .dialog-fields, .lead-form.is-done .dialog-submit { display: none; }
+@media (max-width: 560px) { .dialog-fields { grid-template-columns: 1fr; } }
