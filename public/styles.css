@@ -456,3 +456,18 @@ textarea { min-height: 120px; }
 .city-list b { font-size: 1.05rem; letter-spacing: -.02em; }
 .city-list span { font: 500 .74rem var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; text-align: right; }
 .section.spain { background: var(--soft-lime); }
+
+/* Cookie banner (Google Analytics consent) */
+.consent { position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 40; max-width: 720px; margin: 0 auto; display: flex; align-items: center; gap: 18px; padding: 16px 18px; background: var(--ink); color: #e3e8f1; border: 1px solid #33425c; border-radius: 16px; box-shadow: 0 16px 40px #0b122066; }
+.consent[hidden] { display: none; }
+.consent p { margin: 0; font-size: .88rem; line-height: 1.5; }
+.consent a { color: var(--lime); }
+.consent-actions { display: flex; gap: 8px; flex: none; }
+.btn-consent { background: #fff; color: var(--ink); min-height: 44px; padding: 0 18px; }
+.btn-consent:hover { background: var(--lime); }
+.link-button { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.link-button:hover { color: var(--lime); }
+@media (max-width: 560px) {
+  .consent { flex-direction: column; align-items: stretch; left: 12px; right: 12px; bottom: 12px; }
+  .consent-actions .btn { flex: 1; }
+}

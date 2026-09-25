@@ -65,8 +65,10 @@ cd .. && python3 -m http.server 8000
 
 ## Configuration (`build.py`)
 
-- `SITE`: brand name, contact links, calendar, video and `ga_id` (Google Analytics 4 measurement ID;
-  when set, every page sends `cta_click`, `calendar_open`, `video_play` and `booking_submitted`).
+- `SITE`: brand name, contact links, calendar, video and `ga_id` (Google Analytics 4 measurement ID).
+  With `ga_id` set, every page shows a cookie banner; Google's tag loads only after "Accept" (EU/Spain
+  consent rules), and then sends `cta_click`, `calendar_open`, `video_play`, `booking_submitted`,
+  `consultation_request` and `currency_switch` events. "Cookie settings" in the footer reopens the banner.
 - `TARGETS`: where the site is published. `vercel` builds `public/` for the custom domain;
   `github` builds the GitHub Pages copy. Set the GitHub target's `redirect` to `True` once the domain
   is live, and every old GitHub Pages URL forwards to the same page on the domain.

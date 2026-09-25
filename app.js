@@ -125,6 +125,48 @@
     group.classList.remove('is-loading');
   };
 
+  // Google Analytics runs only after the visitor accepts the cookie banner. Until then
+  // (and after "Reject") nothing is requested from Google. "Cookie settings" in the
+  // footer reopens the banner. The ID comes from <html data-ga> (SITE.ga_id in build.py).
+  const GA_ID = document.documentElement.dataset.ga;
+  const CONSENT_KEY = 'fit-analytics-consent';
+
+  const loadAnalytics = () => {
+    if (!GA_ID || window.gtag) return;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function gtag() { window.dataLayer.push(arguments); }; // gtag.js expects the arguments object
+    window.gtag('consent', 'default', {
+      analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
+    });
+    window.gtag('js', new Date());
+    window.gtag('config', GA_ID);
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA_ID)}`;
+    document.head.appendChild(script);
+  };
+
+  const initConsent = () => {
+    const banner = document.querySelector('[data-consent]');
+    if (!GA_ID || !banner) return;
+    const choice = store.get(CONSENT_KEY);
+    if (choice === 'granted') loadAnalytics();
+    else if (choice !== 'denied') banner.hidden = false;
+
+    banner.querySelectorAll('[data-consent-choice]').forEach((button) => button.addEventListener('click', () => {
+      const value = button.dataset.consentChoice;
+      const wasGranted = store.get(CONSENT_KEY) === 'granted';
+      store.set(CONSENT_KEY, value);
+      banner.hidden = true;
+      if (value === 'granted') loadAnalytics();
+      else if (wasGranted) location.reload(); // withdrawing consent: reload so Google's tag is no longer on the page
+    }));
+    document.querySelectorAll('[data-consent-open]').forEach((button) => button.addEventListener('click', () => {
+      banner.hidden = false;
+      banner.querySelector('[data-consent-choice]').focus();
+    }));
+  };
+
   const initMenu = () => {
     const button = document.querySelector('[data-menu]');
     const links = document.getElementById('nav-links');
@@ -325,5 +367,6 @@
     initSubscribeForms();
     initLeadDialog();
     initCurrency();
+    initConsent();
   });
 })();
