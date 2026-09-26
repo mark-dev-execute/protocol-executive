@@ -1,0 +1,102 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>A · Editorial & authoritative</title><style>
+@font-face{font-family:Manrope;font-weight:200 800;font-display:swap;src:url(assets/manrope-latin-wght-normal.woff2) format('woff2')}
+@font-face{font-family:"DM Mono";font-weight:400;src:url(assets/dm-mono-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:"DM Mono";font-weight:500;src:url(assets/dm-mono-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:Fraunces;font-weight:100 900;font-display:swap;src:url(assets/fraunces-latin-full-normal.woff2) format('woff2')}
+*{box-sizing:border-box} .brand,.btn{white-space:nowrap} img{max-width:100%;display:block} a{color:inherit}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+:root{--paper:#F5F1E8;--sheet:#FFFCF6;--ink:#111;--muted:#5B564E;--rule:#C9C2B4;--accent:#9E1B1B}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.65 Manrope,system-ui,sans-serif}
+.wrap{width:min(1180px,100% - 40px);margin:0 auto}
+.serif{font-family:Fraunces,Georgia,serif;font-optical-sizing:auto}
+.mast{border-bottom:3px solid var(--ink)}
+.mast .wrap{display:flex;align-items:center;gap:28px;padding:18px 0}
+.brand{font:600 1.55rem/1 Fraunces,Georgia,serif;letter-spacing:-.02em;text-decoration:none;margin-right:auto}
+.mast nav{display:flex;gap:22px;font-size:.92rem}
+.mast nav a{text-decoration:none}
+.mast nav a:hover{text-decoration:underline;text-underline-offset:4px}
+.btn{display:inline-flex;align-items:center;min-height:46px;padding:0 20px;font-weight:700;font-size:.95rem;text-decoration:none;border:1.5px solid var(--ink)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-line{background:transparent}
+.kicker{font:500 .74rem/1.4 "DM Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--rule)}
+.hero-grid{display:grid;grid-template-columns:1fr 300px;gap:56px;align-items:end}
+.hero h1{font:500 clamp(2.6rem,6vw,5.1rem)/1.02 Fraunces,Georgia,serif;letter-spacing:-.035em;margin:14px 0 26px}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.lede{font-size:1.2rem;max-width:40em;margin:0 0 26px}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.note{margin:18px 0 0;color:var(--muted);font-size:.95rem}
+.portrait figure{margin:0}
+.portrait img{filter:grayscale(1) contrast(1.05);aspect-ratio:4/5;object-fit:cover;width:100%}
+.portrait figcaption{font-size:.82rem;color:var(--muted);border-top:1px solid var(--ink);margin-top:10px;padding-top:8px}
+.proof{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--rule)}
+.proof p{margin:0;padding:22px 24px 22px 0;display:flex;gap:14px;align-items:baseline}
+.proof p+p{padding-left:24px;border-left:1px solid var(--rule)}
+.proof b{font:500 2.1rem/1 Fraunces,Georgia,serif}
+.proof span{color:var(--muted);font-size:.92rem}
+section.block{padding:72px 0;border-bottom:1px solid var(--rule)}
+.chapter{display:grid;grid-template-columns:120px 1fr;gap:30px}
+.num{font:300 4.6rem/.9 Fraunces,Georgia,serif;color:var(--accent)}
+h2{font:500 clamp(1.9rem,3.4vw,2.8rem)/1.1 Fraunces,Georgia,serif;letter-spacing:-.025em;margin:6px 0 16px;max-width:22ch}
+.contents{display:grid;grid-template-columns:repeat(3,1fr);margin-top:34px;border-top:2px solid var(--ink)}
+.contents article{padding:22px 26px 6px 0}
+.contents article+article{padding-left:26px;border-left:1px solid var(--rule)}
+.contents h3{font:600 1.35rem/1.2 Fraunces,Georgia,serif;margin:8px 0 6px}
+.price{font:500 .85rem "DM Mono",monospace;color:var(--accent)}
+.contents p{margin:10px 0;color:#2b2925;font-size:.97rem}
+.contents ul{padding:0;margin:0 0 14px;list-style:none;font-size:.93rem}
+.contents li{padding:6px 0;border-top:1px dotted var(--rule)}
+.more{font-weight:700;text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--accent)}
+.steps{counter-reset:s;display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:28px;border-top:1px solid var(--ink)}
+.steps li{list-style:none;padding:18px 20px 0 0}
+.steps li+li{padding-left:20px;border-left:1px solid var(--rule)}
+.steps h3{font:600 1.1rem Fraunces,Georgia,serif;margin:0 0 6px}
+.steps p{margin:0;color:var(--muted);font-size:.95rem}
+.steps li::before{counter-increment:s;content:"0" counter(s);font:500 .78rem "DM Mono",monospace;color:var(--accent)}
+.pull{padding:84px 0;border-bottom:1px solid var(--rule);background:var(--sheet)}
+.pull blockquote{margin:0 auto;max-width:880px;text-align:center}
+.pull p{font:400 italic clamp(1.6rem,3vw,2.35rem)/1.3 Fraunces,Georgia,serif;margin:0 0 18px;letter-spacing:-.01em}
+.pull footer{font:500 .78rem "DM Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.guides{display:grid;grid-template-columns:repeat(2,1fr);gap:0;margin-top:26px;border-top:2px solid var(--ink)}
+.guides a{display:block;padding:22px 28px 22px 0;text-decoration:none}
+.guides a+a{padding-left:28px;border-left:1px solid var(--rule)}
+.guides h3{font:600 1.5rem/1.2 Fraunces,Georgia,serif;margin:6px 0 10px}
+.guides a:hover h3{text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:5px}
+.final{background:var(--ink);color:#fff;padding:84px 0}
+.final h2{color:#fff;max-width:18ch;font-size:clamp(2.2rem,4.4vw,3.6rem)}
+.final .btn-primary{border-color:#fff;background:#fff;color:var(--ink)}
+.foot{background:var(--ink);color:#bdb6a8;border-top:1px solid #333;padding:22px 0;font-size:.85rem}
+@media (max-width:860px){
+ .mast nav{display:none}.hero-grid,.chapter{grid-template-columns:1fr}.portrait{max-width:260px}
+ .proof,.contents,.steps,.guides{grid-template-columns:1fr}
+ .proof p+p,.contents article+article,.steps li+li,.guides a+a{padding-left:0;border-left:0;border-top:1px solid var(--rule)}
+ .num{font-size:3rem}.hero{padding-top:36px}
+}
+</style></head><body>
+<header class="mast"><div class="wrap"><a class="brand" href="#">Fluent in Tech</a><nav aria-label="Main"><a href="#">Interview</a><a href="#">Communication</a><a href="#">Programs</a><a href="#">Reviews</a><a href="#">Prices</a><a href="#">Guides</a><a href="#">About</a></nav>
+<a class="btn btn-primary" href="#">Book a free call</a></div></header>
+<main>
+<section class="hero"><div class="wrap hero-grid"><div>
+<span class="kicker">Coaching for tech professionals</span>
+<h1>Get the job, the promotion and the <em>respect</em> your work deserves</h1>
+<p class="lede">I’m Mark. I coach engineers, product managers and other tech professionals one-to-one, online. We work on whatever is coming up for you: an interview next week, a presentation you’re dreading, or the step up into leading people.</p>
+<div class="actions"><a class="btn btn-primary" href="#">Book a free call</a><a class="btn btn-line" href="#">Prepare for an interview</a><a class="btn btn-line" href="#">Improve my communication</a></div>
+<p class="note"><b>The first call is free.</b> Tell me what you’re working on and I’ll suggest a plan.</p></div>
+<div class="portrait"><figure><img src="assets/coach_mark_portrait.jpg" alt="Mark Parfenov" width="300" height="375"><figcaption>Mark Parfenov. Ten years at Google, KPMG and Caterpillar before coaching.</figcaption></figure></div>
+</div></section>
+<div class="wrap proof"><p><b>1,500+</b><span>coaching sessions on Preply, italki and Superprof</span></p><p><b>40+</b><span>five-star reviews from my clients</span></p><p><b>Free</b><span>first call, with no obligation</span></p></div>
+<section class="block"><div class="wrap chapter"><div class="num" aria-hidden="true">01</div><div>
+<span class="kicker">How I can help</span><h2>Three ways to work with me</h2>
+<p>Most people come to me with one urgent problem. Some stay on as their role grows.</p>
+<div class="contents"><article><span class="kicker">Career & interview</span><h3>Interviews and career moves</h3><span class="price">€79/hour</span><p>For an upcoming interview, a job search, a promotion conversation or negotiating an offer.</p><ul><li>Your story and a 2-minute pitch</li><li>Behavioral and technical interviews</li><li>Mock interviews and negotiation</li></ul><a class="more" href="#">See interview coaching →</a></article><article><span class="kicker">Professional communication</span><h3>English and communication at work</h3><span class="price">€39/hour</span><p>Business English and executive communication for the meetings, presentations and conversations your job depends on.</p><ul><li>Meetings, presentations and client calls</li><li>Saying what you mean clearly</li><li>Emails, small talk, other cultures</li></ul><a class="more" href="#">See communication coaching →</a></article><article><span class="kicker">Programs</span><h3>Leadership, groups and teams</h3><span class="price">from €118/hour</span><p>For managers and executives, founders, and companies that want to develop several people at once.</p><ul><li>Leadership and executive coaching</li><li>Small groups and team programs</li><li>Business coaching for founders</li></ul><a class="more" href="#">See programs →</a></article></div></div></div></section>
+<section class="block"><div class="wrap chapter"><div class="num" aria-hidden="true">02</div><div>
+<span class="kicker">How I coach</span><h2>We practice until it feels natural</h2>
+<p>I use your own material: the job description, your project, your slides, the meeting you’re worried about.</p>
+<ol class="steps"><li><h3>One technique</h3><p>I explain one way of structuring what you say, or one piece of language.</p></li><li><h3>Role-play</h3><p>We act out your interview, meeting or conversation as realistically as we can.</p></li><li><h3>Feedback</h3><p>I tell you exactly what worked and what to change.</p></li><li><h3>Second attempt</h3><p>You do it again with the changes. This is where it starts to stick.</p></li></ol></div></div></section>
+<section class="pull"><blockquote><p>“After many attempts on Preply, I finally found the right teacher. Mark is an exceptional teacher with deep technical knowledge. He inspires, encourages, and helps me excel in job interviews.”</p><footer>Alexandra · Tech candidate · Five-star review on Preply</footer></blockquote></section>
+<section class="block"><div class="wrap chapter"><div class="num" aria-hidden="true">03</div><div>
+<span class="kicker">Free guides</span><h2>Start preparing today</h2><div class="guides"><a href="#"><span class="kicker">Free guide · 12-minute read</span><h3>Interview questions and how to answer them with PAR</h3><span class="more">Read the guide →</span></a><a href="#"><span class="kicker">Free guide · 15-minute read</span><h3>Google interview prep: Googleyness and behavioral questions</h3><span class="more">Read the guide →</span></a></div></div></div></section>
+<section class="final"><div class="wrap"><span class="kicker" style="color:#bdb6a8">Ready when you are</span><h2>Tell me what’s coming up, and we’ll prepare for it together</h2><a class="btn btn-primary" href="#">Book a free call</a></div></section>
+</main><footer class="foot"><div class="wrap">© 2026 Fluent in Tech · Mark Parfenov</div></footer></body></html>

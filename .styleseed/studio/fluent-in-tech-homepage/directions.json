@@ -1,0 +1,58 @@
+{
+  "directions": [
+    {
+      "id": "native",
+      "lane": "native",
+      "name": "C · Sharp & structured",
+      "promise": "The current brand made sharper: a confident, grid-led page where the offer, price and proof line up like a well-run meeting.",
+      "grammar": "commerce-conversion",
+      "recipe": "editorial-authority",
+      "palette": "deep-lime-studio (adapted to a light page: ink chrome, lime used only for the primary action)",
+      "composition": "Asymmetric 12-column Swiss grid. Hero headline spans 8 columns with the proof numbers in a ruled column to the right; services become a ruled comparison table (service, who it is for, price, action) instead of three cards.",
+      "navigationChrome": "Thin white header with a hairline rule; ink only in the footer and one proof band. Lime reserved for the single primary button.",
+      "typeAndMaterial": "Manrope 800 display at large size with tight tracking, DM Mono for labels and numbers, 0 to 4px radius, hairline rules instead of card shadows, white and pale grey surfaces.",
+      "assetDirection": "No generated imagery. The portrait and the real client-company logos are the only images.",
+      "motionDirection": "Snap: content appears with no decorative motion; hover underlines and a 120ms button press only.",
+      "signatureMove": "Numbered section index (01, 02, 03) that doubles as the page's table of contents.",
+      "tradeoffs": ["Closest to what exists, so least disruption and cheapest to build", "Can still read as a tech product rather than a person", "Table layout needs care on phones"],
+      "cost": "low",
+      "risk": "low"
+    },
+    {
+      "id": "signature",
+      "lane": "signature",
+      "name": "B · Warm & personal",
+      "promise": "A friendly, human page that feels like meeting Mark: his face and voice first, then the three ways he can help, then booking.",
+      "grammar": "expressive-marketing",
+      "recipe": "calm-consumer",
+      "palette": "warm-clay-commerce",
+      "composition": "Split hero with a large rounded portrait and a handwritten-style caption; proof as a warm band; services as three soft cards with the price as a pill; a 'How a session feels' row with three steps; reviews as large quote cards.",
+      "navigationChrome": "Cream header that blends into the page; dark clay footer. Terracotta primary button.",
+      "typeAndMaterial": "Manrope for everything, generous line height, 18 to 24px radius, soft tonal shadows, cream background, warm brown ink, terracotta accent checked for 4.5:1 text contrast.",
+      "assetDirection": "Portrait only. No stock photos; decorative shapes are CSS.",
+      "motionDirection": "Spring, restrained: cards lift slightly on hover; reduced motion removes lift.",
+      "signatureMove": "A handwritten-style note beside the portrait ('Hi, I'm Mark. The first call is on me') that links to booking.",
+      "tradeoffs": ["Most approachable for people nervous about interviews", "Less 'technical' credibility signal", "Warm palette needs contrast care on the accent"],
+      "cost": "medium",
+      "risk": "medium"
+    },
+    {
+      "id": "experimental",
+      "lane": "experimental",
+      "name": "A · Editorial & authoritative",
+      "promise": "A magazine-like page that reads like expert advice: a big serif headline, a clear argument, proof in pull quotes, and the guides front and centre.",
+      "grammar": "editorial-reading",
+      "recipe": "editorial-authority",
+      "palette": "editorial-ink",
+      "composition": "Masthead-style header, oversized serif headline over a bounded reading column, services as a three-column 'contents' list separated by rules, a large pull quote from a client, and the free guides promoted as featured articles.",
+      "navigationChrome": "Black masthead rule and text links; no filled header. Off-white paper page, black footer.",
+      "typeAndMaterial": "Fraunces serif for display headlines only, Manrope for body and UI, 0 to 2px radius, hairline rules, off-white paper, black ink, one deep red accent for links and the primary button.",
+      "assetDirection": "Portrait in black and white. No generated media.",
+      "motionDirection": "Still: no entrance motion; underlines animate on hover.",
+      "signatureMove": "Section numbers set as large serif numerals in the margin, like chapters.",
+      "tradeoffs": ["Strongest authority and very different from typical coaching sites", "Serif display may feel less 'tech'", "Biggest change from the current site, more work to roll out to all pages"],
+      "cost": "high",
+      "risk": "medium"
+    }
+  ]
+}

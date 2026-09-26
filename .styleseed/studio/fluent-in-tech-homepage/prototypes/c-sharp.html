@@ -1,0 +1,92 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>C · Sharp & structured</title><style>
+@font-face{font-family:Manrope;font-weight:200 800;font-display:swap;src:url(assets/manrope-latin-wght-normal.woff2) format('woff2')}
+@font-face{font-family:"DM Mono";font-weight:400;src:url(assets/dm-mono-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:"DM Mono";font-weight:500;src:url(assets/dm-mono-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:Fraunces;font-weight:100 900;font-display:swap;src:url(assets/fraunces-latin-full-normal.woff2) format('woff2')}
+*{box-sizing:border-box} .brand,.btn{white-space:nowrap} img{max-width:100%;display:block} a{color:inherit}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+:root{--paper:#fff;--grey:#F2F4F7;--ink:#0B1220;--muted:#4A5567;--line:#D7DCE3;--lime:#B8F34A;--lime-ink:#3D6410}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16.5px/1.6 Manrope,system-ui,sans-serif}
+.wrap{width:min(1200px,100% - 40px);margin:0 auto}
+.mono{font:500 .74rem/1.4 "DM Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.top{border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:26px;height:68px}
+.brand{display:flex;gap:10px;align-items:center;font-weight:800;text-decoration:none;margin-right:auto}
+.brand i{width:26px;height:26px;background:var(--ink);color:var(--lime);display:grid;place-items:center;font-style:normal;font-size:.8rem}
+.top nav{display:flex;gap:4px}
+.top nav a{text-decoration:none;font-size:.9rem;padding:8px 10px}
+.top nav a:hover{background:var(--grey)}
+.btn{display:inline-flex;align-items:center;min-height:46px;padding:0 20px;font-weight:800;text-decoration:none;font-size:.93rem;border:1.5px solid var(--ink)}
+.btn-primary{background:var(--lime);border-color:var(--lime);color:var(--ink)}
+.btn-primary:active,.btn:active{transform:translateY(1px)}
+.hero{display:grid;grid-template-columns:repeat(12,1fr);gap:0 24px;padding:56px 0 0}
+.hero .text{grid-column:1/9}
+.hero .side{grid-column:10/13;border-left:1px solid var(--line);padding-left:24px}
+.index{display:flex;gap:18px;margin-bottom:26px}
+.index a{text-decoration:none}
+.index a b{color:var(--ink)}
+.hero h1{font-size:clamp(2.6rem,5.6vw,4.7rem);line-height:.98;letter-spacing:-.055em;font-weight:800;margin:0 0 24px}
+.hero h1 mark{background:linear-gradient(transparent 62%,var(--lime) 62%);color:inherit}
+.hero p.lede{font-size:1.14rem;color:var(--muted);max-width:36em;margin:0 0 26px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.side img{aspect-ratio:1/1;object-fit:cover;width:100%;margin-bottom:14px}
+.side dl{margin:0}.side dt{font:800 1.9rem/1 Manrope;letter-spacing:-.04em}.side dd{margin:4px 0 18px;color:var(--muted);font-size:.9rem}
+.logos{grid-column:1/13;display:flex;gap:36px;align-items:center;border-top:1px solid var(--line);margin-top:48px;padding:20px 0}
+.logos img{height:26px;width:auto;filter:grayscale(1);opacity:.8}.logos span{font-weight:800;color:#5a6474}
+section.s{padding:80px 0;border-top:1px solid var(--line)}
+.shead{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;margin-bottom:30px}
+.shead .n{grid-column:1/3;font:500 .8rem "DM Mono",monospace;color:var(--lime-ink);padding-top:10px}
+.shead div{grid-column:3/11}
+.shead h2{font-size:clamp(2rem,3.4vw,2.9rem);letter-spacing:-.045em;line-height:1.05;margin:0 0 10px}
+.shead p{margin:0;color:var(--muted)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font:500 .72rem "DM Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:0 16px 12px 0;border-bottom:2px solid var(--ink)}
+td{padding:22px 16px 22px 0;border-bottom:1px solid var(--line);vertical-align:top}
+td h3{margin:0 0 4px;font-size:1.2rem;letter-spacing:-.02em}
+td .mono{display:block}
+td.price{font:800 1.3rem Manrope;letter-spacing:-.03em;white-space:nowrap}
+td ul{margin:0;padding-left:18px;color:var(--muted);font-size:.93rem}
+td .btn{white-space:nowrap}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--ink)}
+.grid4 div{padding:20px 20px 0 0}.grid4 div+div{padding-left:20px;border-left:1px solid var(--line)}
+.grid4 b{font:500 .78rem "DM Mono",monospace;color:var(--lime-ink)}
+.grid4 h3{margin:6px 0;font-size:1.1rem}.grid4 p{margin:0;color:var(--muted);font-size:.93rem}
+.quote{background:var(--ink);color:#fff;padding:80px 0}
+.quote .wrap{display:grid;grid-template-columns:repeat(12,1fr);gap:24px}
+.quote blockquote{grid-column:3/12;margin:0}
+.quote p{font-size:clamp(1.5rem,2.6vw,2.1rem);line-height:1.3;letter-spacing:-.03em;font-weight:700;margin:0 0 18px}
+.quote footer{font:500 .78rem "DM Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:#aab4c3}
+.quote .n{grid-column:1/3;font:500 .8rem "DM Mono",monospace;color:var(--lime);padding-top:10px}
+.final{padding:80px 0;border-top:1px solid var(--line)}
+.final .wrap{display:flex;justify-content:space-between;align-items:end;gap:30px;flex-wrap:wrap}
+.final h2{font-size:clamp(2rem,4vw,3.4rem);letter-spacing:-.05em;line-height:1.02;max-width:17ch;margin:0}
+.foot{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:.85rem}
+@media (max-width:900px){
+ .top nav{display:none}.hero .text,.hero .side,.logos{grid-column:1/13}.hero .side{border-left:0;padding-left:0;margin-top:30px;display:grid;grid-template-columns:120px 1fr;gap:18px}
+ .shead .n,.shead div,.quote blockquote,.quote .n{grid-column:1/13}
+ thead{display:none}table,tbody,tr,td{display:block}tr{border-bottom:1px solid var(--line);padding:16px 0}td{border:0;padding:4px 0}
+ .grid4{grid-template-columns:1fr 1fr}.grid4 div:nth-child(3){padding-left:0;border-left:0}
+ .logos{flex-wrap:wrap;gap:18px}
+}
+</style></head><body>
+<header class="top"><div class="wrap"><a class="brand" href="#"><i>F</i>Fluent in Tech</a><nav aria-label="Main"><a href="#">Interview</a><a href="#">Communication</a><a href="#">Programs</a><a href="#">Reviews</a><a href="#">Prices</a><a href="#">Guides</a><a href="#">About</a></nav>
+<a class="btn btn-primary" href="#">Book a free call</a></div></header>
+<main><div class="wrap">
+<section class="hero"><div class="text">
+<nav class="index mono" aria-label="On this page"><a href="#s1"><b>01</b> Services</a><a href="#s2"><b>02</b> Method</a><a href="#s3"><b>03</b> Proof</a></nav>
+<h1>Get the job, the promotion and the <mark>respect</mark> your work deserves</h1>
+<p class="lede">I’m Mark. I coach engineers, product managers and other tech professionals one-to-one, online. We work on whatever is coming up for you: an interview next week, a presentation you’re dreading, or the step up into leading people.</p>
+<div class="actions"><a class="btn btn-primary" href="#">Book a free call</a><a class="btn" href="#">Prepare for an interview</a><a class="btn" href="#">Improve my communication</a></div>
+</div>
+<aside class="side"><img src="assets/coach_mark_portrait.jpg" alt="Mark Parfenov" width="260" height="260"><dl><dt>1,500+</dt><dd>coaching sessions on Preply, italki and Superprof</dd><dt>40+</dt><dd>five-star reviews from my clients</dd><dt>Free</dt><dd>first call, with no obligation</dd></dl></aside>
+<div class="logos"><span class="mono">Worked with</span><img src="assets/tufts.png" alt="Tufts University"><img src="assets/caterpillar.png" alt="Caterpillar"><span class="mono">Clients hired at</span><span>Cloudflare</span><span>Microsoft</span></div>
+</section></div>
+<section class="s" id="s1"><div class="wrap"><div class="shead"><span class="n">01 / Services</span><div><h2>Three ways to work with me</h2><p>Most people come to me with one urgent problem. Some stay on as their role grows.</p></div></div>
+<table><thead><tr><th>Service</th><th>What we work on</th><th>Price</th><th><span class="vh">Action</span></th></tr></thead><tbody><tr><td><span class="mono">Career & interview</span><h3>Interviews and career moves</h3></td><td><ul><li>Your story and a 2-minute pitch</li><li>Behavioral and technical interviews</li><li>Mock interviews and negotiation</li></ul></td><td class="price">€79/hour</td><td><a class="btn btn-primary" href="#">See interview coaching</a></td></tr><tr><td><span class="mono">Professional communication</span><h3>English and communication at work</h3></td><td><ul><li>Meetings, presentations and client calls</li><li>Saying what you mean clearly</li><li>Emails, small talk, other cultures</li></ul></td><td class="price">€39/hour</td><td><a class="btn" href="#">See communication coaching</a></td></tr><tr><td><span class="mono">Programs</span><h3>Leadership, groups and teams</h3></td><td><ul><li>Leadership and executive coaching</li><li>Small groups and team programs</li><li>Business coaching for founders</li></ul></td><td class="price">from €118/hour</td><td><a class="btn" href="#">See programs</a></td></tr></tbody></table></div></section>
+<section class="s" id="s2"><div class="wrap"><div class="shead"><span class="n">02 / Method</span><div><h2>We practice until it feels natural</h2><p>I use your own material: the job description, your project, your slides, the meeting you’re worried about.</p></div></div>
+<div class="grid4"><div><b>01</b><h3>One technique</h3><p>I explain one way of structuring what you say, or one piece of language.</p></div><div><b>02</b><h3>Role-play</h3><p>We act out your interview, meeting or conversation as realistically as we can.</p></div><div><b>03</b><h3>Feedback</h3><p>I tell you exactly what worked and what to change.</p></div><div><b>04</b><h3>Second attempt</h3><p>You do it again with the changes. This is where it starts to stick.</p></div></div></div></section>
+<section class="quote" id="s3"><div class="wrap"><span class="n">03 / Proof</span><blockquote><p>“After many attempts on Preply, I finally found the right teacher. Mark is an exceptional teacher with deep technical knowledge. He inspires, encourages, and helps me excel in job interviews.”</p><footer>Alexandra · Tech candidate · Five-star review on Preply</footer></blockquote></div></section>
+<section class="final"><div class="wrap"><h2>Tell me what’s coming up, and we’ll prepare for it together</h2><a class="btn btn-primary" href="#">Book a free call</a></div></section>
+</main><footer class="foot"><div class="wrap">© 2026 Fluent in Tech · Mark Parfenov</div></footer></body></html>

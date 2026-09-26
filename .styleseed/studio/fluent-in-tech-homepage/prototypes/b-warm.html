@@ -1,0 +1,93 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>B · Warm & personal</title><style>
+@font-face{font-family:Manrope;font-weight:200 800;font-display:swap;src:url(assets/manrope-latin-wght-normal.woff2) format('woff2')}
+@font-face{font-family:"DM Mono";font-weight:400;src:url(assets/dm-mono-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:"DM Mono";font-weight:500;src:url(assets/dm-mono-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:Fraunces;font-weight:100 900;font-display:swap;src:url(assets/fraunces-latin-full-normal.woff2) format('woff2')}
+*{box-sizing:border-box} .brand,.btn{white-space:nowrap} img{max-width:100%;display:block} a{color:inherit}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+:root{--bg:#FFF8F2;--card:#fff;--ink:#2B201B;--muted:#6B5549;--line:#EADBCF;--clay:#B4441F;--clay-dark:#8E3416;--sand:#F6E7D8;--sage:#E3EBDD}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.7 Manrope,system-ui,sans-serif}
+.wrap{width:min(1160px,100% - 40px);margin:0 auto}
+.top .wrap{display:flex;align-items:center;gap:26px;padding:20px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;text-decoration:none;margin-right:auto}
+.brand i{width:34px;height:34px;border-radius:12px;background:var(--clay);color:#fff;display:grid;place-items:center;font-style:normal}
+.top nav{display:flex;gap:20px;font-weight:600;font-size:.93rem;color:var(--muted)}
+.top nav a{text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 24px;border-radius:999px;font-weight:800;text-decoration:none;font-size:.97rem;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(43,32,27,.14)}
+.btn-primary{background:var(--clay);color:#fff}
+.btn-primary:hover{background:var(--clay-dark)}
+.btn-soft{background:var(--card);border:1.5px solid var(--line)}
+.pill{display:inline-block;padding:6px 14px;border-radius:999px;background:var(--sand);font-weight:700;font-size:.82rem;color:var(--clay-dark)}
+.hero{padding:40px 0 70px}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center}
+.hero h1{font-size:clamp(2.4rem,5vw,4rem);line-height:1.05;letter-spacing:-.045em;font-weight:800;margin:18px 0 22px}
+.hero h1 span{color:var(--clay)}
+.hero p{font-size:1.15rem;color:var(--muted);margin:0 0 28px;max-width:34em}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.photo{position:relative}
+.photo img{border-radius:32px;aspect-ratio:1/1;object-fit:cover;width:100%;box-shadow:0 24px 60px rgba(43,32,27,.18)}
+.photo::before{content:"";position:absolute;inset:-18px 40px 40px -18px;background:var(--sage);border-radius:40px;z-index:-1}
+.hello{position:absolute;left:-26px;bottom:26px;background:#fff;border-radius:20px;padding:14px 18px;box-shadow:0 12px 30px rgba(43,32,27,.16);max-width:240px;font-size:.93rem;line-height:1.45;text-decoration:none}
+.hello b{display:block;font-size:1.02rem}
+.hello span{color:var(--clay-dark);font-weight:700}
+.band{background:var(--ink);color:#FFF8F2;border-radius:28px;display:grid;grid-template-columns:repeat(3,1fr);padding:30px 34px;gap:20px}
+.band p{margin:0}.band b{display:block;font-size:2rem;letter-spacing:-.04em;color:#F6C9AE}.band span{color:#E8D9CE;font-size:.95rem}
+section.sec{padding:88px 0}
+.head{max-width:640px;margin-bottom:34px}
+.head h2{font-size:clamp(2rem,3.6vw,2.8rem);letter-spacing:-.04em;line-height:1.1;margin:10px 0 12px}
+.head p{color:var(--muted);margin:0}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px;display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s}
+.card:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(43,32,27,.1)}
+.card.feature{background:#FFF1E6;border-color:#F0CDB3}
+.card h3{font-size:1.3rem;letter-spacing:-.02em;margin:14px 0 8px}
+.card .price{font-weight:800;color:var(--clay-dark)}
+.card p{color:var(--muted);font-size:.97rem}
+.card ul{padding:0;margin:0 0 20px;list-style:none}
+.card li{padding:5px 0 5px 26px;position:relative}
+.card li::before{content:"";position:absolute;left:0;top:13px;width:14px;height:8px;border-left:2.5px solid var(--clay);border-bottom:2.5px solid var(--clay);transform:rotate(-45deg)}
+.card .btn{margin-top:auto;align-self:flex-start}
+.soft{background:var(--sand);border-radius:40px;margin:0 20px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:0;margin:0;list-style:none}
+.steps li{background:#fff;border-radius:22px;padding:24px}
+.steps em{font-style:normal;display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--clay);color:#fff;font-weight:800;margin-bottom:12px}
+.steps h3{margin:0 0 6px;font-size:1.1rem}.steps p{margin:0;color:var(--muted);font-size:.95rem}
+.quote{display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:center;background:#fff;border-radius:32px;padding:44px;border:1px solid var(--line)}
+.quote .mark{font-size:7rem;line-height:.6;color:var(--clay);font-weight:800}
+.quote p{font-size:1.45rem;line-height:1.45;font-weight:600;letter-spacing:-.015em;margin:0 0 14px}
+.quote footer{color:var(--muted);font-size:.93rem}
+.stars{color:#A8561F;letter-spacing:2px}
+.final{background:var(--clay);color:#fff;border-radius:40px;margin:0 20px 20px;padding:80px 0;text-align:center}
+.final h2{font-size:clamp(2rem,4vw,3.2rem);letter-spacing:-.04em;line-height:1.08;max-width:18ch;margin:0 auto 26px}
+.final .btn{background:#fff;color:var(--clay-dark)}
+.foot{padding:26px 0 40px;color:var(--muted);font-size:.88rem;text-align:center}
+@media (max-width:860px){
+ .top nav{display:none}.top .btn{min-height:44px;padding:0 16px;font-size:.88rem}.hero-grid,.cards,.steps,.band,.quote{grid-template-columns:1fr}
+ .hero{padding-top:10px}.photo{max-width:340px;margin:10px auto 0}.hello{left:-8px}
+ .soft,.final{margin-left:10px;margin-right:10px;border-radius:28px}.quote{padding:28px}.quote .mark{font-size:4rem}
+}
+</style></head><body>
+<header class="top"><div class="wrap"><a class="brand" href="#"><i>F</i>Fluent in Tech</a><nav aria-label="Main"><a href="#">Interview</a><a href="#">Communication</a><a href="#">Programs</a><a href="#">Reviews</a><a href="#">Prices</a><a href="#">Guides</a><a href="#">About</a></nav>
+<a class="btn btn-primary" href="#">Book a free call</a></div></header>
+<main>
+<section class="hero"><div class="wrap hero-grid"><div>
+<span class="pill">Coaching for tech professionals</span>
+<h1>Get the job, the promotion and the respect <span>your work deserves</span></h1>
+<p>I’m Mark. I coach engineers, product managers and other tech professionals one-to-one, online. We work on whatever is coming up for you: an interview next week, a presentation you’re dreading, or the step up into leading people.</p>
+<div class="actions"><a class="btn btn-primary" href="#">Book a free call</a><a class="btn btn-soft" href="#">Prepare for an interview</a><a class="btn btn-soft" href="#">Improve my communication</a></div>
+</div>
+<div class="photo"><img src="assets/coach_mark_portrait.jpg" alt="Mark Parfenov" width="480" height="480">
+<a class="hello" href="#"><b>Hi, I’m Mark.</b>The first call is on me. <span>Book a time →</span></a></div>
+</div></section>
+<div class="wrap band"><p><b>1,500+</b><span>coaching sessions on Preply, italki and Superprof</span></p><p><b>40+</b><span>five-star reviews from my clients</span></p><p><b>Free</b><span>first call, with no obligation</span></p></div>
+<section class="sec"><div class="wrap"><div class="head"><span class="pill">How I can help</span><h2>Three ways to work with me</h2>
+<p>Most people come to me with one urgent problem. Some stay on as their role grows.</p></div><div class="cards"><article class="card feature"><span class="pill">Career & interview</span><h3>Interviews and career moves</h3><span class="price">€79/hour</span><p>For an upcoming interview, a job search, a promotion conversation or negotiating an offer.</p><ul><li>Your story and a 2-minute pitch</li><li>Behavioral and technical interviews</li><li>Mock interviews and negotiation</li></ul><a class="btn btn-soft" href="#">See interview coaching</a></article><article class="card"><span class="pill">Professional communication</span><h3>English and communication at work</h3><span class="price">€39/hour</span><p>Business English and executive communication for the meetings, presentations and conversations your job depends on.</p><ul><li>Meetings, presentations and client calls</li><li>Saying what you mean clearly</li><li>Emails, small talk, other cultures</li></ul><a class="btn btn-soft" href="#">See communication coaching</a></article><article class="card"><span class="pill">Programs</span><h3>Leadership, groups and teams</h3><span class="price">from €118/hour</span><p>For managers and executives, founders, and companies that want to develop several people at once.</p><ul><li>Leadership and executive coaching</li><li>Small groups and team programs</li><li>Business coaching for founders</li></ul><a class="btn btn-soft" href="#">See programs</a></article></div></div></section>
+<section class="sec soft"><div class="wrap"><div class="head"><span class="pill">How I coach</span><h2>We practice until it feels natural</h2>
+<p>I use your own material: the job description, your project, your slides, the meeting you’re worried about.</p></div><ol class="steps"><li><em>1</em><h3>One technique</h3><p>I explain one way of structuring what you say, or one piece of language.</p></li><li><em>2</em><h3>Role-play</h3><p>We act out your interview, meeting or conversation as realistically as we can.</p></li><li><em>3</em><h3>Feedback</h3><p>I tell you exactly what worked and what to change.</p></li><li><em>4</em><h3>Second attempt</h3><p>You do it again with the changes. This is where it starts to stick.</p></li></ol></div></section>
+<section class="sec"><div class="wrap"><blockquote class="quote"><span class="mark" aria-hidden="true">“</span><div><p>After many attempts on Preply, I finally found the right teacher. Mark is an exceptional teacher with deep technical knowledge. He inspires, encourages, and helps me excel in job interviews.</p>
+<footer><span class="stars" aria-label="Five stars">★★★★★</span> Alexandra · Tech candidate · Five-star review on Preply</footer></div></blockquote></div></section>
+<section class="final"><div class="wrap"><h2>Tell me what’s coming up, and we’ll prepare for it together</h2><a class="btn" href="#">Book a free call</a></div></section>
+</main><footer class="foot">© 2026 Fluent in Tech · Mark Parfenov</footer></body></html>
