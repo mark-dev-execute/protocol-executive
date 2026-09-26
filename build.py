@@ -297,7 +297,8 @@ def downloads_html(slugs, lang):
             f'<p class="guide-meta">{facts}</p>'
             f'<a class="btn btn-dark" href="{url(f"assets/programs/{slug}.pdf")}" download data-guide="{slug}" '
             f'data-dialog="lead" data-title="{esc(title)}" data-track="download-{slug}">'
-            f'{"Descargar PDF" if lang == "es" else "Download PDF"}</a></article>')
+            f'{"Descargar PDF" if lang == "es" else "Download PDF"}'
+            f'<span class="visually-hidden">: {esc(title)}</span></a></article>')
     return f'<div class="cards downloads">{"".join(cards)}</div>'
 
 
@@ -349,15 +350,15 @@ def download_dialog(kind, lang):
     <h2 id="{kind}-dialog-title" data-dialog-title></h2>
     <p>{t["intro"]}</p>
     <div class="dialog-fields">
-      <label class="field">{ui["name"]}<input name="name" placeholder="{ui["name_placeholder"]}" autocomplete="name" maxlength="100" required></label>
-      <label class="field">{ui["email"]}<input name="email" type="email" placeholder="{ui["email_placeholder"]}" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="go" maxlength="254" required></label>
+      <label class="field">{ui["name"]}<input name="name" placeholder="{ui["name_placeholder"]}" autocomplete="name" maxlength="100" required aria-describedby="{kind}-dialog-status"></label>
+      <label class="field">{ui["email"]}<input name="email" type="email" placeholder="{ui["email_placeholder"]}" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="go" maxlength="254" required aria-describedby="{kind}-dialog-status"></label>
     </div>
     <button class="btn btn-primary dialog-submit" type="submit">{ui["submit"]}</button>
     <div class="hp" aria-hidden="true"><label>{ui["company"]}<input name="company" tabindex="-1" autocomplete="off"></label></div>
     <input type="hidden" name="guide" value="">
     <input type="hidden" name="t" value="">{source}
     <p class="fine">{t["fine"]} <a class="text-link" href="{url(t["privacy_href"])}">{ui["privacy_link"]}</a>.</p>
-    <p class="form-status" aria-live="polite"></p>
+    <p class="form-status" id="{kind}-dialog-status" aria-live="polite"></p>
     <button class="text-button" type="button" data-download-skip>{ui["skip"]}</button>
   </form>
 </dialog>"""
@@ -375,7 +376,8 @@ def guide_download(slug, css="btn btn-dark"):
     if slug not in ARTICLE_GUIDES:
         sys.exit(f"Unknown article guide '{slug}'")
     return (f'<a class="{css}" href="{url(f"assets/guides/{slug}.pdf")}" download data-guide="{slug}" '
-            f'data-dialog="guide" data-title="{esc(ARTICLE_GUIDES[slug])}" data-track="download-{slug}">Download PDF</a>')
+            f'data-dialog="guide" data-title="{esc(ARTICLE_GUIDES[slug])}" data-track="download-{slug}">Download PDF'
+            f'<span class="visually-hidden">: {esc(ARTICLE_GUIDES[slug])}</span></a>')
 
 
 # Prices in page text ("$90", "$1,000–1,200") become <span class="money" data-usd="…">

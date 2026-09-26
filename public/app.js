@@ -216,10 +216,18 @@
     const button = document.querySelector('[data-menu]');
     const links = document.getElementById('nav-links');
     if (!button || !links) return;
-    button.addEventListener('click', () => {
-      const open = links.classList.toggle('open');
+    const setOpen = (open) => {
+      links.classList.toggle('open', open);
       button.setAttribute('aria-expanded', String(open));
+    };
+    button.addEventListener('click', () => setOpen(!links.classList.contains('open')));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && links.classList.contains('open')) { setOpen(false); button.focus(); }
     });
+    document.addEventListener('click', (event) => {
+      if (links.classList.contains('open') && !links.contains(event.target) && !button.contains(event.target)) setOpen(false);
+    });
+    links.addEventListener('click', (event) => { if (event.target.closest('a')) setOpen(false); });
   };
 
   const initTracking = () => {
@@ -382,6 +390,7 @@
         form.reset();
         form.classList.remove('is-done');
         show('');
+        [name, email].forEach((field) => field.removeAttribute('aria-invalid'));
         dialog.querySelector('[data-dialog-title]').textContent = link.dataset.title || '';
         form.elements.guide.value = link.dataset.guide;
         if (form.elements.source) form.elements.source.value = `download-${link.dataset.guide}`;
@@ -400,6 +409,8 @@
 
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
+        name.setAttribute('aria-invalid', String(!name.value.trim()));
+        email.setAttribute('aria-invalid', String(!EMAIL_RE.test(email.value.trim())));
         if (!name.value.trim() || !EMAIL_RE.test(email.value.trim())) {
           show(T.nameEmail, true);
           (name.value.trim() ? email : name).focus();

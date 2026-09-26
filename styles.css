@@ -203,7 +203,7 @@ h1, h2 { text-wrap: balance; }
 .quote p { font-size: .97rem; margin: 0 0 18px; }
 .quote footer { margin-top: auto; font: 500 .72rem/1.5 var(--mono); letter-spacing: .03em; color: #647086; }
 .quote footer b { display: block; color: var(--ink); font: 800 .95rem var(--sans); letter-spacing: 0; margin-bottom: 2px; }
-.stars { color: #c98f12; letter-spacing: 2px; font-size: .9rem; margin-bottom: 10px; }
+.stars { color: #a16207; letter-spacing: 2px; font-size: .9rem; margin-bottom: 10px; }
 .pullquote { margin: 0; max-width: 900px; }
 .pullquote p { font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -.04em; line-height: 1.2; font-weight: 800; margin: 0 0 14px; }
 .pullquote footer { font: 500 .78rem var(--mono); color: #9fb0c8; }
@@ -518,3 +518,11 @@ textarea { min-height: 120px; }
 .dialog-submit { width: 100%; }
 .lead-form.is-done .dialog-fields, .lead-form.is-done .dialog-submit { display: none; }
 @media (max-width: 560px) { .dialog-fields { grid-template-columns: 1fr; } }
+
+/* Touch targets (StyleSeed audit): 44px minimum on phones */
+.link-button { min-height: 44px; display: inline-flex; align-items: center; }
+@media (max-width: 480px) {
+  .brand { min-height: 44px; }
+  .currency-switch button { min-width: 40px; min-height: 40px; }
+}
+input[aria-invalid="true"], input:user-invalid { border-color: #a23b3b; box-shadow: 0 0 0 1px #a23b3b; }

@@ -20,9 +20,9 @@
 <meta name="theme-color" content="#0b1220">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css?v=0f499400">
+<link rel="stylesheet" href="/styles.css?v=9ae49d7d">
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "ProfessionalService", "@id": "https://www.fluentintechcoaching.com/#business", "name": "Fluent in Tech", "url": "https://www.fluentintechcoaching.com/", "email": "mark.parfenov@gmail.com", "image": "https://www.fluentintechcoaching.com/assets/og-image.jpg", "description": "Career, communication and leadership coaching for technology professionals.", "areaServed": [{"@type": "Country", "name": "Spain"}, {"@type": "City", "name": "Madrid"}, {"@type": "City", "name": "Barcelona"}, "Worldwide (online)"], "availableLanguage": "English", "founder": {"@type": "Person", "name": "Mark Parfenov", "sameAs": ["https://www.linkedin.com/in/parfenov-mark/", "https://preply.com/en/tutor/4745825", "https://www.italki.com/en/teacher/22622933", "https://www.superprof.com/executive-interview-coaching-for-engineers-and-product-leaders-who-want-senior-offers.html"]}, "sameAs": ["https://www.linkedin.com/in/parfenov-mark/", "https://preply.com/en/tutor/4745825", "https://www.italki.com/en/teacher/22622933", "https://www.superprof.com/executive-interview-coaching-for-engineers-and-product-leaders-who-want-senior-offers.html"]}, {"@type": "Article", "headline": "Interview Questions and How to Answer Them with the PAR Method", "description": "A practical guide for tech professionals interviewing at international companies: the Hook for \"Tell me about yourself\", PAR stories for behavioral questions, screening questions and the language that costs offers.", "datePublished": "2026-09-25", "image": "https://www.fluentintechcoaching.com/assets/og-image.jpg", "url": "https://www.fluentintechcoaching.com/guides/interview-questions/", "publisher": {"@id": "https://www.fluentintechcoaching.com/#business"}, "inLanguage": "en"}]}</script>
-<script src="/app.js?v=9e5e85bb" defer></script>
+<script src="/app.js?v=f86a71c6" defer></script>
 <script src="/_vercel/insights/script.js" defer></script>
 </head>
 <body class="has-sticky">
@@ -44,7 +44,7 @@
       <h1>Interview questions and how to answer them with PAR.</h1>
       <p>A practical guide for technology professionals interviewing at international companies: how to open with a strong Hook, answer behavioral questions with PAR, and avoid the language habits that quietly cost offers.</p>
       <p class="hero-note"><b>12-minute read</b> · Free · By Mark Parfenov</p>
-      <div class="cta-row"><a class="btn btn-primary" href="/assets/guides/interview-questions.pdf" download data-guide="interview-questions" data-dialog="guide" data-title="Interview questions and how to answer them with PAR" data-track="download-interview-questions">Download PDF</a></div>
+      <div class="cta-row"><a class="btn btn-primary" href="/assets/guides/interview-questions.pdf" download data-guide="interview-questions" data-dialog="guide" data-title="Interview questions and how to answer them with PAR" data-track="download-interview-questions">Download PDF<span class="visually-hidden">: Interview questions and how to answer them with PAR</span></a></div>
     </div>
     <div class="hero-video"><a class="video-embed video-facade" href="https://www.youtube.com/watch?v=eWnjK1nXoSw" data-video="https://www.youtube-nocookie.com/embed/eWnjK1nXoSw" aria-label="Play video: an introduction from Mark"><img src="/thumbnail.jpg" alt="" width="1024" height="576"><span class="play" aria-hidden="true"></span></a></div>
   </div>
@@ -333,8 +333,8 @@
     <h2 id="guide-dialog-title" data-dialog-title></h2>
     <p>Share your name and email to get the guide, and new guides will come straight to your inbox. Or choose “No thanks” to just download it.</p>
     <div class="dialog-fields">
-      <label class="field">Name<input name="name" placeholder="Your name" autocomplete="name" maxlength="100" required></label>
-      <label class="field">Email<input name="email" type="email" placeholder="you@example.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="go" maxlength="254" required></label>
+      <label class="field">Name<input name="name" placeholder="Your name" autocomplete="name" maxlength="100" required aria-describedby="guide-dialog-status"></label>
+      <label class="field">Email<input name="email" type="email" placeholder="you@example.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="go" maxlength="254" required aria-describedby="guide-dialog-status"></label>
     </div>
     <button class="btn btn-primary dialog-submit" type="submit">Download the guide</button>
     <div class="hp" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off"></label></div>
@@ -342,7 +342,7 @@
     <input type="hidden" name="t" value="">
     <input type="hidden" name="source" value="">
     <p class="fine">By sharing your email you agree to receive new guides and occasional coaching tips from Fluent in Tech. Unsubscribe any time. See the <a class="text-link" href="/privacy/#email-list">privacy policy</a>.</p>
-    <p class="form-status" aria-live="polite"></p>
+    <p class="form-status" id="guide-dialog-status" aria-live="polite"></p>
     <button class="text-button" type="button" data-download-skip>No thanks, just download</button>
   </form>
 </dialog>
