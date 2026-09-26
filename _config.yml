@@ -1,6 +1,7 @@
 # GitHub Pages runs Jekyll. The site is pre-built by build.py, so publish the
 # generated HTML as-is and keep the page sources and tooling out of the site.
 exclude:
+  - skills-lock.json
   - src
   - build.py
   - README.md
