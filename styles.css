@@ -491,7 +491,7 @@ textarea { min-height: 120px; }
   .toc ol { columns: 2; column-gap: 28px; }
   .toc li { break-inside: avoid; }
   .site-header, .footer, .sticky-cta, .consent, dialog, .skip-link, .hero-video, #subscribe,
-  .page-hero .btn, .page-hero .cta-row, .final .btn, .final .link-row, .print-hide { display: none !important; }
+  .page-hero .btn, .page-hero .cta-row, .final .link-row, .print-hide { display: none !important; }
   .page-hero { padding: 26px 24px 28px; border-radius: 14px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .page-hero .hero-grid { display: block; }
   .page-hero h1 { font-size: 2.3rem; }
@@ -501,7 +501,7 @@ textarea { min-height: 120px; }
   .article h2 { margin-top: 34px; break-after: avoid; }
   .article h3 { break-after: avoid; }
   .card, .quote, tr, .process li, .phrases tr, .callout, .example, .compare > div { break-inside: avoid; }
-  .final { padding: 22px 24px; border-radius: 14px; margin-top: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .final { break-inside: avoid; padding: 22px 24px; border-radius: 14px; margin-top: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   a { color: inherit; }
   details .faq-a { display: block !important; }
 }
@@ -511,7 +511,8 @@ textarea { min-height: 120px; }
 .card .card-actions .btn { margin-top: 0; }
 .btn-outline { border-color: var(--ink); color: var(--ink); background: transparent; }
 .btn-outline:hover { background: var(--ink); color: #fff; }
-@media print { .final::after { content: "Book a free call: fluentintechcoaching.com/book"; display: block; margin-top: 10px; font: 700 1rem var(--sans); } }
+.cta-callout { margin: 30px 0; }
+.cta-callout .btn { margin-top: 14px; }
 .dialog-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .dialog-submit { width: 100%; }
 .lead-form.is-done .dialog-fields, .lead-form.is-done .dialog-submit { display: none; }
@@ -529,3 +530,9 @@ input[aria-invalid="true"], input:user-invalid { border-color: #a23b3b; box-shad
   .site-header .brand-name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .site-header .brand { min-width: 44px; }
 }
+
+/* A program guide download placed inside its section */
+.program-download { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 16px 0 0; }
+.program-download .btn { margin-top: 0; }
+.program-download .guide-meta { margin: 0; }
+.card > .program-download { margin: 10px 0 0; }

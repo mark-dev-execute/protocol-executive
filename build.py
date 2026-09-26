@@ -304,6 +304,20 @@ def downloads_html(slugs, lang):
     return f'<div class="cards downloads">{"".join(cards)}</div>'
 
 
+def program_download(slug, lang, css="btn btn-outline"):
+    """A single program-guide download button, for placing a guide inside the section it belongs to."""
+    if slug not in PROGRAM_GUIDES:
+        sys.exit(f"Unknown program guide '{slug}'")
+    title = PROGRAM_GUIDES[slug][0]
+    pages = pdf_pages(slug)
+    label, facts = (("Descargar la guía", f"PDF en inglés · {pages} páginas") if lang == "es"
+                    else ("Download the program guide", f"PDF · {pages} pages"))
+    return (f'<p class="program-download"><a class="{css}" href="{url(f"assets/programs/{slug}.pdf")}" download '
+            f'data-guide="{slug}" data-dialog="lead" data-title="{esc(title)}" data-track="download-{slug}">'
+            f'{label}<span class="visually-hidden">: {esc(title)}</span></a>'
+            f'<span class="guide-meta">{esc(title)} · {facts}</span></p>')
+
+
 # Download dialogs. Clicking "Download PDF" opens a dialog: the PDF downloads only after
 # the visitor shares their name and email, or chooses "No thanks" (app.js). Without
 # JavaScript the link downloads directly. "lead": program guides, the details go to
@@ -492,6 +506,9 @@ def expand(body, source, lang="en"):
             return reviews_html([n.strip() for n in arg.split(",")], reviews, lang)
         if name == "downloads":
             return downloads_html([n.strip() for n in arg.split(",")], lang)
+        if name == "program-download":
+            slug, _, css = arg.partition("|")
+            return program_download(slug.strip(), lang, css.strip() or "btn btn-outline")
         if name == "guide-download":
             slug, _, css = arg.partition("|")
             return guide_download(slug.strip(), css.strip() or "btn btn-dark")
