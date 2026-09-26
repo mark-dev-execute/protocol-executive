@@ -91,7 +91,7 @@ export async function handleSubscribe(request, db) {
     await db.save({ email, source, name, consent: fromDownload ? DOWNLOAD_CONSENT_TEXT : CONSENT_TEXT });
   } catch (error) {
     console.error('subscribe: could not save signup', error?.message);
-    return reply(request, form, 500, 'Something went wrong. Please try again, or email mark.parfenov@gmail.com.');
+    return reply(request, form, 500, 'Something went wrong. Please try again, or email me at mark.parfenov@gmail.com.');
   }
   return reply(request, form, 200, 'You’re in. New guides will arrive in your inbox.');
 }

@@ -20,8 +20,8 @@ const CLOSING = `
 <div class="end">
 <section class="closing">
   <span class="eyebrow">Next step</span>
-  <h2>Start with a free call.</h2>
-  <p>Tell Mark where you are now, where you want to be and what’s in the way. You’ll leave the call with a clear recommendation, whether or not you decide to work together.</p>
+  <h2>Start with a free call</h2>
+  <p>Tell me where you are now, where you want to be and what’s in the way. You’ll leave the call with a clear recommendation from me, whether or not we decide to work together.</p>
   <div class="contact">
     <div><span>Book</span><a href="https://www.fluentintechcoaching.com/book/">fluentintechcoaching.com/book</a></div>
     <div><span>Email</span><a href="mailto:mark.parfenov@gmail.com">mark.parfenov@gmail.com</a></div>

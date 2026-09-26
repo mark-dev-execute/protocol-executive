@@ -93,7 +93,7 @@ FOOTER = [
         ("Business coaching", "programs/#business-coaching"),
     ]),
     ("Company", [
-        ("About Mark", "about/"),
+        ("About me", "about/"),
         ("Reviews", "reviews/"),
         ("Guides", "guides/"),
         ("Pricing", "pricing/"),
@@ -105,6 +105,7 @@ FOOTER = [
     ("Policies", [
         ("Privacy policy", "privacy/"),
         ("Lesson & cancellation policy", "cancellation-policy/"),
+        ("Accessibility", "accessibility/"),
     ]),
 ]
 
@@ -115,7 +116,7 @@ NAV_ES = [
     ("communication", "Comunicación", "es/comunicacion-profesional/"),
     ("business-english", "Inglés de negocios", "es/ingles-de-negocios/"),
     ("pricing", "Precios", "es/precios/"),
-    ("about", "Sobre Mark", "es/sobre-mark/"),
+    ("about", "Sobre mí", "es/sobre-mark/"),
 ]
 
 FOOTER_ES = [
@@ -124,7 +125,7 @@ FOOTER_ES = [
         ("Comunicación profesional", "es/comunicacion-profesional/"),
         ("Inglés de negocios", "es/ingles-de-negocios/"),
         ("Precios", "es/precios/"),
-        ("Sobre Mark", "es/sobre-mark/"),
+        ("Sobre mí", "es/sobre-mark/"),
         ("Contacto", "es/contacto/"),
         ("Reserva una llamada gratuita", "es/reservar/"),
     ]),
@@ -140,6 +141,7 @@ FOOTER_ES = [
     ("Políticas", [
         ("Política de privacidad", "es/privacidad/"),
         ("Política de clases y cancelación", "es/politica-de-cancelacion/"),
+        ("Accesibilidad", "es/accesibilidad/"),
     ]),
 ]
 
@@ -172,13 +174,13 @@ REDIRECTS = {
 # Spanish and EU regulators expect; nothing loads from Google until "Accept".
 CONSENT_TEXT = {
     "en": {"label": "Cookie choice", "settings": "Cookie settings",
-           "text": "May this site use Google cookies for analytics and advertising? They show which pages are useful and help measure and show Fluent in Tech ads on Google.",
+           "text": "May I use Google cookies for analytics and advertising? They show me which pages are useful and help me measure and show my ads on Google.",
            "link": "Privacy policy", "href": "privacy/#analytics", "reject": "Reject all", "accept": "Accept all",
            "choose": "Choose", "save": "Save choices",
            "analytics": "Analytics", "analytics_note": "Google Analytics: which pages and buttons are used",
            "ads": "Advertising", "ads_note": "Google Ads: measure ad results and show ads to past visitors"},
     "es": {"label": "Preferencias de cookies", "settings": "Configurar cookies",
-           "text": "¿Nos permites usar cookies de Google para analítica y publicidad? Sirven para saber qué páginas son útiles y para medir y mostrar anuncios de Fluent in Tech en Google.",
+           "text": "¿Me permites usar cookies de Google para analítica y publicidad? Me sirven para saber qué páginas son útiles y para medir y mostrar mis anuncios en Google.",
            "link": "Política de privacidad", "href": "es/privacidad/#analitica", "reject": "Rechazar todo", "accept": "Aceptar todo",
            "choose": "Elegir", "save": "Guardar selección",
            "analytics": "Analítica", "analytics_note": "Google Analytics: qué páginas y botones se usan",
@@ -310,16 +312,16 @@ def downloads_html(slugs, lang):
 DIALOG_TEXT = {
     ("lead", "en"): {
         "eyebrow": "Free program guide", "api": "api/lead",
-        "intro": "Share your name and email to get the guide, and Mark will get in touch to offer a free consultation. Or choose “No thanks” to just download it.",
-        "fine": "Your details are only used to arrange the consultation. See the",
+        "intro": "Share your name and email to get the guide, and I’ll get in touch to offer you a free consultation. Or choose “No thanks” to just download it.",
+        "fine": "I only use your details to arrange the consultation. See the",
         "privacy_href": "privacy/#consultation-requests",
-        "done": "Your download has started. Thanks, Mark will email you to arrange your free consultation."},
+        "done": "Your download has started. Thanks, I’ll email you to arrange your free consultation."},
     ("lead", "es"): {
         "eyebrow": "Guía del programa gratuita", "api": "api/lead",
-        "intro": "Déjanos tu nombre y tu email para recibir la guía, y Mark se pondrá en contacto contigo para ofrecerte una consulta gratuita. O elige «No, gracias» para descargarla sin más.",
-        "fine": "Solo usamos tus datos para organizar la consulta. Consulta la",
+        "intro": "Déjame tu nombre y tu email para recibir la guía, y me pondré en contacto contigo para ofrecerte una consulta gratuita. O elige «No, gracias» para descargarla sin más.",
+        "fine": "Solo uso tus datos para organizar la consulta. Consulta la",
         "privacy_href": "es/privacidad/#solicitudes-de-consulta",
-        "done": "Tu descarga ha empezado. Gracias, Mark te escribirá para organizar tu consulta gratuita."},
+        "done": "Tu descarga ha empezado. Gracias, te escribiré para organizar tu consulta gratuita."},
     ("guide", "en"): {
         "eyebrow": "Free guide", "api": "api/subscribe",
         "intro": "Share your name and email to get the guide, and new guides will come straight to your inbox. Or choose “No thanks” to just download it.",
@@ -380,25 +382,47 @@ def guide_download(slug, css="btn btn-dark"):
             f'<span class="visually-hidden">: {esc(ARTICLE_GUIDES[slug])}</span></a>')
 
 
-# Prices in page text ("$90", "$1,000–1,200") become <span class="money" data-usd="…">
-# so app.js can show them in euros. Spanish pages write them Spanish-style ("90 US$").
+# Prices in page text ("$90", "$1,000–1,200") are set in US dollars and shown in euros:
+# the build writes them as <span class="money" data-usd="…">€79</span> using the rate
+# below, and app.js updates them with the live ECB rate (or shows dollars when the
+# visitor picks USD). Update the fallback rate now and then; the date shows in the note.
+FX_FALLBACK = {"rate": 0.877, "date": "2026-09-25"}
 MONEY = re.compile(r"\$(\d{1,3}(?:,\d{3})+|\d+)(?:\s*([–-])\s*\$?(\d{1,3}(?:,\d{3})+|\d+))?")
 MONEY_SKIP = ("script", "style", "title", "option", "textarea")
 
 
-def spanish_number(n):
-    return f"{n:,}".replace(",", ".") if n >= 10000 else str(n)
+def to_euros(usd):
+    """Same rounding as app.js: whole euros below €200, then steps of €5."""
+    eur = usd * FX_FALLBACK["rate"]
+    return round(eur) if eur < 200 else round(eur / 5) * 5
+
+
+def euro_text(low, high, lang):
+    if lang == "es":
+        n = lambda v: f"{v:,}".replace(",", ".") if v >= 10000 else str(v)
+        return f"{n(low)}–{n(high)} €" if high else f"{n(low)} €"
+    return f"€{low:,}–{high:,}" if high else f"€{low:,}"
+
+
+def money_parts(match):
+    low = int(match.group(1).replace(",", ""))
+    high = int(match.group(3).replace(",", "")) if match.group(3) else None
+    return low, high
 
 
 def money_span(match, lang):
-    low = int(match.group(1).replace(",", ""))
-    high = int(match.group(3).replace(",", "")) if match.group(3) else None
+    low, high = money_parts(match)
     usd = f"{low}-{high}" if high else str(low)
-    if lang == "es":
-        shown = f"{spanish_number(low)}–{spanish_number(high)} US$" if high else f"{spanish_number(low)} US$"
-    else:
-        shown = match.group(0)
+    shown = euro_text(to_euros(low), to_euros(high) if high else None, lang)
     return f'<span class="money" data-usd="{usd}">{shown}</span>'
+
+
+def euros_in_text(text, lang):
+    """Prices in plain text (titles, meta descriptions) in euros, without markup."""
+    def repl(match):
+        low, high = money_parts(match)
+        return euro_text(to_euros(low), to_euros(high) if high else None, lang)
+    return MONEY.sub(repl, text)
 
 
 def wrap_money(body, lang):
@@ -520,7 +544,7 @@ def structured_data(meta, body):
         graph.append({
             "@type": "Article",
             "headline": meta.get("headline", meta["title"]),
-            "description": meta["description"],
+            "description": euros_in_text(meta["description"], meta["lang"]),
             "datePublished": meta["published"],
             "image": absolute(SITE["og_image"]),
             "url": absolute(meta["path"]),
@@ -549,7 +573,8 @@ def render(meta, body, versions):
     og_image = absolute(SITE["og_image"])
     sticky = meta.get("sticky", "yes") != "no"
     robots = f'<meta name="robots" content="{meta["robots"]}">' if "robots" in meta else ""
-    ga_attr = f' data-ga="{SITE["ga_id"]}"' if SITE["ga_id"] else ""
+    ga_attr = f' data-fx-rate="{FX_FALLBACK["rate"]}" data-fx-date="{FX_FALLBACK["date"]}"'
+    ga_attr += f' data-ga="{SITE["ga_id"]}"' if SITE["ga_id"] else ""
     if SITE["ga_id"] and SITE["ads_id"]:
         ga_attr += f' data-ads="{SITE["ads_id"]}"'
 
@@ -594,6 +619,7 @@ def render(meta, body, versions):
         f'aria-label="{t["other_name"]}" data-track="lang-{t["other_lang"]}">{t["other_label"]}</a></div>'
     )
     body = wrap_money(body, lang)
+    title, description = euros_in_text(meta["title"], lang), euros_in_text(meta["description"], lang)
     for kind in ("lead", "guide"):
         if f'data-dialog="{kind}"' in body:
             body += download_dialog(kind, lang)
@@ -622,14 +648,14 @@ def render(meta, body, versions):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{esc(meta["title"])}</title>
-<meta name="description" content="{esc(meta["description"])}">
+<title>{esc(title)}</title>
+<meta name="description" content="{esc(description)}">
 {robots}<link rel="canonical" href="{canonical}">
 {alternates}<meta property="og:type" content="website">
 <meta property="og:locale" content="{t["locale"]}">
 <meta property="og:site_name" content="{SITE["name"]}">
-<meta property="og:title" content="{esc(meta.get("og_title", meta["title"]))}">
-<meta property="og:description" content="{esc(meta["description"])}">
+<meta property="og:title" content="{esc(euros_in_text(meta.get("og_title", meta["title"]), lang))}">
+<meta property="og:description" content="{esc(description)}">
 <meta property="og:url" content="{canonical}">
 <meta property="og:image" content="{og_image}">
 <meta property="og:image:width" content="1200">
@@ -647,7 +673,7 @@ def render(meta, body, versions):
 <a class="skip-link" href="#main">{t["skip"]}</a>
 <header class="site-header">
 <nav class="nav wrap" aria-label="{t["main_nav"]}">
-<a class="brand" href="{url("es/" if spanish else "")}"><span class="brand-mark" aria-hidden="true">{SITE["mark"]}</span>{SITE["name"]}</a>
+<a class="brand" href="{url("es/" if spanish else "")}"><span class="brand-mark" aria-hidden="true">{SITE["mark"]}</span><span class="brand-name">{SITE["name"]}</span></a>
 <div class="nav-links" id="nav-links">{nav_links}{cta_link(meta, "btn btn-primary menu-cta", "menu-cta")}</div>
 {switches}
 {cta_link(meta, "btn btn-primary nav-cta", "header-cta")}
@@ -659,7 +685,7 @@ def render(meta, body, versions):
 </main>
 <footer class="footer">
 <div class="wrap footer-grid">
-<div class="footer-brand"><a class="brand" href="{url("es/" if spanish else "")}"><span class="brand-mark" aria-hidden="true">{SITE["mark"]}</span>{SITE["name"]}</a>
+<div class="footer-brand"><a class="brand" href="{url("es/" if spanish else "")}"><span class="brand-mark" aria-hidden="true">{SITE["mark"]}</span><span class="brand-name">{SITE["name"]}</span></a>
 <p>{t["tagline"]}</p>
 <p><a href="mailto:{SITE["email"]}">{SITE["email"]}</a></p></div>
 {footer_cols}

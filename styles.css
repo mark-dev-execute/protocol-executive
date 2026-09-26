@@ -74,7 +74,6 @@ h1, h2 { text-wrap: balance; }
 .nav-tools { display: flex; align-items: center; gap: 8px; flex: none; }
 .currency-switch { display: inline-flex; border: 1px solid #33425c; border-radius: 999px; padding: 2px; }
 .currency-switch[hidden] { display: none; }
-.currency-switch.is-loading { visibility: hidden; }
 .currency-switch button, .lang-switch { font: 500 .72rem var(--mono); letter-spacing: .04em; color: #c7cfdd; background: none; border: 0; border-radius: 999px; padding: 0 9px; min-height: 38px; cursor: pointer; }
 .currency-switch button:hover, .lang-switch:hover { color: #fff; }
 .currency-switch button[aria-pressed="true"] { background: var(--lime); color: var(--ink); }
@@ -82,7 +81,6 @@ h1, h2 { text-wrap: balance; }
 .currency-switch button:focus-visible, .lang-switch:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
 .currency-switch .cur-short { display: none; }
 .money { white-space: nowrap; }
-.money-usd { font-size: .78em; font-weight: inherit; opacity: .72; }
 
 /* Small phones: shorter switch labels so the header stays on one line. */
 @media (max-width: 480px) {
@@ -526,3 +524,8 @@ textarea { min-height: 120px; }
   .currency-switch button { min-width: 40px; min-height: 40px; }
 }
 input[aria-invalid="true"], input:user-invalid { border-color: #a23b3b; box-shadow: 0 0 0 1px #a23b3b; }
+/* Very narrow screens (and 200% zoom on laptops): logo mark only, name kept for screen readers */
+@media (max-width: 359px) {
+  .site-header .brand-name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .site-header .brand { min-width: 44px; }
+}

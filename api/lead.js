@@ -17,8 +17,8 @@ const GUIDES = new Set([
 ]);
 // Services a booking link can preselect (book/?service=…).
 const TOPICS = new Set(['interview', 'communication', 'leadership', 'corporate', 'cohort', 'business']);
-const THANKS = 'Thanks. Mark will email you to arrange your free consultation.';
-const THANKS_MESSAGE = 'Thanks. Mark will email you within 24 hours.';
+const THANKS = 'Thanks. I’ll email you to arrange your free consultation.';
+const THANKS_MESSAGE = 'Thanks. I’ll email you within 24 hours.';
 
 let schemaReady = null;
 
@@ -85,7 +85,7 @@ export async function handleLead(request, db, notify = notifyMark) {
     await db.save({ email, name, guide, topic, page });
   } catch (error) {
     console.error('lead: could not save request', error?.message);
-    return reply(request, form, 500, 'Something went wrong. Please email mark.parfenov@gmail.com instead.');
+    return reply(request, form, 500, 'Something went wrong. Please email me at mark.parfenov@gmail.com instead.');
   }
   const pageUrl = page ? `https://www.fluentintechcoaching.com${page}` : 'unknown';
   const who = name ? `${name} <${email}>` : email;

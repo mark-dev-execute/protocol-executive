@@ -10,19 +10,19 @@
   const T = SPANISH ? {
     fields: 'Completa los campos marcados.',
     nameEmail: 'Escribe tu nombre y un email válido, o elige «No, gracias».',
-    contactThanks: 'Gracias. Mark te escribirá en un plazo de 24 horas.',
+    contactThanks: 'Gracias. Te escribiré en menos de 24 horas.',
     invalidEmail: 'Introduce un email válido.',
     failed: 'Algo ha fallado. Inténtalo de nuevo.',
     sending: 'Enviando…',
-    fxNote: (date, rate) => `Los precios se fijan en dólares estadounidenses y se muestran en euros al tipo de cambio de referencia del Banco Central Europeo del ${date} (1 USD = ${rate} EUR). Los importes en euros están redondeados; tu factura indica el importe exacto.`,
+    fxNote: (date, rate) => `Fijo mis precios en dólares estadounidenses. Los precios en euros usan el tipo de cambio del Banco Central Europeo del ${date} (1 USD = ${rate} EUR) y están redondeados. El importe exacto aparece en tu factura.`,
   } : {
     fields: 'Please complete the highlighted fields.',
     nameEmail: 'Please enter your name and a valid email, or choose “No thanks”.',
-    contactThanks: 'Thanks. Mark will email you within 24 hours.',
+    contactThanks: 'Thanks. I’ll email you within 24 hours.',
     invalidEmail: 'Please enter a valid email address.',
     failed: 'Something went wrong. Please try again.',
     sending: 'Sending…',
-    fxNote: (date, rate) => `Prices are set in US dollars and shown in euros at the European Central Bank reference rate of ${date} (1 USD = ${rate} EUR). Euro amounts are rounded; your invoice shows the exact amount.`,
+    fxNote: (date, rate) => `I set my prices in US dollars. Euro prices use the European Central Bank rate of ${date} (1 USD = ${rate} EUR) and are rounded. Your invoice shows the exact amount.`,
   };
   const LOCALE = SPANISH ? 'es-ES' : 'en-US';
 
@@ -31,13 +31,14 @@
     set: (key, value) => { try { localStorage.setItem(key, value); } catch (e) { /* storage unavailable */ } },
   };
 
-  // Prices are set in USD and shown euro first, dollars second ("€77 ($90)"), at the
-  // European Central Bank rate served by /api/rates (kept in the browser for 12 hours).
-  // The EUR/USD switch shows dollars only; the choice is remembered. Without a rate
-  // (or without JavaScript) prices show in dollars.
+  // Prices are set in USD and shown in euros. The build writes euro amounts using a
+  // fallback rate (<html data-fx-rate data-fx-date>); here they are updated with the
+  // European Central Bank rate from /api/rates (kept in the browser for 12 hours).
+  // The EUR/USD switch shows dollars instead; the choice is remembered.
   const FX_KEY = 'fit-fx';
   const CURRENCY_KEY = 'fit-currency';
   const HOUR = 3600 * 1000;
+  const FALLBACK_FX = { rate: Number(document.documentElement.dataset.fxRate), date: document.documentElement.dataset.fxDate };
 
   const preferredCurrency = () => (store.get(CURRENCY_KEY) === 'USD' ? 'USD' : 'EUR');
 
@@ -61,29 +62,23 @@
       store.set(FX_KEY, JSON.stringify(fx));
       return fx;
     } catch (e) {
-      return savedRate(7 * 24 * HOUR); // an older rate beats none
+      return savedRate(7 * 24 * HOUR) || (plausible(FALLBACK_FX) ? FALLBACK_FX : null);
     }
   };
 
   const showPrices = (currency, fx) => {
-    const euros = (n, symbol) => new Intl.NumberFormat(LOCALE, symbol
-      ? { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }
+    const format = (n, code, symbol) => new Intl.NumberFormat(LOCALE, symbol
+      ? { style: 'currency', currency: code, maximumFractionDigits: 0 }
       : { maximumFractionDigits: 0 }).format(n);
-    const convert = (usd) => {
-      const eur = Number(usd) * fx.rate;
+    const toEuros = (usd) => {
+      const eur = usd * fx.rate;
       return eur < 200 ? Math.round(eur) : Math.round(eur / 5) * 5;
     };
     document.querySelectorAll('.money[data-usd]').forEach((el) => {
-      if (el.dataset.original === undefined) el.dataset.original = el.textContent;
-      el.textContent = currency === 'USD' ? el.dataset.original : '';
-      if (currency === 'USD') return;
-      const [low, high] = el.dataset.usd.split('-').map(convert);
-      const range = !high ? euros(low, true)
-        : SPANISH ? `${euros(low)}–${euros(high, true)}` : `${euros(low, true)}–${euros(high)}`;
-      const dollars = document.createElement('span');
-      dollars.className = 'money-usd';
-      dollars.textContent = ` (${el.dataset.original.trim()})`;
-      el.append(range, dollars);
+      const code = currency === 'USD' ? 'USD' : 'EUR';
+      const [low, high] = el.dataset.usd.split('-').map(Number).map((v) => (code === 'EUR' ? toEuros(v) : v));
+      el.textContent = !high ? format(low, code, true)
+        : SPANISH ? `${format(low, code)}–${format(high, code, true)}` : `${format(low, code, true)}–${format(high, code)}`;
     });
     const date = new Intl.DateTimeFormat(LOCALE, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
       .format(new Date(`${fx.date}T12:00:00Z`));
@@ -98,12 +93,10 @@
     const group = document.querySelector('[data-currency]');
     if (!group) return;
     group.hidden = false;
-    group.classList.add('is-loading'); // keeps its place in the header while the rate loads
-    const fx = await loadRate();
-    if (!fx) { group.hidden = true; return; } // no rate: prices stay in USD
     let currency = preferredCurrency();
+    let fx = plausible(FALLBACK_FX) ? FALLBACK_FX : null;
     const apply = () => {
-      showPrices(currency, fx);
+      if (fx) showPrices(currency, fx);
       group.querySelectorAll('button[data-cur]').forEach((button) =>
         button.setAttribute('aria-pressed', String(button.dataset.cur === currency)));
     };
@@ -116,7 +109,8 @@
       track('currency_switch', { currency });
     });
     apply();
-    group.classList.remove('is-loading');
+    fx = (await loadRate()) || fx;
+    apply();
   };
 
   // Google tags run only with consent from the cookie banner: "Analytics" loads Google
